@@ -1,0 +1,31 @@
+﻿@{
+    ViewData["Title"] = "Criar Estado";
+}
+
+@model Pagamento.Models.Estado
+
+<div>
+    <h1 class="display-4">Criar Estado</h1>
+</div>
+
+
+<form asp-action="Criar" method="post">
+    <div class="mb-3">
+        <label asp-for="NomeEstado" class="form-label">Nome</label>
+        <input asp-for="NomeEstado" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label for="IdPais" class="form-label">Pais</label>
+        <select id="IdPais" class="form-control" asp-for="IdPais">
+            <option value="">Selecione o País</option>
+            @foreach (var pais in ViewBag.Paises as List<SelectListItem>)
+            {
+                <option value="@pais.Value">@pais.Text</option>
+            }
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-success">Salvar Estado</button>
+    <a class="btn btn-secondary" href="@Url.Action("Index", "Estado")">Cancelar</a>
+</form>

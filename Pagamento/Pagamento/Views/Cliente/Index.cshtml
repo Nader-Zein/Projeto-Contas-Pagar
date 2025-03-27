@@ -1,0 +1,53 @@
+﻿@model List<Pagamento.Models.Cliente>
+
+@{
+    ViewData["Title"] = "Clientes";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Clientes</h1>
+
+    <div class="d-flex justify-content-start mb-3">
+        <a asp-action="Criar" class="btn btn-primary">Novo Cliente</a>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Tipo</th>
+                <th>CPF/CNPJ</th>
+                <th>Email</th>
+                <th>Telefone</th>
+                <th>Status</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                foreach (var cliente in Model)
+                {
+                    <tr>
+                        <td>@cliente.Nome_RazaoSocial</td>
+                        <td>@cliente.TipoPessoa</td>
+                        <td>@cliente.CPF_CNPJ</td>
+                        <td>@cliente.Email</td>
+                        <td>@cliente.Telefone</td>
+                        <td>@cliente.Status</td>
+                        <td>
+                            <a asp-action="Editar" asp-route-id="@cliente.IdPessoa" class="btn btn-sm btn-warning">Editar</a>
+                            <a asp-action="Excluir" asp-route-id="@cliente.IdPessoa" class="btn btn-sm btn-danger">Excluir</a>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="7" class="text-center">Nenhum cliente cadastrado.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

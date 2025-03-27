@@ -1,0 +1,30 @@
+﻿@model Pagamento.Models.Cidade
+
+@{
+    ViewData["Title"] = "Editar Cidade";
+}
+
+<h2>Editar Cidade</h2>
+
+<form asp-action="Editar" method="post">
+    <div class="mb-3">
+        <label asp-for="NomeCidade" class="form-label">Nome da Cidade</label>
+        <input asp-for="NomeCidade" class="form-control" />
+        <span asp-validation-for="NomeCidade" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="IdEstado" class="form-label">Estado</label>
+        <select asp-for="IdEstado" class="form-control" asp-items="ViewBag.Estados">
+            <option value="">Selecione o Estado</option>
+        </select>
+        <span asp-validation-for="IdEstado" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success">Salvar</button>
+    <a href="@Url.Action("Index", "Cidade")" class="btn btn-secondary">Cancelar</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

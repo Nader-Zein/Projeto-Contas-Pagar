@@ -1,0 +1,45 @@
+﻿@{
+    ViewData["Title"] = "Forma de Pagamento";
+}
+
+@model List<Pagamento.Models.FormaPagamento>
+
+
+<div class="text-center">
+    <h1 class="display-4">Forma de Pagamento</h1>
+
+    <div class="d-flex justify-content-start mb-3">
+        <a asp-controller="FormaPagamento" asp-action="CriarForma" class="btn btn-primary">Criar</a>
+    </div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Count > 0)
+            {
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.IdFormaPgto</td>
+                        <td>@item.Descricao</td>
+                        <td>
+                            <a asp-controller="FormaPagamento" asp-action="Editar" asp-route-id="@item.IdFormaPgto" class="btn btn-warning btn-sm">Editar</a>
+                            <a asp-controller="FormaPagamento" asp-action="Excluir" asp-route-id="@item.IdFormaPgto" class="btn btn-danger btn-sm">Excluir</a>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="3" class="text-center">Nenhuma forma de pagamento encontrada.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

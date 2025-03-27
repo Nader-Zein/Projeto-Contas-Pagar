@@ -1,0 +1,55 @@
+﻿@model List<Pagamento.Models.Fornecedor>
+
+@{
+    ViewData["Title"] = "Fornecedores";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Fornecedores</h1>
+
+    <div class="d-flex justify-content-start mb-3">
+        <a asp-action="Criar" class="btn btn-primary">Novo Fornecedor</a>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Tipo</th>
+                <th>CPF/CNPJ</th>
+                <th>Email</th>
+                <th>Telefone</th>
+                <th>Status</th>
+                <th>Cidade</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                foreach (var fornecedor in Model)
+                {
+                    <tr>
+                        <td>@fornecedor.Nome_RazaoSocial</td>
+                        <td>@fornecedor.TipoPessoa</td>
+                        <td>@fornecedor.CPF_CNPJ</td>
+                        <td>@fornecedor.Email</td>
+                        <td>@fornecedor.Telefone</td>
+                        <td>@fornecedor.Status</td>
+                        <td>@fornecedor.IdCidade</td> <!-- Ou mostrar o nome da cidade se tiver -->
+                        <td>
+                            <a asp-action="Editar" asp-route-id="@fornecedor.IdPessoa" class="btn btn-sm btn-warning">Editar</a>
+                            <a asp-action="Excluir" asp-route-id="@fornecedor.IdPessoa" class="btn btn-sm btn-danger">Excluir</a>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="8" class="text-center">Nenhum fornecedor cadastrado.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

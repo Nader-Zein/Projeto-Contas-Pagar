@@ -1,0 +1,45 @@
+﻿@{
+    ViewData["Title"] = "Países";
+}
+
+@model List<Pagamento.Models.Pais>
+
+<div class="text-center">
+    <h1 class="display-4">Países</h1>
+
+    <div class="d-flex justify-content-start mb-3">
+        <a asp-controller="Pais" asp-action="Criar" class="btn btn-primary">Criar</a>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Count > 0)
+            {
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.IdPais</td>
+                        <td>@item.NomePais</td>
+                        <td>
+                            <a asp-controller="Pais" asp-action="Editar" asp-route-id="@item.IdPais" class="btn btn-warning btn-sm">Editar</a>
+                            <a asp-controller="Pais" asp-action="Excluir" asp-route-id="@item.IdPais" class="btn btn-danger btn-sm">Excluir</a>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="3" class="text-center">Nenhum país encontrado.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,53 @@
+﻿@model List<Pagamento.Models.Funcionario>
+
+@{
+    ViewData["Title"] = "Funcionários";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Funcionários</h1>
+
+    <div class="d-flex justify-content-start mb-3">
+        <a asp-action="Criar" class="btn btn-primary">Novo Funcionário</a>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Tipo</th>
+                <th>CPF/CNPJ</th>
+                <th>Email</th>
+                <th>Telefone</th>
+                <th>Status</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                foreach (var funcionario in Model)
+                {
+                    <tr>
+                        <td>@funcionario.Nome_RazaoSocial</td>
+                        <td>@funcionario.TipoPessoa</td>
+                        <td>@funcionario.CPF_CNPJ</td>
+                        <td>@funcionario.Email</td>
+                        <td>@funcionario.Telefone</td>
+                        <td>@funcionario.Status</td>
+                        <td>
+                            <a asp-action="Editar" asp-route-id="@funcionario.IdPessoa" class="btn btn-sm btn-warning">Editar</a>
+                            <a asp-action="Excluir" asp-route-id="@funcionario.IdPessoa" class="btn btn-sm btn-danger">Excluir</a>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="7" class="text-center">Nenhum funcionário cadastrado.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

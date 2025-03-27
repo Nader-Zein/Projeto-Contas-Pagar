@@ -1,0 +1,54 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\User\\Documents\\Pratica Profissional\\Versao 6 Final Bimestre\\Pagamento\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|c:\\users\\user\\documents\\pratica profissional\\versao 6 final bimestre\\pagamento\\pagamento\\dao\\cidadedao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|solutionrelative:pagamento\\dao\\cidadedao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|c:\\users\\user\\documents\\pratica profissional\\versao 6 final bimestre\\pagamento\\pagamento\\controllers\\cidadecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|solutionrelative:pagamento\\controllers\\cidadecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "CidadeDAO.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Documents\\Pratica Profissional\\Versao 6 Final Bimestre\\Pagamento\\Pagamento\\DAO\\CidadeDAO.cs",
+              "RelativeDocumentMoniker": "Pagamento\\DAO\\CidadeDAO.cs",
+              "ToolTip": "C:\\Users\\User\\Documents\\Pratica Profissional\\Versao 6 Final Bimestre\\Pagamento\\Pagamento\\DAO\\CidadeDAO.cs",
+              "RelativeToolTip": "Pagamento\\DAO\\CidadeDAO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-27T12:28:05.469Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "CidadeController.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Documents\\Pratica Profissional\\Versao 6 Final Bimestre\\Pagamento\\Pagamento\\Controllers\\CidadeController.cs",
+              "RelativeDocumentMoniker": "Pagamento\\Controllers\\CidadeController.cs",
+              "ToolTip": "C:\\Users\\User\\Documents\\Pratica Profissional\\Versao 6 Final Bimestre\\Pagamento\\Pagamento\\Controllers\\CidadeController.cs",
+              "RelativeToolTip": "Pagamento\\Controllers\\CidadeController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-27T12:28:01.387Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

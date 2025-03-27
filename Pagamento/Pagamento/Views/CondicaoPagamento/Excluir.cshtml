@@ -1,0 +1,49 @@
+﻿@model Pagamento.Models.CondicaoPagamento
+
+@{
+    ViewData["Title"] = "Excluir Condição de Pagamento";
+}
+
+<h2>Tem certeza que deseja excluir esta condição de pagamento?</h2>
+
+<form asp-action="Excluir" method="post">
+    <input type="hidden" asp-for="IdCondPgto" />
+
+    <div class="mb-3">
+        <label class="form-label">Descrição:</label>
+        <p>@Model.Descricao</p>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Quantidade de Parcelas:</label>
+        <p>@Model.QuantidadeParcelas</p>
+    </div>
+
+    <h3>Parcelas</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Numero da Parcela</th>
+                <th>Forma de Pagamento</th>
+                <th>Valor %</th>
+                <th>Dias Após Venda</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var parcela in Model.Parcelas)
+            {
+                <tr>
+                    <td>@parcela.NumeroParcela</td>
+                    <td>@parcela.IdFormaPgto</td>
+                    <td>@parcela.ValorPercentual%</td>
+                    <td>@parcela.DiasAposVenda dias</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <button type="submit" class="btn btn-danger">Confirmar Exclusão</button>
+    <a class="btn btn-secondary" href="@Url.Action("Index", "CondicaoPagamento")">Cancelar</a>
+</form>
+
+

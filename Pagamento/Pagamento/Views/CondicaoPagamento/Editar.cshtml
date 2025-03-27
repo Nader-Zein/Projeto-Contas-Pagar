@@ -1,0 +1,180 @@
+﻿@using System.Globalization
+@model Pagamento.Models.CondicaoPagamento
+
+@{
+    ViewData["Title"] = "Editar Condição de Pagamento";
+}
+
+<h2>Editar Condição de Pagamento</h2>
+
+<form asp-action="Editar" method="post">
+    <input type="hidden" asp-for="IdCondPgto" />
+
+    <div class="mb-3">
+        <label asp-for="Descricao" class="form-label">Descrição</label>
+        <input asp-for="Descricao" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="QuantidadeParcelas" class="form-label">Quantidade de Parcelas</label>
+        <input asp-for="QuantidadeParcelas" type="number" class="form-control" required />
+    </div>
+    <div class="col-md-3">
+        <label for="NumeroParcela">Número da Parcela</label>
+        <input type="number" id="NumeroParcela" class="form-control" min="1" />
+    </div>
+
+    <h3>Parcelas</h3>
+
+    <div class="row">
+        <div class="col-md-3">
+            <label for="IdFormaPgto">Forma de Pagamento</label>
+            <select id="IdFormaPgto" class="form-control">
+                @foreach (var forma in Model.FormasPagamento)
+                {
+                    <option value="@forma.IdFormaPgto">@forma.Descricao</option>
+                }
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <label for="ValorPercentual">Valor %</label>
+            <input type="number" id="ValorPercentual" class="form-control" step="0.01" />
+        </div>
+
+        <div class="col-md-3">
+            <label for="DiasAposVenda">Dias Após Venda</label>
+            <input type="number" id="DiasAposVenda" class="form-control" />
+        </div>
+
+        <div class="col-md-3 d-flex align-items-end">
+            <button type="button" class="btn btn-primary" id="btnAdicionarParcela">Adicionar Parcela</button>
+        </div>
+    </div>
+
+    <br />
+
+    <table class="table" id="tabelaParcelas">
+        <thead>
+            <tr>
+                <th>Nº Parcela</th>
+                <th>Forma de Pagamento</th>
+                <th>Valor %</th>
+                <th>Dias Após Venda</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var parcela in Model.Parcelas)
+            {
+                <tr data-numero="@parcela.NumeroParcela"
+                    data-idforma="@parcela.IdFormaPgto"
+                    data-valor="@parcela.ValorPercentual"
+                    data-dias="@parcela.DiasAposVenda">
+                    <td>@parcela.NumeroParcela</td>
+                    <td>@parcela.IdFormaPgto</td>
+                    <td>@parcela.ValorPercentual</td>
+                    <td>@parcela.DiasAposVenda</td>
+                    <td>
+                        <button type="button" class="btn btn-danger btn-sm removerParcela">Remover</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <button type="submit" class="btn btn-success">Salvar Alterações</button>
+    <a class="btn btn-secondary" href="@Url.Action("Index", "CondicaoPagamento")">Cancelar</a>
+</form>
+
+
+@section Scripts {
+    <script>
+        let parcelas = [];
+
+        document.querySelectorAll("#tabelaParcelas tbody tr").forEach(row => {
+            const numero = parseInt(row.dataset.numero);
+            const idFormaPgto = parseInt(row.dataset.idforma);
+            const valor = parseFloat(row.dataset.valor);
+            const dias = parseInt(row.dataset.dias);
+
+            parcelas.push({
+                numeroParcela: numero,
+                idFormaPgto: idFormaPgto,
+                valorPercentual: valor,
+                diasAposVenda: dias
+            });
+
+            const btnRemover = row.querySelector(".removerParcela");
+            btnRemover.addEventListener("click", function () {
+                row.remove();
+                parcelas = parcelas.filter(p => p.numeroParcela !== numero);
+            });
+        });
+
+        document.getElementById("btnAdicionarParcela").addEventListener("click", function () {
+            let numeroParcela = parseInt(document.getElementById("NumeroParcela").value);
+            let formaPgto = document.getElementById("IdFormaPgto");
+            let valor = parseFloat(document.getElementById("ValorPercentual").value);
+            let dias = parseInt(document.getElementById("DiasAposVenda").value);
+
+            if (!numeroParcela || !formaPgto.value || isNaN(valor) || isNaN(dias)) {
+                alert("Preencha todos os campos da parcela.");
+                return;
+            }
+
+            let existe = parcelas.some(p => p.numeroParcela === numeroParcela);
+            if (existe) {
+                alert("Número de parcela já utilizado.");
+                return;
+            }
+
+            let parcela = {
+                numeroParcela: numeroParcela,
+                idFormaPgto: parseInt(formaPgto.value),
+                descricaoFormaPgto: formaPgto.options[formaPgto.selectedIndex].text,
+                valorPercentual: valor,
+                diasAposVenda: dias
+            };
+
+            parcelas.push(parcela);
+
+            let tabela = document.querySelector("#tabelaParcelas tbody");
+            let novaLinha = tabela.insertRow();
+            novaLinha.dataset.numero = parcela.numeroParcela;
+            novaLinha.dataset.idforma = parcela.idFormaPgto;
+            novaLinha.dataset.valor = parcela.valorPercentual;
+            novaLinha.dataset.dias = parcela.diasAposVenda;
+
+            novaLinha.innerHTML = `
+                <td>${parcela.numeroParcela}</td>
+                <td>${parcela.idFormaPgto}</td>
+                <td>${parcela.valorPercentual}</td>
+                <td>${parcela.diasAposVenda}</td>
+                <td><button type="button" class="btn btn-danger btn-sm removerParcela">Remover</button></td>`;
+
+            novaLinha.querySelector(".removerParcela").addEventListener("click", function () {
+                novaLinha.remove();
+                parcelas = parcelas.filter(p => p.numeroParcela !== parcela.numeroParcela);
+            });
+
+            document.getElementById("NumeroParcela").value = "";
+            document.getElementById("ValorPercentual").value = "";
+            document.getElementById("DiasAposVenda").value = "";
+        });
+
+        document.querySelector("form").addEventListener("submit", function () {
+            let inputParcelas = document.createElement("input");
+            inputParcelas.type = "hidden";
+            inputParcelas.name = "ParcelasJson";
+            inputParcelas.value = JSON.stringify(parcelas);
+            this.appendChild(inputParcelas);
+        });
+
+    </script>
+}
+
+
+
+
+

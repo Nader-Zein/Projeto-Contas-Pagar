@@ -1,0 +1,40 @@
+﻿@model Pagamento.Models.Funcionario
+
+@{
+    ViewData["Title"] = "Excluir Funcionário";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="alert alert-danger">
+    <strong>Tem certeza que deseja excluir este funcionário?</strong>
+</div>
+
+<div class="row mb-3">
+    <div class="col-md-6">
+        <label class="form-label">Nome / Razão Social:</label>
+        <p class="form-control-plaintext">@Model.Nome_RazaoSocial</p>
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">CPF / CNPJ:</label>
+        <p class="form-control-plaintext">@Model.CPF_CNPJ</p>
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">Email:</label>
+        <p class="form-control-plaintext">@Model.Email</p>
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">Telefone:</label>
+        <p class="form-control-plaintext">@Model.Telefone</p>
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">Status:</label>
+        <p class="form-control-plaintext">@Model.Status</p>
+    </div>
+</div>
+
+<form asp-action="Excluir" method="post">
+    <input type="hidden" asp-for="IdPessoa" />
+    <button type="submit" class="btn btn-danger">Confirmar Exclusão</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>

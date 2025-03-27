@@ -1,0 +1,17 @@
+﻿@{
+    ViewData["Title"] = "Criar País";
+}
+
+@model Pagamento.Models.Pais
+
+<div>
+    <h1 class="display-4">Criar País</h1>
+</div>
+
+<form asp-action="Criar" asp-controller="Pais" method="post">
+    <label>Nome do País</label>
+    <input class="form-control" type="text" placeholder="Nome do país" asp-for="NomePais" required />
+
+    <button class="btn btn-primary" type="submit">Cadastrar</button>
+    <a class="btn btn-secondary" href="@Url.Action("Index", "Pais")">Cancelar</a>
+</form>

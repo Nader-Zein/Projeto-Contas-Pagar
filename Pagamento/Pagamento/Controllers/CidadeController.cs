@@ -1,0 +1,93 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Pagamento.DAO;
+using Pagamento.Models;
+
+namespace Pagamento.Controllers
+{
+    public class CidadeController : Controller
+    {
+        private readonly CidadeDAO _cidadeDAO = new CidadeDAO();
+        private readonly EstadoDAO _estadoDAO = new EstadoDAO();
+
+        public IActionResult Index()
+        {
+            var lista = _cidadeDAO.Listar();
+            return View(lista);
+        }
+
+        public IActionResult Criar()
+        {
+            var estados = _estadoDAO.Listar();
+
+            ViewBag.Estados = estados.Select(e => new SelectListItem
+            {
+                Value = e.IdEstado.ToString(),  
+                Text = e.NomeEstado  
+            }).ToList();
+
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Criar(Cidade cidade)
+        {
+            if (ModelState.IsValid)
+            {
+                _cidadeDAO.Inserir(cidade);
+                return RedirectToAction("Index");
+            }
+            ViewBag.Estados = _estadoDAO.Listar();
+            return View(cidade);
+        }
+
+        public IActionResult Excluir(int id)
+        {
+            var cidade = _cidadeDAO.Listar().FirstOrDefault(c => c.IdCidade == id);
+            if (cidade == null) return NotFound();
+            return View(cidade);
+        }
+
+        [HttpPost, ActionName("Excluir")]
+        public IActionResult ConfirmarExclusao(int id)
+        {
+            _cidadeDAO.Excluir(id);
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult Editar(int id)
+        {
+            var cidade = _cidadeDAO.Listar().FirstOrDefault(c => c.IdCidade == id);
+            if (cidade == null) return NotFound();
+
+            var estados = _estadoDAO.Listar();
+            ViewBag.Estados = estados.Select(e => new SelectListItem
+            {
+                Value = e.IdEstado.ToString(),
+                Text = e.NomeEstado
+            }).ToList();
+
+            return View(cidade);
+        }
+
+        [HttpPost]
+        public IActionResult Editar(Cidade cidade)
+        {
+            if (ModelState.IsValid)
+            {
+                _cidadeDAO.Atualizar(cidade);
+                return RedirectToAction("Index");
+            }
+
+            var estados = _estadoDAO.Listar();
+            ViewBag.Estados = estados.Select(e => new SelectListItem
+            {
+                Value = e.IdEstado.ToString(),
+                Text = e.NomeEstado
+            }).ToList();
+
+            return View(cidade);
+        }
+
+    }
+}

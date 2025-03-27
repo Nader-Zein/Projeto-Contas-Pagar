@@ -1,0 +1,17 @@
+﻿@{
+    ViewData["Title"] = "Excluir Forma de Pagamento";
+}
+
+@model Pagamento.Models.FormaPagamento
+   
+<div>
+    <h1 class="display-4">Excluir Forma de Pagamento</h1>
+</div>
+
+<p>Tem certeza que deseja excluir a forma de pagamento <strong>@Model.Descricao</strong>?</p>
+
+<form asp-action="Excluir" asp-controller="FormaPagamento" method="post">
+    <input type="hidden" asp-for="IdFormaPgto" />
+    <button class="btn btn-danger" type="submit">Excluir</button>
+    <a class="btn btn-secondary" href="@Url.Action("FormaPagamento", "FormaPagamento")">Cancelar</a> 
+</form>

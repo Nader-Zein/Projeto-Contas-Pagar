@@ -1,0 +1,24 @@
+﻿@model Pagamento.Models.Pais
+
+@{
+    ViewData["Title"] = "Editar País";
+}
+
+<h2>Editar País</h2>
+
+<form asp-action="Editar" method="post">
+    <input type="hidden" asp-for="IdPais" />
+
+    <div class="mb-3">
+        <label asp-for="NomePais" class="form-label">Nome do País</label>
+        <input asp-for="NomePais" class="form-control" />
+        <span asp-validation-for="NomePais" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success">Salvar</button>
+    <a href="@Url.Action("Index", "Pais")" class="btn btn-secondary">Cancelar</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

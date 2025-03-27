@@ -1,0 +1,47 @@
+﻿@{
+    ViewData["Title"] = "Estados";
+}
+
+@model List<Pagamento.Models.Estado>
+
+<div class="text-center">
+    <h1 class="display-4">Estados</h1>
+
+    <div class="d-flex justify-content-start mb-3">
+        <a asp-controller="Estado" asp-action="Criar" class="btn btn-primary">Criar</a>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>ID do País</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Count > 0)
+            {
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.IdEstado</td>
+                        <td>@item.NomeEstado</td>
+                        <td>@item.IdPais</td>
+                        <td>
+                            <a asp-controller="Estado" asp-action="Editar" asp-route-id="@item.IdEstado" class="btn btn-warning btn-sm">Editar</a>
+                            <a asp-controller="Estado" asp-action="Excluir" asp-route-id="@item.IdEstado" class="btn btn-danger btn-sm">Excluir</a>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="4" class="text-center">Nenhum estado encontrado.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

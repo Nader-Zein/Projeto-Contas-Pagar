@@ -1,0 +1,94 @@
+CREATE TABLE CondicaoPagamento (
+    IdCondPgto INT AUTO_INCREMENT PRIMARY KEY,
+    Descricao VARCHAR(255) NOT NULL,
+    QuantidadeParcelas INT NOT NULL
+);
+
+CREATE TABLE FormaPagamento (
+    IdFormaPgto INT AUTO_INCREMENT PRIMARY KEY,
+    Descricao VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE ParcelaCondicaoPagamento (
+    IdCondPgto INT NOT NULL,
+    NumeroParcela INT NOT NULL,
+    IdFormaPgto INT NOT NULL,
+    ValorPercentual DECIMAL(10,2) NOT NULL,
+    DiasAposVenda INT NOT NULL,
+    PRIMARY KEY (IdCondPgto, NumeroParcela, IdFormaPgto),
+    FOREIGN KEY (IdCondPgto) REFERENCES CondicaoPagamento(IdCondPgto) ON DELETE CASCADE,
+    FOREIGN KEY (IdFormaPgto) REFERENCES FormaPagamento(IdFormaPgto)
+);
+
+CREATE TABLE Pais (
+    IdPais INT PRIMARY KEY AUTO_INCREMENT,
+    NomePais VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE Estado (
+    IdEstado INT PRIMARY KEY AUTO_INCREMENT,
+    NomeEstado VARCHAR(100) NOT NULL,
+    IdPais INT NOT NULL,
+    FOREIGN KEY (IdPais) REFERENCES Pais(IdPais) ON DELETE CASCADE
+);
+
+CREATE TABLE Cidade (
+    IdCidade INT PRIMARY KEY AUTO_INCREMENT,
+    NomeCidade VARCHAR(100) NOT NULL,
+    IdEstado INT NOT NULL,
+    FOREIGN KEY (IdEstado) REFERENCES Estado(IdEstado) ON DELETE CASCADE
+);
+
+CREATE TABLE Cliente (
+    IdPessoa INT PRIMARY KEY AUTO_INCREMENT,
+    TipoPessoa VARCHAR(20) NOT NULL,
+    Nome_RazaoSocial VARCHAR(100) NOT NULL,
+    DataNascimento_Fundacao DATE NOT NULL,
+    CPF_CNPJ VARCHAR(20) NOT NULL,
+    RG_InsMunicipal VARCHAR(20),
+    Email VARCHAR(100),
+    Telefone VARCHAR(20),
+    Endereco VARCHAR(100),
+    Bairro VARCHAR(50),
+    Cep VARCHAR(10),
+    Status VARCHAR(10) NOT NULL,
+    IdCidade INT NOT NULL,
+    FOREIGN KEY (IdCidade) REFERENCES Cidade(IdCidade)
+);
+
+CREATE TABLE Funcionario (
+    IdPessoa INT PRIMARY KEY AUTO_INCREMENT,
+    TipoPessoa VARCHAR(20) NOT NULL,
+    Nome_RazaoSocial VARCHAR(100) NOT NULL,
+    DataNascimento_Fundacao DATE NOT NULL,
+    CPF_CNPJ VARCHAR(20) NOT NULL,
+    RG_InsMunicipal VARCHAR(20),
+    Email VARCHAR(100),
+    Telefone VARCHAR(20),
+    Endereco VARCHAR(100),
+    Bairro VARCHAR(50),
+    Cep VARCHAR(10),
+    Status VARCHAR(10) NOT NULL,
+    IdCidade INT NOT NULL,
+    FOREIGN KEY (IdCidade) REFERENCES Cidade(IdCidade)
+);
+
+CREATE TABLE Fornecedor (
+    IdPessoa INT PRIMARY KEY AUTO_INCREMENT,
+    TipoPessoa VARCHAR(20) NOT NULL,
+    Nome_RazaoSocial VARCHAR(100) NOT NULL,
+    DataNascimento_Fundacao DATE NOT NULL,
+    CPF_CNPJ VARCHAR(20) NOT NULL,
+    RG_InsMunicipal VARCHAR(20),
+    Email VARCHAR(100),
+    Telefone VARCHAR(20),
+    Endereco VARCHAR(100),
+    Bairro VARCHAR(50),
+    Cep VARCHAR(10),
+    Status VARCHAR(10) NOT NULL,
+    IdCidade INT NOT NULL,
+    InscricaoEstadual VARCHAR(30),
+    InscricaoSubstitutoTributario VARCHAR(30),
+    FOREIGN KEY (IdCidade) REFERENCES Cidade(IdCidade)
+);
+

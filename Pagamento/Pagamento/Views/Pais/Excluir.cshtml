@@ -1,0 +1,20 @@
+﻿@model Pagamento.Models.Pais
+
+@{
+    ViewData["Title"] = "Excluir País";
+}
+
+<h2>Excluir País</h2>
+
+<h5>Tem certeza que deseja excluir o país abaixo?</h5>
+
+<div class="mb-3">
+    <label class="form-label">Nome do País:</label>
+    <p class="form-control-plaintext">@Model.NomePais</p>
+</div>
+
+<form asp-action="Excluir" method="post">
+    <input type="hidden" asp-for="IdPais" />
+    <button type="submit" class="btn btn-danger">Excluir</button>
+    <a href="@Url.Action("Index", "Pais")" class="btn btn-secondary">Cancelar</a>
+</form>

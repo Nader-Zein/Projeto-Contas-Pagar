@@ -1,0 +1,38 @@
+﻿@{
+    ViewData["Title"] = "Condições de Pagamento";
+}
+
+@model List<Pagamento.Models.CondicaoPagamento>
+
+<div class="text-center">
+    <h1 class="display-4">Condições de Pagamento</h1>
+
+    <div class="d-flex justify-content-start mb-3">
+        <a asp-controller="CondicaoPagamento" asp-action="Criar" class="btn btn-primary">Criar</a>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Descrição</th>
+                <th>Parcelas</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.IdCondPgto</td>
+                    <td>@item.Descricao</td>
+                    <td>@item.QuantidadeParcelas</td>
+                    <td>
+                        <a class="btn btn-warning btn-sm" asp-action="Editar" asp-route-id="@item.IdCondPgto">Editar</a>
+                        <a class="btn btn-danger btn-sm" asp-action="Excluir" asp-route-id="@item.IdCondPgto">Excluir</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

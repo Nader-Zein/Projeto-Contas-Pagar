@@ -1,0 +1,19 @@
+﻿@{
+    ViewData["Title"] = "Editar Forma de Pagamento";
+}
+
+@model Pagamento.Models.FormaPagamento
+
+<div>
+    <h1 class="display-4">Editar Forma de Pagamento</h1>
+</div>
+
+<form asp-action="Editar" asp-controller="FormaPagamento" method="post">
+    <input type="hidden" asp-for="IdFormaPgto" /> 
+
+    <label>Descrição</label>
+    <input class="form-control" type="text" placeholder=" " asp-for="Descricao" />
+
+    <button class="btn btn-primary" type="submit">Salvar alterações</button>
+    <a class="btn btn-secondary" href="@Url.Action("FormaPagamento", "FormaPagamento")">Cancelar</a>
+</form>

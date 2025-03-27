@@ -1,0 +1,17 @@
+﻿@model Pagamento.Models.Cidade
+
+@{
+    ViewData["Title"] = "Excluir Cidade";
+}
+
+<h2>Excluir Cidade</h2>
+
+<div>
+    <h4>Tem certeza que deseja excluir a cidade @Model.NomeCidade?</h4>
+</div>
+
+<form asp-action="Excluir" method="post">
+    <input type="hidden" name="id" value="@Model.IdCidade" />
+    <button type="submit" class="btn btn-danger">Excluir</button>
+    <a href="@Url.Action("Index", "Cidade")" class="btn btn-secondary">Cancelar</a>
+</form>
