@@ -6,12 +6,42 @@
 
 <h2>Excluir Cidade</h2>
 
-<div>
-    <h4>Tem certeza que deseja excluir a cidade @Model.NomeCidade?</h4>
-</div>
+<h5 class="text-danger">Tem certeza que deseja excluir esta cidade?</h5>
 
 <form asp-action="Excluir" method="post">
-    <input type="hidden" name="id" value="@Model.IdCidade" />
-    <button type="submit" class="btn btn-danger">Excluir</button>
-    <a href="@Url.Action("Index", "Cidade")" class="btn btn-secondary">Cancelar</a>
+    <input type="hidden" asp-for="IdCidade" />
+
+    <div class="d-flex justify-content-end mt-3">
+        <div class="d-flex justify-content-end mt-3">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" checked="@Model.Status" disabled />
+                <label class="form-check-label">Ativo</label>
+            </div>
+        </div>
+
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Nome da Cidade</label>
+        <input class="form-control" value="@Model.NomeCidade" disabled />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Estado</label>
+        <input class="form-control" value="@ViewBag.NomeEstado" disabled />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Data de Criação</label>
+        <input type="text" class="form-control" value="@Model.DataCriacao.ToString("dd/MM/yyyy HH:mm")" disabled />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Última Edição</label>
+        <input type="text" class="form-control" value="@(Model.DataEdicao?.ToString("dd/MM/yyyy HH:mm") ?? "Nunca editado")" disabled />
+    </div>
+
+    <div class="text-end mt-3">
+        <button type="submit" class="btn btn-danger">Excluir</button>
+        <a class="btn btn-secondary" href="@Url.Action("Index", "Cidade")">Cancelar</a>
+    </div>
 </form>

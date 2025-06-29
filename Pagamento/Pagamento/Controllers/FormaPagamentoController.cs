@@ -17,7 +17,7 @@ namespace Pagamento.Controllers
         [HttpGet]
         public IActionResult CriarForma()
         {
-            return View();
+            return View(new FormaPagamento());
         }
 
         [HttpPost]
@@ -63,5 +63,27 @@ namespace Pagamento.Controllers
             _dao.Excluir(forma.IdFormaPgto);
             return RedirectToAction("FormaPagamento");
         }
+
+        public IActionResult FormModal()
+        {
+            return PartialView("FormFormaPagamentoModal", new FormaPagamento());
+        }
+
+        [HttpPost]
+        public IActionResult FormModal(FormaPagamento forma)
+        {
+            if (ModelState.IsValid)
+            {
+                _dao.Inserir(forma);
+                return Json(new
+                {
+                    sucesso = true,
+                    forma = new { id = forma.IdFormaPgto, nome = forma.Descricao }
+                });
+            }
+
+            return PartialView("FormFormaPagamentoModal", forma);
+        }
+
     }
 }

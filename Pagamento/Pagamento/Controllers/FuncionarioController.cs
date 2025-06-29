@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using MySqlX.XDevAPI;
 using Pagamento.DAO;
 using Pagamento.Models;
 
@@ -30,6 +31,20 @@ namespace Pagamento.Controllers
         [HttpPost]
         public IActionResult Criar(Funcionario funcionario)
         {
+
+            bool estrangeiro = _cidadeDAO.CidadeEstrangeira(funcionario.IdCidade);
+
+
+            
+
+            if (!estrangeiro)
+            {
+                if (string.IsNullOrWhiteSpace(funcionario.CPF_CNPJ))
+                {
+                    ModelState.AddModelError("CPF_CNPJ", "O CPF é obrigatório para funcionarios brasileiros.");
+                }
+            }
+
             if (ModelState.IsValid)
             {
                 _funcionarioDAO.Inserir(funcionario);
@@ -56,12 +71,28 @@ namespace Pagamento.Controllers
                 Text = c.NomeCidade
             }).ToList();
 
+            ViewBag.NomeCidade = _cidadeDAO.BuscarPorId(funcionario.IdCidade)?.NomeCidade ?? "Não encontrado";
+
             return View(funcionario);
         }
 
         [HttpPost]
         public IActionResult Editar(Funcionario funcionario)
         {
+
+            bool estrangeiro = _cidadeDAO.CidadeEstrangeira(funcionario.IdCidade);
+
+
+            
+
+            if (!estrangeiro)
+            {
+                if (string.IsNullOrWhiteSpace(funcionario.CPF_CNPJ))
+                {
+                    ModelState.AddModelError("CPF_CNPJ", "O CPF é obrigatório para funcionarios brasileiros.");
+                }
+            }
+
             if (ModelState.IsValid)
             {
                 _funcionarioDAO.Atualizar(funcionario);
@@ -74,6 +105,8 @@ namespace Pagamento.Controllers
                 Text = c.NomeCidade
             }).ToList();
 
+            ViewBag.NomeCidade = _cidadeDAO.BuscarPorId(funcionario.IdCidade)?.NomeCidade ?? "Não encontrado";
+
             return View(funcionario);
         }
 
@@ -81,6 +114,8 @@ namespace Pagamento.Controllers
         {
             var funcionario = _funcionarioDAO.BuscarPorId(id);
             if (funcionario == null) return NotFound();
+
+            ViewBag.NomeCidade = _cidadeDAO.BuscarPorId(funcionario.IdCidade)?.NomeCidade ?? "Não encontrado";
 
             return View(funcionario);
         }

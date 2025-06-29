@@ -9,14 +9,32 @@
 <form asp-action="Editar" method="post">
     <input type="hidden" asp-for="IdPais" />
 
+    <div class="d-flex justify-content-end mt-3">
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" asp-for="Status" />
+            <label class="form-check-label" asp-for="Status">Ativo</label>
+        </div>
+    </div>
     <div class="mb-3">
         <label asp-for="NomePais" class="form-label">Nome do País</label>
         <input asp-for="NomePais" class="form-control" />
         <span asp-validation-for="NomePais" class="text-danger"></span>
     </div>
 
-    <button type="submit" class="btn btn-success">Salvar</button>
-    <a href="@Url.Action("Index", "Pais")" class="btn btn-secondary">Cancelar</a>
+    <div class="mb-3">
+        <label class="form-label">Data de Criação</label>
+        <input type="text" class="form-control" value="@Model.DataCriacao.ToString("dd/MM/yyyy HH:mm")" readonly />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Última Edição</label>
+        <input type="text" class="form-control" value="@(Model.DataEdicao?.ToString("dd/MM/yyyy HH:mm") ?? "Nunca editado")" readonly />
+    </div>
+
+    <div class="text-end mt-3">
+        <button type="submit" class="btn btn-success">Alterar</button>
+        <a href="@Url.Action("Index", "Pais")" class="btn btn-secondary">Cancelar</a>
+    </div>
 </form>
 
 @section Scripts {

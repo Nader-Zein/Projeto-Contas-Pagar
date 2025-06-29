@@ -47,6 +47,7 @@ namespace Pagamento.Controllers
                 return RedirectToAction("Index");
             }
 
+            condicaoPagamento.FormasPagamento = formaPgtoDAO.Listar() ?? new List<FormaPagamento>();
             return View(condicaoPagamento);
         }
 
@@ -134,5 +135,57 @@ namespace Pagamento.Controllers
 
             return RedirectToAction("Index");
         }
+
+        [HttpGet]
+        public IActionResult FormModal()
+        {
+            var condicao = new CondicaoPagamento
+            {
+                FormasPagamento = formaPgtoDAO.Listar() ?? new List<FormaPagamento>()
+            };
+
+            return PartialView("FormCondicaoPagamento", condicao);
+        }
+
+
+        
+
+        [HttpPost]
+        public IActionResult FormModal(CondicaoPagamento condicao, string ParcelasJson)
+        {
+            if (!ModelState.IsValid)
+            {
+                condicao.FormasPagamento = formaPgtoDAO.Listar() ?? new List<FormaPagamento>();
+
+                ViewBag.ParcelasJson = ParcelasJson;
+
+                return PartialView("FormCondicaoPagamento", condicao);
+            }
+
+            condicao.IdCondPgto = condicaodao.Inserir(condicao);
+
+            var parcelas = JsonConvert.DeserializeObject<List<ParcelaCondicaoPagamento>>(ParcelasJson);
+            foreach (var parcela in parcelas)
+            {
+                parcela.IdCondPgto = condicao.IdCondPgto;
+                parcelaDAO.Inserir(parcela);
+            }
+
+            return Json(new
+            {
+                sucesso = true,
+                condicao = new
+                {
+                    id = condicao.IdCondPgto,
+                    nome = condicao.Descricao
+                }
+            });
+        }
+
+
+
+
+
+
     }
 }

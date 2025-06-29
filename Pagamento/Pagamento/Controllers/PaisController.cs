@@ -16,7 +16,7 @@ namespace Pagamento.Controllers
 
         public IActionResult Criar()
         {
-            return View();
+            return View(new Pais());
         }
 
         [HttpPost]
@@ -61,5 +61,29 @@ namespace Pagamento.Controllers
             _paisDAO.Excluir(id);
             return RedirectToAction("Index");
         }
+
+
+
+        public IActionResult FormModal()
+        {
+            return PartialView("FormPaisModal", new Pais());
+        }
+
+        [HttpPost]
+        public IActionResult FormModal(Pais pais)
+        {
+            if (ModelState.IsValid)
+            {
+                _paisDAO.Inserir(pais);
+                return Json(new
+                {
+                    sucesso = true,
+                    pais = new { id = pais.IdPais, nome = pais.NomePais }
+                });
+            }
+
+            return PartialView("FormPaisModal", pais);
+        }
+
     }
 }

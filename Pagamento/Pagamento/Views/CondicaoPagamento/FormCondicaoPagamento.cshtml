@@ -1,0 +1,166 @@
+﻿@model Pagamento.Models.CondicaoPagamento
+
+<div class="modal-dialog modal-xl modal-dialog-centered" style="max-width: 1140px; width: 95%;">
+    <div class="modal-content">
+        <form id="formCadastrarCondicaoPgto" method="post">
+            <div class="modal-header">
+                <h5 class="modal-title">Nova Condição de Pagamento</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+
+            <div class="modal-body p-4" style="min-height: 600px;">
+                <div class="d-flex justify-content-end mt-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" asp-for="Status" />
+                        <label class="form-check-label" asp-for="Status">Ativo</label>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="Descricao" class="form-label">Descrição</label>
+                    <input asp-for="Descricao" class="form-control" required />
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="QuantidadeParcelas" class="form-label">Quantidade de Parcelas</label>
+                    <input asp-for="QuantidadeParcelas" type="number" class="form-control" required />
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="Juros" class="form-label">Juros (%)</label>
+                        <input asp-for="Juros" type="number" step="0.01" class="form-control" />
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="Multa" class="form-label">Multa (%)</label>
+                        <input asp-for="Multa" type="number" step="0.01" class="form-control" />
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="Desconto" class="form-label">Desconto (%)</label>
+                        <input asp-for="Desconto" type="number" step="0.01" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="NumeroParcela" class="form-label">Número da Parcela</label>
+                    <input type="number" id="NumeroParcela" class="form-control" min="1" />
+                </div>
+
+                <h5 class="mt-4 mb-3">Parcelas</h5>
+
+                <div class="row g-3 align-items-end mb-4">
+                    <div class="col-md-4">
+                        <label class="form-label">Forma de Pagamento</label>
+                        <div class="input-group">
+                            <input type="text" id="NomeFormaSelecionada" class="form-control" placeholder="Nenhuma forma selecionada" readonly />
+                            <input type="hidden" id="IdFormaPgto" />
+                            <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#modalFormaPgto">Selecionar</button>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2">
+                        <label for="ValorPercentual" class="form-label">Valor %</label>
+                        <input type="number" id="ValorPercentual" class="form-control" step="0.01" />
+                    </div>
+
+                    <div class="col-md-3">
+                        <label for="DiasAposVenda" class="form-label">Dias Após Venda</label>
+                        <input type="number" id="DiasAposVenda" class="form-control" />
+                    </div>
+
+                    <div class="col-md-3 d-grid">
+                        <button type="button" class="btn btn-primary" id="btnAdicionarParcela">Adicionar Parcela</button>
+                    </div>
+                </div>
+
+                <table class="table table-bordered" id="tabelaParcelas">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Nº Parcela</th>
+                            <th>Forma de Pagamento</th>
+                            <th>Valor %</th>
+                            <th>Dias Após Venda</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-success">Salvar</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal fade" id="modalFormaPgto" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Selecionar Forma de Pagamento</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="filtroForma" class="form-control mb-2" placeholder="Buscar..." onkeyup="filtrarTabelaForma()" />
+
+                <table class="table table-bordered" id="tabelaFormas">
+                    <thead>
+                        <tr>
+                            <th>Descrição</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var forma in Model.FormasPagamento)
+                        {
+                            <tr>
+                                <td>@forma.Descricao</td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-primary"
+                                            onclick="selecionarFormaPgto(@forma.IdFormaPgto, '@forma.Descricao')">
+                                        Selecionar
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                <hr />
+                <button class="btn btn-success" type="button" onclick="abrirFormNovaForma()">+ Cadastrar nova Forma</button>
+                <div id="formNovaFormaContainer"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalNovaForma" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" id="modalNovaFormaContent"></div>
+    </div>
+</div>
+
+@if (ViewBag.ParcelasJson != null)
+{
+    <script>
+        parcelas = @Html.Raw(ViewBag.ParcelasJson);
+
+        if (Array.isArray(parcelas)) {
+            parcelas.forEach(p => {
+                const linha = `
+                    <tr data-numero="${p.numeroParcela}">
+                        <td>${p.numeroParcela}</td>
+                        <td>${p.descricaoFormaPgto}</td>
+                        <td>${p.valorPercentual}%</td>
+                        <td>${p.diasAposVenda} dias</td>
+                        <td>
+                            <button type="button" class="btn btn-danger btn-sm removerParcela">Remover</button>
+                        </td>
+                    </tr>`;
+                document.querySelector("#tabelaParcelas tbody").insertAdjacentHTML("beforeend", linha);
+            });
+        }
+    </script>
+}

@@ -11,7 +11,7 @@
         <a asp-action="Criar" class="btn btn-primary">Novo Fornecedor</a>
     </div>
 
-    <table class="table table-striped">
+    <table class="table table-bordered table-striped">
         <thead>
             <tr>
                 <th>Nome</th>
@@ -35,8 +35,17 @@
                         <td>@fornecedor.CPF_CNPJ</td>
                         <td>@fornecedor.Email</td>
                         <td>@fornecedor.Telefone</td>
-                        <td>@fornecedor.Status</td>
-                        <td>@fornecedor.IdCidade</td> <!-- Ou mostrar o nome da cidade se tiver -->
+                        <td>
+                            @if (fornecedor.Status)
+                            {
+                                <span class="badge bg-success">Ativo</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Inativo</span>
+                            }
+                        </td>
+                        <td>@fornecedor.NomeCidade</td>
                         <td>
                             <a asp-action="Editar" asp-route-id="@fornecedor.IdPessoa" class="btn btn-sm btn-warning">Editar</a>
                             <a asp-action="Excluir" asp-route-id="@fornecedor.IdPessoa" class="btn btn-sm btn-danger">Excluir</a>

@@ -1,0 +1,641 @@
+﻿@model Pagamento.Models.Produto
+@{
+    ViewData["Title"] = "Cadastrar Produto";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Criar" method="post">
+    <div class="row">
+
+        <div class="d-flex justify-content-end mt-3">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" asp-for="Status" />
+                <label class="form-check-label" asp-for="Status">Ativo</label>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label asp-for="Descricao" class="form-label">Descrição</label>
+            <input asp-for="Descricao" class="form-control" />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label asp-for="Codigo_Barras" class="form-label">Código de Barras</label>
+            <input asp-for="Codigo_Barras" class="form-control" />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label asp-for="Referencia" class="form-label">Referência</label>
+            <input asp-for="Referencia" class="form-control" />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Marca</label>
+            <div class="input-group">
+                <input type="text" id="NomeMarcaSelecionada" class="form-control" placeholder="Nenhuma marca selecionada" readonly />
+                <input type="hidden" asp-for="MarcaId" id="MarcaId" />
+                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#modalMarcaSelecionar">
+                    Selecionar
+                </button>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Unidade de Medida</label>
+            <div class="input-group">
+                <input type="text" id="NomeUnidadeSelecionada" class="form-control" placeholder="Nenhuma unidade selecionada" readonly />
+                <input type="hidden" asp-for="UnidadeMedidaId" id="UnidadeMedidaId" />
+                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#modalUnidadeSelecionar">
+                    Selecionar
+                </button>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-3">
+        <label class="form-label">Fornecedor</label>
+        <div class="input-group">
+            <input type="text" id="NomeFornecedorSelecionado" class="form-control" placeholder="Nenhum fornecedor selecionado" readonly />
+            <input type="hidden" asp-for="FornecedorId" id="FornecedorId" />
+            <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#modalFornecedorSelecionar">Selecionar</button>
+        </div>
+        </div>
+
+
+        <div class="col-md-6 mb-3">
+            <label asp-for="ValorCompra" class="form-label">Valor de Compra</label>
+            <input asp-for="ValorCompra" class="form-control" type="text" disabled />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label asp-for="PercentualLucro" class="form-label">% Lucro</label>
+            <input asp-for="PercentualLucro" class="form-control" type="text" />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label asp-for="ValorVenda" class="form-label">Valor de Venda</label>
+            <input asp-for="ValorVenda" class="form-control" type="text" />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label asp-for="Quantidade" class="form-label">Quantidade</label>
+            <input asp-for="Quantidade" class="form-control" disabled />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label asp-for="QuantidadeMinima" class="form-label">Quantidade Mínima</label>
+            <input asp-for="QuantidadeMinima" class="form-control" />
+        </div>
+
+        
+
+        <div class="col-md-6 mb-3">
+            <label asp-for="Observacoes" class="form-label">Observações</label>
+            <textarea asp-for="Observacoes" class="form-control"></textarea>
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Data de Criação</label>
+            <input type="text" class="form-control" value="@Model.DataCriacao.ToString("dd/MM/yyyy HH:mm")" readonly />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Última Edição</label>
+            <input type="text" class="form-control" value="@(Model.DataEdicao?.ToString("dd/MM/yyyy HH:mm") ?? "Nunca editado")" readonly />
+        </div>
+
+    </div>
+
+    <div class="text-end mt-3">
+        <button type="submit" class="btn btn-success">Salvar</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+    </div>
+</form>
+
+<div class="modal fade" id="modalMarcaSelecionar" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Selecionar Marca</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="filtroMarca" class="form-control mb-2" placeholder="Buscar..." onkeyup="filtrarTabelaMarca()" />
+                <table class="table table-bordered" id="tabelaMarcas">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var marca in ViewBag.Marcas as List<SelectListItem>)
+                        {
+                            <tr>
+                                <td>@marca.Text</td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-primary"
+                                            onclick="selecionarMarca(@marca.Value, '@marca.Text')">
+                                        Selecionar
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                <hr />
+                <button class="btn btn-success" type="button" onclick="abrirFormMarca()">+ Cadastrar nova Marca</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalUnidadeSelecionar" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Selecionar Unidade de Medida</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="filtroUnidade" class="form-control mb-2" placeholder="Buscar..." onkeyup="filtrarTabelaUnidade()" />
+                <table class="table table-bordered" id="tabelaUnidades">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var unidade in ViewBag.Unidades as List<SelectListItem>)
+                        {
+                            <tr>
+                                <td>@unidade.Text</td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-primary"
+                                            onclick="selecionarUnidade(@unidade.Value, '@unidade.Text')">
+                                        Selecionar
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                <hr />
+                <button class="btn btn-success" type="button" onclick="abrirFormUnidade()">+ Cadastrar nova Unidade</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalFornecedorSelecionar" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Selecionar Fornecedor</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="filtroFornecedor" class="form-control mb-2" placeholder="Buscar..." onkeyup="filtrarTabelaFornecedor()" />
+                <table class="table table-bordered" id="tabelaFornecedores">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var t in ViewBag.Fornecedores as List<SelectListItem>)
+                        {
+                            <tr>
+                                <td>@t.Text</td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-primary"
+                                            onclick="selecionarFornecedor(@t.Value, '@t.Text')">
+                                        Selecionar
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                <hr />
+                <button class="btn btn-success" type="button" onclick="abrirFormFornecedor()">+ Cadastrar novo Fornecedor</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="modalMarca" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" id="modalMarcaContent">
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalUnidade" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" id="modalUnidadeContent">
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalFornecedor" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content" id="modalFornecedorContent">
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalNovaCidade" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" id="modalNovaCidadeContent">
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalNovaCondicao" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content" id="modalNovaCondicaoContent">
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+
+            function selecionarMarca(id, nome) {
+            $('#MarcaId').val(id);
+            $('#NomeMarcaSelecionada').val(nome);
+            bootstrap.Modal.getInstance(document.getElementById('modalMarcaSelecionar')).hide();
+            }
+
+            function selecionarUnidade(id, nome) {
+            $('#UnidadeMedidaId').val(id);
+            $('#NomeUnidadeSelecionada').val(nome);
+            bootstrap.Modal.getInstance(document.getElementById('modalUnidadeSelecionar')).hide();
+            }
+
+            function selecionarFornecedor(id, nome) {
+            $('#FornecedorId').val(id);
+            $('#NomeFornecedorSelecionado').val(nome);
+            bootstrap.Modal.getInstance(document.getElementById('modalFornecedorSelecionar')).hide();
+            }
+
+            function filtrarTabelaMarca() {
+            const filtro = $('#filtroMarca').val().toLowerCase();
+            $('#tabelaMarcas tbody tr').each(function () {
+                const nome = $(this).find('td:first').text().toLowerCase();
+                $(this).toggle(nome.includes(filtro));
+            });
+            }
+
+            function filtrarTabelaFornecedor() {
+            const filtro = $('#filtroFornecedor').val().toLowerCase();
+            $('#tabelaFornecedores tbody tr').each(function () {
+                const nome = $(this).find('td:first').text().toLowerCase();
+                $(this).toggle(nome.includes(filtro));
+            });
+            }
+
+
+            function filtrarTabelaUnidade() {
+            const filtro = $('#filtroUnidade').val().toLowerCase();
+            $('#tabelaUnidades tbody tr').each(function () {
+                const nome = $(this).find('td:first').text().toLowerCase();
+                $(this).toggle(nome.includes(filtro));
+            });
+            }
+                
+            function abrirFormMarca() {
+            $.get('/Marca/FormModal', function (data) {
+                $('#modalMarcaContent').html(data);
+                new bootstrap.Modal(document.getElementById('modalMarca')).show();
+            });
+            }
+
+            function abrirFormUnidade() {
+            $.get('/UnidadeMedida/FormModal', function (data) {
+                $('#modalUnidadeContent').html(data);
+                new bootstrap.Modal(document.getElementById('modalUnidade')).show();
+            });
+            }
+
+            function abrirFormFornecedor() {
+            $.get('/Fornecedor/FormModal', function (data) {
+                $('#modalFornecedorContent').html(data);
+                new bootstrap.Modal(document.getElementById('modalFornecedor')).show();
+            });
+            }
+
+            $(document).on('submit', '#formCadastrarMarca', function (e) {
+            e.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: '/Marca/FormModal',
+                data: $(this).serialize(),
+                        success: function (res) {
+            if (res.sucesso) {
+                $('#MarcaId').val(res.marca.id);
+                $('#NomeMarcaSelecionada').val(res.marca.nome);
+
+                bootstrap.Modal.getInstance(document.getElementById('modalMarca')).hide();
+
+                const novaLinha = `
+                    <tr>
+                        <td>${res.marca.nome}</td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-primary"
+                                    onclick="selecionarMarca(${res.marca.id}, '${res.marca.nome}')">
+                                Selecionar
+                            </button>
+                        </td>
+                    </tr>`;
+                $('#tabelaMarcas tbody').append(novaLinha);
+            } else {
+                $('#modalMarcaContent').html(res);
+            }
+        }
+
+            });
+        });
+
+        $(document).on('submit', '#formCadastrarUnidade', function (e) {
+            e.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: '/UnidadeMedida/FormModal',
+                data: $(this).serialize(),
+                        success: function (res) {
+            if (res.sucesso) {
+                $('#UnidadeMedidaId').val(res.unidade.id);
+                $('#NomeUnidadeSelecionada').val(res.unidade.nome);
+                bootstrap.Modal.getInstance(document.getElementById('modalUnidade')).hide();
+
+                const novaLinha = `
+                    <tr>
+                        <td>${res.unidade.nome}</td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-primary"
+                                    onclick="selecionarUnidade(${res.unidade.id}, '${res.unidade.nome}')">
+                                Selecionar
+                            </button>
+                        </td>
+                    </tr>`;
+                $('#tabelaUnidades tbody').append(novaLinha);
+            } else {
+                $('#modalUnidadeContent').html(res);
+            }
+        }
+
+            });
+        });
+
+                $(document).on('submit', '#formCadastrarFornecedor', function (e) {
+            e.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: '/Fornecedor/FormModal',
+                data: $(this).serialize(),
+                success: function (res) {
+                    if (res.sucesso) {
+                        $('#FornecedorId').val(res.fornecedor.id);
+                        $('#NomeFornecedorSelecionado').val(res.fornecedor.nome);
+                        bootstrap.Modal.getInstance(document.getElementById('modalFornecedor')).hide();
+
+                        $('#tabelaFornecedores tbody').append(`
+                            <tr>
+                                <td>${res.fornecedor.nome}</td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-primary"
+                                            onclick="selecionarFornecedor(${res.fornecedor.id}, '${res.fornecedor.nome}')">
+                                        Selecionar
+                                    </button>
+                                </td>
+                            </tr>
+                        `);
+                    } else {
+                        $('#modalFornecedorContent').html(res);
+                    }
+                }
+            });
+        });
+
+
+
+        function selecionarCidade(id, nome) {
+            $('#IdCidade').val(id);
+            $('#NomeCidadeSelecionada').val(nome);
+            bootstrap.Modal.getInstance(document.getElementById('modalCidade')).hide();
+        }
+
+        function abrirFormNovaCidade() {
+            $.get('@Url.Action("FormModal", "Cidade")', function (data) {
+                $('#modalNovaCidadeContent').html(data);
+                new bootstrap.Modal(document.getElementById('modalNovaCidade')).show();
+            });
+        }
+
+        $(document).on('submit', '#formCadastrarCidade', function (e) {
+            e.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("FormModal", "Cidade")',
+                data: $(this).serialize(),
+                success: function (response) {
+                    if (response.sucesso) {
+                        $('#modalNovaCidade').modal('hide');
+                        const novaLinha = `
+                            <tr>
+                                <td>${response.cidade.nome}</td>
+                                <td>
+                                    <button class='btn btn-sm btn-primary' onclick='selecionarCidade(${response.cidade.id}, "${response.cidade.nome}")'>Selecionar</button>
+                                </td>
+                            </tr>`;
+                        $('#tabelaCidades tbody').append(novaLinha);
+                    } else {
+                        $('#modalNovaCidadeContent').html(response);
+                    }
+                }
+            });
+        });
+
+        function filtrarTabelaCidade() {
+            const filtro = $('#filtroCidade').val().toLowerCase();
+            $('#tabelaCidades tbody tr').each(function () {
+                const nome = $(this).find('td:first').text().toLowerCase();
+                $(this).toggle(nome.includes(filtro));
+            });
+        }
+
+        function selecionarCondicao(id, nome) {
+            $('#IdCondPgto').val(id);
+            $('#NomeCondicaoSelecionada').val(nome);
+            bootstrap.Modal.getInstance(document.getElementById('modalCondicaoPgto')).hide();
+        }
+
+        function abrirFormNovaCondicao() {
+            $.get('/CondicaoPagamento/FormModal', function (data) {
+                $('#modalNovaCondicaoContent').html(data);
+                new bootstrap.Modal(document.getElementById('modalNovaCondicao')).show();
+            });
+        }
+
+        function filtrarTabelaCondicao() {
+            const filtro = $('#filtroCondicao').val().toLowerCase();
+            $('#tabelaCondicoes tbody tr').each(function () {
+                const nome = $(this).find('td:first').text().toLowerCase();
+                $(this).toggle(nome.includes(filtro));
+            });
+        }
+
+        function selecionarFormaPgto(id, nome) {
+            $('#IdFormaPgto').val(id);
+            $('#NomeFormaSelecionada').val(nome);
+            bootstrap.Modal.getInstance(document.getElementById('modalFormaPgto')).hide();
+        }
+
+        function filtrarTabelaForma() {
+            const filtro = $('#filtroForma').val().toLowerCase();
+            $('#tabelaFormas tbody tr').each(function () {
+                const texto = $(this).find('td:first').text().toLowerCase();
+                $(this).toggle(texto.includes(filtro));
+            });
+        }
+
+        function abrirFormNovaForma() {
+            $.get('/FormaPagamento/FormModal', function (html) {
+                $('#modalNovaFormaContent').html(html);
+                new bootstrap.Modal(document.getElementById('modalNovaForma')).show();
+            });
+        }
+
+        $(document).on('submit', '#formCadastrarFormaPgto', function (e) {
+            e.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: '/FormaPagamento/FormModal',
+                data: $(this).serialize(),
+                success: function (response) {
+                    if (response.sucesso) {
+                        $('#modalNovaForma').modal('hide');
+
+                        const novaLinha = `
+                            <tr>
+                                <td>${response.forma.nome}</td>
+                                <td>
+                                    <button type='button' class='btn btn-sm btn-primary'
+                                        onclick='selecionarFormaPgto(${response.forma.id}, "${response.forma.nome}")'>
+                                        Selecionar
+                                    </button>
+                                </td>
+                            </tr>`;
+                        $('#tabelaFormas tbody').append(novaLinha);
+                    } else {
+                                $('#modalNovaFormaContent').html(response);
+                           }
+                }
+
+            });
+        });
+
+        let parcelas = [];
+
+        $(document).on('click', '#btnAdicionarParcela', function () {
+            const numeroParcela = parseInt($('#NumeroParcela').val());
+            const idForma = parseInt($('#IdFormaPgto').val());
+            const nomeForma = $('#NomeFormaSelecionada').val();
+            const valor = parseFloat($('#ValorPercentual').val());
+            const dias = parseInt($('#DiasAposVenda').val());
+
+            if (!numeroParcela || !idForma || !nomeForma || isNaN(valor) || isNaN(dias)) {
+                alert("Preencha todos os campos da parcela corretamente.");
+                return;
+            }
+
+            if (parcelas.some(p => p.numeroParcela === numeroParcela)) {
+                alert("Já existe uma parcela com esse número.");
+                return;
+            }
+
+            const parcela = {
+                numeroParcela: numeroParcela,
+                idFormaPgto: idForma,
+                descricaoFormaPgto: nomeForma,
+                valorPercentual: valor,
+                diasAposVenda: dias
+            };
+
+            parcelas.push(parcela);
+
+            const linha = `
+                <tr data-numero="${numeroParcela}">
+                    <td>${numeroParcela}</td>
+                    <td>${nomeForma}</td>
+                    <td>${valor}%</td>
+                    <td>${dias} dias</td>
+                    <td><button type="button" class="btn btn-danger btn-sm removerParcela">Remover</button></td>
+                </tr>`;
+            $('#tabelaParcelas tbody').append(linha);
+
+            $('.removerParcela').off('click').on('click', function () {
+                const tr = $(this).closest('tr');
+                const num = parseInt(tr.attr('data-numero'));
+                parcelas = parcelas.filter(p => p.numeroParcela !== num);
+                tr.remove();
+            });
+
+            $('#NumeroParcela').val('');
+            $('#ValorPercentual').val('');
+            $('#DiasAposVenda').val('');
+            $('#IdFormaPgto').val('');
+            $('#NomeFormaSelecionada').val('');
+        });
+
+        $(document).on('submit', '#formCadastrarCondicaoPgto', function (e) {
+            e.preventDefault();
+
+            const formData = $(this).serializeArray();
+            formData.push({ name: "ParcelasJson", value: JSON.stringify(parcelas) });
+
+            $.ajax({
+                type: 'POST',
+                url: '/CondicaoPagamento/FormModal',
+                data: $.param(formData),
+                success: function (response) {
+                    if (response.sucesso) {
+                        bootstrap.Modal.getInstance(document.getElementById('modalNovaCondicao')).hide();
+
+                        const linha = `
+                            <tr>
+                                <td>${response.condicao.nome}</td>
+                                <td>
+                                    <button type='button' class='btn btn-sm btn-primary'
+                                        onclick='selecionarCondicao(${response.condicao.id}, "${response.condicao.nome}")'>
+                                        Selecionar
+                                    </button>
+                                </td>
+                            </tr>`;
+                        $('#tabelaCondicoes tbody').append(linha);
+
+                        $('#IdCondPgto').val(response.condicao.id);
+                        $('#NomeCondicaoSelecionada').val(response.condicao.nome);
+                    } else {
+                        $('#modalNovaCondicaoContent').html(response);
+                    }
+                },
+                error: function () {
+                    alert("Erro ao cadastrar condição. Verifique os campos e tente novamente.");
+                }
+            });
+        });
+
+
+    </script>
+}

@@ -4,18 +4,18 @@
 
 @model List<Pagamento.Models.FormaPagamento>
 
-
 <div class="text-center">
     <h1 class="display-4">Forma de Pagamento</h1>
 
     <div class="d-flex justify-content-start mb-3">
         <a asp-controller="FormaPagamento" asp-action="CriarForma" class="btn btn-primary">Criar</a>
     </div>
-    <table class="table table-striped">
+    <table class="table table-bordered table-striped">
         <thead>
             <tr>
                 <th>ID</th>
                 <th>Nome</th>
+                <th>Status</th>
                 <th>Ações</th>
             </tr>
         </thead>
@@ -27,6 +27,16 @@
                     <tr>
                         <td>@item.IdFormaPgto</td>
                         <td>@item.Descricao</td>
+                        <td>
+                            @if (item.Status)
+                            {
+                                <span class="badge bg-success">Ativo</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Desativado</span>
+                            }
+                        </td>
                         <td>
                             <a asp-controller="FormaPagamento" asp-action="Editar" asp-route-id="@item.IdFormaPgto" class="btn btn-warning btn-sm">Editar</a>
                             <a asp-controller="FormaPagamento" asp-action="Excluir" asp-route-id="@item.IdFormaPgto" class="btn btn-danger btn-sm">Excluir</a>

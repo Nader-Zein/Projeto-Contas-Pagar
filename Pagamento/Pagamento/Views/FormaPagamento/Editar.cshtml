@@ -1,19 +1,44 @@
-﻿@{
+﻿@model Pagamento.Models.FormaPagamento
+
+@{
     ViewData["Title"] = "Editar Forma de Pagamento";
 }
 
-@model Pagamento.Models.FormaPagamento
-
-<div>
-    <h1 class="display-4">Editar Forma de Pagamento</h1>
-</div>
+<h1 class="display-4">Editar Forma de Pagamento</h1>
 
 <form asp-action="Editar" asp-controller="FormaPagamento" method="post">
-    <input type="hidden" asp-for="IdFormaPgto" /> 
+    <input type="hidden" asp-for="IdFormaPgto" />
 
-    <label>Descrição</label>
-    <input class="form-control" type="text" placeholder=" " asp-for="Descricao" />
+    <div class="d-flex justify-content-end mt-3">
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" asp-for="Status" />
+            <label class="form-check-label" asp-for="Status">Ativo</label>
+        </div>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Descricao" class="form-label">Descrição</label>
+        <input asp-for="Descricao" class="form-control" />
+        <span asp-validation-for="Descricao" class="text-danger"></span>
+    </div>
 
-    <button class="btn btn-primary" type="submit">Salvar alterações</button>
-    <a class="btn btn-secondary" href="@Url.Action("FormaPagamento", "FormaPagamento")">Cancelar</a>
+    <div class="mb-3">
+        <label class="form-label">Data de Criação</label>
+        <input type="text" class="form-control"
+               value="@Model.DataCriacao.ToString("dd/MM/yyyy HH:mm")" readonly />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Última Edição</label>
+        <input type="text" class="form-control"
+               value="@Model.DataEdicao?.ToString("dd/MM/yyyy HH:mm")" readonly />
+    </div>
+
+    <div class="text-end mt-3">
+        <button class="btn btn-primary" type="submit">Alterar</button>
+        <a class="btn btn-secondary" href="@Url.Action("FormaPagamento", "FormaPagamento")">Cancelar</a>
+    </div>
 </form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

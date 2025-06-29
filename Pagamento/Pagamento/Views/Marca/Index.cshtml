@@ -1,0 +1,50 @@
+﻿@model IEnumerable<Pagamento.Models.Marca>
+
+@{
+    ViewData["Title"] = "Lista de Marcas";
+}
+
+<h1 class="display-4">Marcas Cadastradas</h1>
+
+<div class="mb-3 text-end">
+    <a class="btn btn-primary" href="@Url.Action("Criar", "Marca")">+ Nova Marca</a>
+</div>
+
+@if (!Model.Any())
+{
+    <p class="text-muted">Nenhuma marca cadastrada.</p>
+}
+else
+{
+    <table class="table table-bordered table-striped">
+        <thead class="table-light">
+            <tr>
+                <th>Nome</th>
+                <th>Status</th>
+                <th class="text-center">Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var marca in Model)
+            {
+                <tr>
+                    <td>@marca.Descricao</td>
+                    <td>
+                        @if (marca.Status)
+                        {
+                            <span class="badge bg-success">Ativo</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">Desativado</span>
+                        }
+                    </td>
+                    <td class="text-center">
+                        <a class="btn btn-sm btn-warning" href="@Url.Action("Editar", "Marca", new { id = marca.IdMarca })">Editar</a>
+                        <a class="btn btn-sm btn-danger" href="@Url.Action("Excluir", "Marca", new { id = marca.IdMarca })">Excluir</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

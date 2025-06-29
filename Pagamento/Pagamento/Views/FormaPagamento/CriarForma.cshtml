@@ -1,20 +1,46 @@
-﻿@{
+﻿@model Pagamento.Models.FormaPagamento
+
+@{
     ViewData["Title"] = "Criar Forma de Pagamento";
 }
 
-@model Pagamento.Models.FormaPagamento
-
-<div>
-    <h1 class="display-4"> Criar Forma de Pagamento</h1>
-</div>
+<h1 class="display-4">Criar Forma de Pagamento</h1>
 
 <form asp-action="CriarForma" asp-controller="FormaPagamento" method="post">
-   
-    <label>Descricao</label>
-    <input class="form-control" type="text" placeholder=" " asp-for="Descricao" />
+    <div class="d-flex justify-content-end mt-3">
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" asp-for="Status" />
+            <label class="form-check-label" asp-for="Status">Ativo</label>
+        </div>
+    </div>
 
+    <div class="mb-3">
+        <label asp-for="Descricao" class="form-label">Descrição</label>
+        <input asp-for="Descricao" class="form-control" placeholder="Digite a descrição" />
+        <span asp-validation-for="Descricao" class="text-danger"></span>
+    </div>
 
-    <button class="btn btn-primary" type="submit">Cadastrar</button>
-    <a class="btn btn-secondary" href="@Url.Action("FormaPagamento", "FormaPagamento")">Cancelar</a>
+    @if (Model != null)
+    {
+        <div class="mb-3">
+            <label class="form-label">Data de Criação</label>
+            <input type="text" class="form-control" 
+                   value="@Model.DataCriacao.ToString("dd/MM/yyyy HH:mm")" readonly />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Última Edição</label>
+            <input type="text" class="form-control" 
+                   value="@Model.DataEdicao?.ToString("dd/MM/yyyy HH:mm")" readonly />
+        </div>
+    }
+
+    <div class="text-end mt-3">
+        <button class="btn btn-primary" type="submit">Salvar</button>
+        <a class="btn btn-secondary" href="@Url.Action("FormaPagamento", "FormaPagamento")">Cancelar</a>
+    </div>
 </form>
 
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

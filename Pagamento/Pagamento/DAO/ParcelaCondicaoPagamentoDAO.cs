@@ -30,6 +30,34 @@ namespace Pagamento.DAO
                         DiasAposVenda = reader.GetInt32("DiasAposVenda")
                     });
                 }
+                reader.Close();
+
+                string sqlView = "SELECT IdCondPgto, NumeroParcela, IdFormaPgto, NomeFormaPgto FROM vw_ParcelasCondicaoForma WHERE IdCondPgto = @IdCondPgto";
+                var cmdView = new MySqlCommand(sqlView, conexao);
+                cmdView.Parameters.AddWithValue("@IdCondPgto", idCondPgto);
+
+                var readerView = cmdView.ExecuteReader();
+                var nomesFormas = new Dictionary<(int, int, int), string>();
+
+                while (readerView.Read())
+                {
+                    var chave = (
+                        readerView.GetInt32("IdCondPgto"),
+                        readerView.GetInt32("NumeroParcela"),
+                        readerView.GetInt32("IdFormaPgto")
+                    );
+                    nomesFormas[chave] = readerView.GetString("NomeFormaPgto");
+                }
+                readerView.Close();
+
+                foreach (var parcela in lista)
+                {
+                    var chave = (parcela.IdCondPgto, parcela.NumeroParcela, parcela.IdFormaPgto);
+                    if (nomesFormas.TryGetValue(chave, out var nome))
+                    {
+                        parcela.NomeFormaPagamento = nome;
+                    }
+                }
             }
 
             return lista;

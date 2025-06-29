@@ -1,5 +1,4 @@
-﻿@using System.Globalization
-@model Pagamento.Models.CondicaoPagamento
+﻿@model Pagamento.Models.CondicaoPagamento
 
 @{
     ViewData["Title"] = "Editar Condição de Pagamento";
@@ -10,6 +9,13 @@
 <form asp-action="Editar" method="post">
     <input type="hidden" asp-for="IdCondPgto" />
 
+    <div class="d-flex justify-content-end mt-3">
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" asp-for="Status" />
+            <label class="form-check-label" asp-for="Status">Ativo</label>
+        </div>
+    </div>
+
     <div class="mb-3">
         <label asp-for="Descricao" class="form-label">Descrição</label>
         <input asp-for="Descricao" class="form-control" required />
@@ -19,6 +25,23 @@
         <label asp-for="QuantidadeParcelas" class="form-label">Quantidade de Parcelas</label>
         <input asp-for="QuantidadeParcelas" type="number" class="form-control" required />
     </div>
+
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <label asp-for="Juros" class="form-label">Juros (%)</label>
+            <input asp-for="Juros" type="number" step="0.01" class="form-control" />
+        </div>
+        <div class="col-md-4 mb-3">
+            <label asp-for="Multa" class="form-label">Multa (%)</label>
+            <input asp-for="Multa" type="number" step="0.01" class="form-control" />
+        </div>
+        <div class="col-md-4 mb-3">
+            <label asp-for="Desconto" class="form-label">Desconto (%)</label>
+            <input asp-for="Desconto" type="number" step="0.01" class="form-control" />
+        </div>
+    </div>
+
+
     <div class="col-md-3">
         <label for="NumeroParcela">Número da Parcela</label>
         <input type="number" id="NumeroParcela" class="form-control" min="1" />
@@ -28,13 +51,14 @@
 
     <div class="row">
         <div class="col-md-3">
-            <label for="IdFormaPgto">Forma de Pagamento</label>
-            <select id="IdFormaPgto" class="form-control">
-                @foreach (var forma in Model.FormasPagamento)
-                {
-                    <option value="@forma.IdFormaPgto">@forma.Descricao</option>
-                }
-            </select>
+            <label class="form-label">Forma de Pagamento</label>
+            <div class="input-group">
+                <input type="text" id="NomeFormaSelecionada" class="form-control" placeholder="Nenhuma forma selecionada" readonly />
+                <input type="hidden" id="IdFormaPgto" name="IdFormaPgto" />
+                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#modalFormaPgto">
+                    Selecionar
+                </button>
+            </div>
         </div>
 
         <div class="col-md-3">
@@ -52,9 +76,7 @@
         </div>
     </div>
 
-    <br />
-
-    <table class="table" id="tabelaParcelas">
+    <table class="table mt-3" id="tabelaParcelas">
         <thead>
             <tr>
                 <th>Nº Parcela</th>
@@ -72,7 +94,7 @@
                     data-valor="@parcela.ValorPercentual"
                     data-dias="@parcela.DiasAposVenda">
                     <td>@parcela.NumeroParcela</td>
-                    <td>@parcela.IdFormaPgto</td>
+                    <td>@parcela.NomeFormaPagamento</td>
                     <td>@parcela.ValorPercentual</td>
                     <td>@parcela.DiasAposVenda</td>
                     <td>
@@ -83,12 +105,65 @@
         </tbody>
     </table>
 
-    <button type="submit" class="btn btn-success">Salvar Alterações</button>
-    <a class="btn btn-secondary" href="@Url.Action("Index", "CondicaoPagamento")">Cancelar</a>
+    
+    @if (Model != null)
+    {
+        <div class="mb-3">
+            <label class="form-label">Data de Criação</label>
+            <input type="text" class="form-control"
+                   value="@Model.DataCriacao.ToString("dd/MM/yyyy HH:mm")" readonly />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Última Edição</label>
+            <input type="text" class="form-control"
+                   value="@Model.DataEdicao?.ToString("dd/MM/yyyy HH:mm")" readonly />
+        </div>
+    }
+
+    <div class="text-end mt-3">
+        <button type="submit" class="btn btn-success">Alterar</button>
+        <a class="btn btn-secondary" href="@Url.Action("Index", "CondicaoPagamento")">Cancelar</a>
+    </div>
 </form>
 
+<div class="modal fade" id="modalFormaPgto" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Selecionar Forma de Pagamento</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="filtroForma" class="form-control mb-2" placeholder="Buscar..." onkeyup="filtrarTabelaForma()" />
+                <table class="table table-bordered" id="tabelaFormas">
+                    <thead><tr><th>Nome</th><th>Ação</th></tr></thead>
+                    <tbody>
+                        @foreach (var forma in Model.FormasPagamento)
+                        {
+                            <tr>
+                                <td>@forma.Descricao</td>
+                                <td><button class="btn btn-sm btn-primary" onclick="selecionarForma(@forma.IdFormaPgto, '@forma.Descricao')">Selecionar</button></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <hr />
+                <button class="btn btn-success" type="button" onclick="abrirFormNovaForma()">+ Cadastrar nova Forma</button>
+                <div id="formNovaFormaContainer"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalNovaForma" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content" id="modalNovaFormaContent"></div>
+    </div>
+</div>
 
 @section Scripts {
+    <partial name="_ValidationScriptsPartial" />
     <script>
         let parcelas = [];
 
@@ -97,65 +172,97 @@
             const idFormaPgto = parseInt(row.dataset.idforma);
             const valor = parseFloat(row.dataset.valor);
             const dias = parseInt(row.dataset.dias);
+            parcelas.push({ numeroParcela: numero, idFormaPgto, valorPercentual: valor, diasAposVenda: dias });
 
-            parcelas.push({
-                numeroParcela: numero,
-                idFormaPgto: idFormaPgto,
-                valorPercentual: valor,
-                diasAposVenda: dias
-            });
-
-            const btnRemover = row.querySelector(".removerParcela");
-            btnRemover.addEventListener("click", function () {
+            row.querySelector(".removerParcela").addEventListener("click", () => {
                 row.remove();
                 parcelas = parcelas.filter(p => p.numeroParcela !== numero);
             });
         });
 
-        document.getElementById("btnAdicionarParcela").addEventListener("click", function () {
+        function selecionarForma(id, nome) {
+            document.getElementById('IdFormaPgto').value = id;
+            document.getElementById('NomeFormaSelecionada').value = nome;
+            bootstrap.Modal.getInstance(document.getElementById('modalFormaPgto')).hide();
+        }
+
+        function abrirFormNovaForma() {
+            $.get('@Url.Action("FormModal", "FormaPagamento")', function (data) {
+                $('#modalNovaFormaContent').html(data);
+                new bootstrap.Modal(document.getElementById('modalNovaForma')).show();
+            });
+        }
+
+        $(document).off('submit', '#formCadastrarFormaPgto');
+        $(document).on('submit', '#formCadastrarFormaPgto', function (e) {
+            e.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("FormModal", "FormaPagamento")',
+                data: $(this).serialize(),
+                success: function (response) {
+                    if (response.sucesso) {
+                        $('#modalNovaForma').modal('hide');
+                        let novaLinha = `<tr>
+                            <td>${response.forma.nome}</td>
+                            <td>
+                                <button class='btn btn-sm btn-primary' onclick='selecionarForma(${response.forma.id}, "${response.forma.nome}")'>Selecionar</button>
+                            </td>
+                        </tr>`;
+                        $('#tabelaFormas tbody').append(novaLinha);
+                    } else {
+                        $('#modalNovaFormaContent').html(response);
+                    }
+                }
+            });
+        });
+
+        function filtrarTabelaForma() {
+            let filtro = document.getElementById("filtroForma").value.toLowerCase();
+            document.querySelectorAll("#tabelaFormas tbody tr").forEach(row => {
+                let nome = row.cells[0].textContent.toLowerCase();
+                row.style.display = nome.includes(filtro) ? "" : "none";
+            });
+        }
+
+        document.getElementById("btnAdicionarParcela").addEventListener("click", () => {
             let numeroParcela = parseInt(document.getElementById("NumeroParcela").value);
-            let formaPgto = document.getElementById("IdFormaPgto");
+            let formaPgtoId = parseInt(document.getElementById("IdFormaPgto").value);
+            let formaPgtoNome = document.getElementById("NomeFormaSelecionada").value;
             let valor = parseFloat(document.getElementById("ValorPercentual").value);
             let dias = parseInt(document.getElementById("DiasAposVenda").value);
 
-            if (!numeroParcela || !formaPgto.value || isNaN(valor) || isNaN(dias)) {
+            if (!numeroParcela || !formaPgtoId || isNaN(valor) || isNaN(dias)) {
                 alert("Preencha todos os campos da parcela.");
                 return;
             }
 
-            let existe = parcelas.some(p => p.numeroParcela === numeroParcela);
-            if (existe) {
+            if (parcelas.some(p => p.numeroParcela === numeroParcela)) {
                 alert("Número de parcela já utilizado.");
                 return;
             }
 
-            let parcela = {
-                numeroParcela: numeroParcela,
-                idFormaPgto: parseInt(formaPgto.value),
-                descricaoFormaPgto: formaPgto.options[formaPgto.selectedIndex].text,
-                valorPercentual: valor,
-                diasAposVenda: dias
-            };
-
+            let parcela = { numeroParcela, idFormaPgto: formaPgtoId, descricaoFormaPgto: formaPgtoNome, valorPercentual: valor, diasAposVenda: dias };
             parcelas.push(parcela);
 
-            let tabela = document.querySelector("#tabelaParcelas tbody");
-            let novaLinha = tabela.insertRow();
-            novaLinha.dataset.numero = parcela.numeroParcela;
-            novaLinha.dataset.idforma = parcela.idFormaPgto;
-            novaLinha.dataset.valor = parcela.valorPercentual;
-            novaLinha.dataset.dias = parcela.diasAposVenda;
+            let novaLinha = `
+                <tr data-numero="${numeroParcela}" data-idforma="${formaPgtoId}" data-valor="${valor}" data-dias="${dias}">
+                    <td>${numeroParcela}</td>
+                    <td>${formaPgtoNome}</td>
+                    <td>${valor}</td>
+                    <td>${dias}</td>
+                    <td><button type="button" class="btn btn-danger btn-sm removerParcela">Remover</button></td>
+                </tr>`;
 
-            novaLinha.innerHTML = `
-                <td>${parcela.numeroParcela}</td>
-                <td>${parcela.idFormaPgto}</td>
-                <td>${parcela.valorPercentual}</td>
-                <td>${parcela.diasAposVenda}</td>
-                <td><button type="button" class="btn btn-danger btn-sm removerParcela">Remover</button></td>`;
-
-            novaLinha.querySelector(".removerParcela").addEventListener("click", function () {
-                novaLinha.remove();
-                parcelas = parcelas.filter(p => p.numeroParcela !== parcela.numeroParcela);
+            let tbody = document.querySelector("#tabelaParcelas tbody");
+            tbody.insertAdjacentHTML("beforeend", novaLinha);
+            tbody.querySelectorAll(".removerParcela").forEach(btn => {
+                btn.onclick = function () {
+                    let tr = this.closest("tr");
+                    let num = parseInt(tr.dataset.numero);
+                    tr.remove();
+                    parcelas = parcelas.filter(p => p.numeroParcela !== num);
+                };
             });
 
             document.getElementById("NumeroParcela").value = "";
@@ -164,17 +271,11 @@
         });
 
         document.querySelector("form").addEventListener("submit", function () {
-            let inputParcelas = document.createElement("input");
-            inputParcelas.type = "hidden";
-            inputParcelas.name = "ParcelasJson";
-            inputParcelas.value = JSON.stringify(parcelas);
-            this.appendChild(inputParcelas);
+            const input = document.createElement("input");
+            input.type = "hidden";
+            input.name = "ParcelasJson";
+            input.value = JSON.stringify(parcelas);
+            this.appendChild(input);
         });
-
     </script>
 }
-
-
-
-
-

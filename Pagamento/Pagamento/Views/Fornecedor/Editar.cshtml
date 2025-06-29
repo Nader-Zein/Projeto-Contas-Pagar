@@ -10,58 +10,45 @@
     <input type="hidden" asp-for="IdPessoa" />
 
     <div class="row">
+        <div class="d-flex justify-content-end mt-3">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" asp-for="Status" />
+                <label class="form-check-label" asp-for="Status">Ativo</label>
+            </div>
+        </div>
+
         <div class="col-md-6 mb-3">
             <label asp-for="TipoPessoa" class="form-label">Tipo de Pessoa</label>
             <select asp-for="TipoPessoa" class="form-control">
-                <option value="">Selecione</option>
-                <option value="Física" selected="@("Física" == Model.TipoPessoa)">Física</option>
-                <option value="Jurídica" selected="@("Jurídica" == Model.TipoPessoa)">Jurídica</option>
+                <option value="Física">Física</option>
+                <option value="Jurídica">Jurídica</option>
             </select>
         </div>
 
         <div class="col-md-6 mb-3">
-            <label asp-for="Nome_RazaoSocial" class="form-label">Nome / Razão Social</label>
+            <label id="labelNomeRazao" asp-for="Nome_RazaoSocial" class="form-label">Nome / Razão Social</label>
             <input asp-for="Nome_RazaoSocial" class="form-control" />
         </div>
 
         <div class="col-md-6 mb-3">
-            <label asp-for="DataNascimento_Fundacao" class="form-label">Data de Nascimento / Fundação</label>
-            <input asp-for="DataNascimento_Fundacao" type="date" class="form-control" />
-        </div>
-
-        <div class="col-md-6 mb-3">
-            <label asp-for="CPF_CNPJ" class="form-label">CPF / CNPJ</label>
-            <input asp-for="CPF_CNPJ" class="form-control" />
-        </div>
-
-        <div class="col-md-6 mb-3">
-            <label asp-for="RG_InsMunicipal" class="form-label">RG / Inscrição Municipal</label>
-            <input asp-for="RG_InsMunicipal" class="form-control" />
-        </div>
-
-        <div class="col-md-6 mb-3">
-            <label asp-for="InscricaoEstadual" class="form-label">Inscrição Estadual</label>
-            <input asp-for="InscricaoEstadual" class="form-control" />
-        </div>
-
-        <div class="col-md-6 mb-3">
-            <label asp-for="InscricaoSubstitutoTributario" class="form-label">Inscrição Substituto Tributário</label>
-            <input asp-for="InscricaoSubstitutoTributario" class="form-control" />
-        </div>
-
-        <div class="col-md-6 mb-3">
-            <label asp-for="Email" class="form-label">Email</label>
-            <input asp-for="Email" class="form-control" />
-        </div>
-
-        <div class="col-md-6 mb-3">
-            <label asp-for="Telefone" class="form-label">Telefone</label>
-            <input asp-for="Telefone" class="form-control" />
+            <label id="labelApelidoFantasia" asp-for="Apelido_NomeFantasia" class="form-label">Apelido / Nome Fantasia</label>
+            <input asp-for="Apelido_NomeFantasia" class="form-control" />
         </div>
 
         <div class="col-md-6 mb-3">
             <label asp-for="Endereco" class="form-label">Endereço</label>
             <input asp-for="Endereco" class="form-control" />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label asp-for="Numero" class="form-label">Número</label>
+            <input asp-for="Numero" class="form-control" />
+            <span asp-validation-for="Numero" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label asp-for="Complemento" class="form-label">Complemento</label>
+            <input asp-for="Complemento" class="form-control" />
         </div>
 
         <div class="col-md-6 mb-3">
@@ -72,31 +59,520 @@
         <div class="col-md-6 mb-3">
             <label asp-for="Cep" class="form-label">CEP</label>
             <input asp-for="Cep" class="form-control" />
+            <span asp-validation-for="Cep" class="text-danger"></span>
         </div>
 
         <div class="col-md-6 mb-3">
-            <label asp-for="Status" class="form-label">Status</label>
-            <select asp-for="Status" class="form-control">
-                <option value="">Selecione</option>
-                <option value="Ativo" selected="@("Ativo" == Model.Status)">Ativo</option>
-                <option value="Inativo" selected="@("Inativo" == Model.Status)">Inativo</option>
-            </select>
+            <label class="form-label">Cidade</label>
+            <div class="input-group">
+                <input type="text" id="NomeCidadeSelecionada" class="form-control"
+                       value="@ViewBag.NomeCidade" readonly />
+                <input type="hidden" asp-for="IdCidade" id="IdCidade" />
+                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#modalCidade">
+                    Selecionar Cidade
+                </button>
+            </div>
         </div>
 
         <div class="col-md-6 mb-3">
-            <label asp-for="IdCidade" class="form-label">Cidade</label>
-            <select asp-for="IdCidade" class="form-control" asp-items="ViewBag.Cidades">
-                <option value="">Selecione a Cidade</option>
-            </select>
+            <label id="labelNascimentoFundacao"  asp-for="DataNascimento_Fundacao" class="form-label">Data de Nascimento / Fundação</label>
+            <input asp-for="DataNascimento_Fundacao" type="date" class="form-control" />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label id="labelCpfCnpj" asp-for="CPF_CNPJ" class="form-label">CPF / CNPJ</label>
+            <input asp-for="CPF_CNPJ" class="form-control" />
+            <span asp-validation-for="CPF_CNPJ" class="text-danger"></span>
+
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label id="labelRgIe" asp-for="RG_InsEstadual" class="form-label">RG / Inscrição Estadual</label>
+            <input asp-for="RG_InsEstadual" class="form-control" />
+            <span asp-validation-for="RG_InsEstadual" class="text-danger"></span>
+
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label asp-for="Email" class="form-label">Email</label>
+            <input asp-for="Email" class="form-control" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label asp-for="Telefone" class="form-label">Telefone</label>
+            <input asp-for="Telefone" class="form-control" />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Condição de Pagamento</label>
+            <div class="input-group">
+                <input type="text" id="NomeCondicaoSelecionada" class="form-control" placeholder="Nenhuma condição selecionada" 
+                value="@ViewBag.NomeCondicao" readonly />
+                <input type="hidden" asp-for="IdCondPgto" id="IdCondPgto" />
+                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#modalCondicaoPgto">
+                    Selecionar Condição
+                </button>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label asp-for="LimiteCredito" class="form-label">Limite de Crédito </label>
+            <input asp-for="LimiteCredito" class="form-control" type="text" data-val="false" />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Data de Criação</label>
+            <input type="text" class="form-control"
+                   value="@Model.DataCriacao.ToString("dd/MM/yyyy HH:mm")" readonly />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Última Edição</label>
+            <input type="text" class="form-control"
+                   value="@(Model.DataEdicao?.ToString("dd/MM/yyyy HH:mm") ?? "Nunca editado")" readonly />
         </div>
     </div>
 
-    <div class="mt-3">
-        <button type="submit" class="btn btn-success">Salvar Alterações</button>
+    <div class="text-end mt-3">
+        <button type="submit" class="btn btn-primary">Alterar</button>
         <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
     </div>
 </form>
 
+<div class="modal fade" id="modalCidade" tabindex="-1" aria-labelledby="modalCidadeLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Selecionar Cidade</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <input type="text" id="filtroCidade" class="form-control" placeholder="Digite para buscar..." onkeyup="filtrarTabelaCidade()" />
+                </div>
+
+                <table class="table table-bordered" id="tabelaCidades">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var cidade in ViewBag.Cidades as List<SelectListItem>)
+                        {
+                            <tr>
+                                <td>@cidade.Text</td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-primary"
+                                            onclick="selecionarCidade('@cidade.Value', '@cidade.Text')">
+                                        Selecionar
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                <hr />
+                <button class="btn btn-success" type="button" onclick="abrirFormNovaCidade()">+ Cadastrar nova Cidade</button>
+                <div id="formNovaCidadeContainer"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modalCondicaoPgto" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Selecionar Condição de Pagamento</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="filtroCondicao" class="form-control mb-2" placeholder="Buscar..." onkeyup="filtrarTabelaCondicao()" />
+                <table class="table table-bordered" id="tabelaCondicoes">
+                    <thead>
+                        <tr>
+                            <th>Descrição</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var condicao in ViewBag.CondicoesPagamento as List<SelectListItem>)
+                        {
+                            <tr>
+                                <td>@condicao.Text</td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-primary"
+                                            onclick="selecionarCondicao(@condicao.Value, '@condicao.Text')">
+                                        Selecionar
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <hr />
+                <button class="btn btn-success" type="button" onclick="abrirFormNovaCondicao()">+ Cadastrar nova Condição</button>
+                <div id="formNovaCondicaoContainer"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modalNovaCidade" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" id="modalNovaCidadeContent">
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalNovaCondicao" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content" id="modalNovaCondicaoContent"></div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalCidade" tabindex="-1" aria-labelledby="modalCidadeLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Selecionar Cidade</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <input type="text" id="filtroCidade" class="form-control" placeholder="Digite para buscar..." onkeyup="filtrarTabelaCidade()" />
+                </div>
+
+                <table class="table table-bordered" id="tabelaCidades">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var cidade in ViewBag.Cidades as List<SelectListItem>)
+                        {
+                            <tr>
+                                <td>@cidade.Text</td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-primary"
+                                            onclick="selecionarCidade(@cidade.Value, '@cidade.Text')">
+                                        Selecionar
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                <hr />
+                <button class="btn btn-success" type="button" onclick="abrirFormNovaCidade()">+ Cadastrar nova Cidade</button>
+                <div id="formNovaCidadeContainer"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalCondicaoPgto" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Selecionar Condição de Pagamento</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="filtroCondicao" class="form-control mb-2" placeholder="Buscar..." onkeyup="filtrarTabelaCondicao()" />
+                <table class="table table-bordered" id="tabelaCondicoes">
+                    <thead>
+                        <tr>
+                            <th>Descrição</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var condicao in ViewBag.CondicoesPagamento as List<SelectListItem>)
+                        {
+                            <tr>
+                                <td>@condicao.Text</td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-primary"
+                                            onclick="selecionarCondicao(@condicao.Value, '@condicao.Text')">
+                                        Selecionar
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                <hr />
+                <button class="btn btn-success" type="button" onclick="abrirFormNovaCondicao()">+ Cadastrar nova Condição</button>
+                <div id="formNovaCondicaoContainer"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalNovaCidade" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" id="modalNovaCidadeContent">
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalNovaCondicao" tabindex="-1" aria-hidden="true">
+    <div id="modalNovaCondicaoContent"></div>
+</div>
+
+
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+
+    <script>
+
+
+        function atualizarLabels(tipo) {
+
+            
+
+            if (tipo === "Física") {
+                $('#labelNomeRazao').text("Nome");
+                $('#labelApelidoFantasia').text("Apelido");
+                $('#labelCpfCnpj').text("CPF");
+                $('#labelNascimentoFundacao').text("Data Nascimento");
+                $('#labelRgIe').text("RG");
+            } else if (tipo === "Jurídica") {
+                $('#labelNomeRazao').text("Razão Social");
+                $('#labelApelidoFantasia').text("Nome Fantasia");
+                $('#labelCpfCnpj').text("CNPJ");
+                $('#labelNascimentoFundacao').text("Fundação");
+                $('#labelRgIe').text("Inscrição Estadual");
+            }
+        }
+
+        $(document).ready(function () {
+            $('#TipoPessoa').change(function () {
+                atualizarLabels($(this).val());
+            });
+
+            atualizarLabels($('#TipoPessoa').val());
+        });
+
+        function selecionarCidade(id, nome) {
+            $('#IdCidade').val(id);
+            $('#NomeCidadeSelecionada').val(nome);
+            bootstrap.Modal.getInstance(document.getElementById('modalCidade')).hide();
+        }
+
+        function abrirFormNovaCidade() {
+            $.get('@Url.Action("FormModal", "Cidade")', function (data) {
+                $('#modalNovaCidadeContent').html(data);
+                new bootstrap.Modal(document.getElementById('modalNovaCidade')).show();
+            });
+        }
+
+        $(document).on('submit', '#formCadastrarCidade', function (e) {
+            e.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("FormModal", "Cidade")',
+                data: $(this).serialize(),
+                success: function (response) {
+                    if (response.sucesso) {
+                        $('#modalNovaCidade').modal('hide');
+                        const novaLinha = `
+                            <tr>
+                                <td>${response.cidade.nome}</td>
+                                <td>
+                                    <button class='btn btn-sm btn-primary' onclick='selecionarCidade(${response.cidade.id}, "${response.cidade.nome}")'>Selecionar</button>
+                                </td>
+                            </tr>`;
+                        $('#tabelaCidades tbody').append(novaLinha);
+                    } else {
+                        $('#modalNovaCidadeContent').html(response);
+                    }
+                }
+            });
+        });
+
+        function filtrarTabelaCidade() {
+            const filtro = $('#filtroCidade').val().toLowerCase();
+            $('#tabelaCidades tbody tr').each(function () {
+                const nome = $(this).find('td:first').text().toLowerCase();
+                $(this).toggle(nome.includes(filtro));
+            });
+        }
+
+        function selecionarCondicao(id, nome) {
+            $('#IdCondPgto').val(id);
+            $('#NomeCondicaoSelecionada').val(nome);
+            bootstrap.Modal.getInstance(document.getElementById('modalCondicaoPgto')).hide();
+        }
+
+        function abrirFormNovaCondicao() {
+            $.get('/CondicaoPagamento/FormModal', function (data) {
+                $('#modalNovaCondicaoContent').html(data);
+                new bootstrap.Modal(document.getElementById('modalNovaCondicao')).show();
+            });
+        }
+
+        function filtrarTabelaCondicao() {
+            const filtro = $('#filtroCondicao').val().toLowerCase();
+            $('#tabelaCondicoes tbody tr').each(function () {
+                const nome = $(this).find('td:first').text().toLowerCase();
+                $(this).toggle(nome.includes(filtro));
+            });
+        }
+
+        function selecionarFormaPgto(id, nome) {
+            $('#IdFormaPgto').val(id);
+            $('#NomeFormaSelecionada').val(nome);
+            bootstrap.Modal.getInstance(document.getElementById('modalFormaPgto')).hide();
+        }
+
+        function filtrarTabelaForma() {
+            const filtro = $('#filtroForma').val().toLowerCase();
+            $('#tabelaFormas tbody tr').each(function () {
+                const texto = $(this).find('td:first').text().toLowerCase();
+                $(this).toggle(texto.includes(filtro));
+            });
+        }
+
+        function abrirFormNovaForma() {
+            $.get('/FormaPagamento/FormModal', function (html) {
+                $('#modalNovaFormaContent').html(html);
+                new bootstrap.Modal(document.getElementById('modalNovaForma')).show();
+            });
+        }
+
+        $(document).on('submit', '#formCadastrarFormaPgto', function (e) {
+            e.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: '/FormaPagamento/FormModal',
+                data: $(this).serialize(),
+                success: function (response) {
+                    if (response.sucesso) {
+                        $('#modalNovaForma').modal('hide');
+
+                        const novaLinha = `
+                            <tr>
+                                <td>${response.forma.nome}</td>
+                                <td>
+                                    <button type='button' class='btn btn-sm btn-primary'
+                                        onclick='selecionarFormaPgto(${response.forma.id}, "${response.forma.nome}")'>
+                                        Selecionar
+                                    </button>
+                                </td>
+                            </tr>`;
+                        $('#tabelaFormas tbody').append(novaLinha);
+                    } else {
+                                $('#modalNovaFormaContent').html(response);
+                           }
+                }
+
+            });
+        });
+
+        let parcelas = [];
+
+        $(document).on('click', '#btnAdicionarParcela', function () {
+            const numeroParcela = parseInt($('#NumeroParcela').val());
+            const idForma = parseInt($('#IdFormaPgto').val());
+            const nomeForma = $('#NomeFormaSelecionada').val();
+            const valor = parseFloat($('#ValorPercentual').val());
+            const dias = parseInt($('#DiasAposVenda').val());
+
+            if (!numeroParcela || !idForma || !nomeForma || isNaN(valor) || isNaN(dias)) {
+                alert("Preencha todos os campos da parcela corretamente.");
+                return;
+            }
+
+            if (parcelas.some(p => p.numeroParcela === numeroParcela)) {
+                alert("Já existe uma parcela com esse número.");
+                return;
+            }
+
+            const parcela = {
+                numeroParcela: numeroParcela,
+                idFormaPgto: idForma,
+                descricaoFormaPgto: nomeForma,
+                valorPercentual: valor,
+                diasAposVenda: dias
+            };
+
+            parcelas.push(parcela);
+
+            const linha = `
+                <tr data-numero="${numeroParcela}">
+                    <td>${numeroParcela}</td>
+                    <td>${nomeForma}</td>
+                    <td>${valor}%</td>
+                    <td>${dias} dias</td>
+                    <td><button type="button" class="btn btn-danger btn-sm removerParcela">Remover</button></td>
+                </tr>`;
+            $('#tabelaParcelas tbody').append(linha);
+
+            $('.removerParcela').off('click').on('click', function () {
+                const tr = $(this).closest('tr');
+                const num = parseInt(tr.attr('data-numero'));
+                parcelas = parcelas.filter(p => p.numeroParcela !== num);
+                tr.remove();
+            });
+
+            $('#NumeroParcela').val('');
+            $('#ValorPercentual').val('');
+            $('#DiasAposVenda').val('');
+            $('#IdFormaPgto').val('');
+            $('#NomeFormaSelecionada').val('');
+        });
+
+        $(document).on('submit', '#formCadastrarCondicaoPgto', function (e) {
+            e.preventDefault();
+
+            const formData = $(this).serializeArray();
+            formData.push({ name: "ParcelasJson", value: JSON.stringify(parcelas) });
+
+            $.ajax({
+                type: 'POST',
+                url: '/CondicaoPagamento/FormModal',
+                data: $.param(formData),
+                success: function (response) {
+                    if (response.sucesso) {
+                        bootstrap.Modal.getInstance(document.getElementById('modalNovaCondicao')).hide();
+
+                        const linha = `
+                            <tr>
+                                <td>${response.condicao.nome}</td>
+                                <td>
+                                    <button type='button' class='btn btn-sm btn-primary'
+                                        onclick='selecionarCondicao(${response.condicao.id}, "${response.condicao.nome}")'>
+                                        Selecionar
+                                    </button>
+                                </td>
+                            </tr>`;
+                        $('#tabelaCondicoes tbody').append(linha);
+
+                        $('#IdCondPgto').val(response.condicao.id);
+                        $('#NomeCondicaoSelecionada').val(response.condicao.nome);
+                    } else {
+                        $('#modalNovaCondicaoContent').html(response);
+                    }
+                },
+                error: function () {
+                    alert("Erro ao cadastrar condição. Verifique os campos e tente novamente.");
+                }
+            });
+        });
+    </script>
 }
+
+

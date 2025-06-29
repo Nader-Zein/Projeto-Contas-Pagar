@@ -26,7 +26,7 @@ namespace Pagamento.Controllers
                 Text = e.NomeEstado  
             }).ToList();
 
-            return View();
+            return View(new Cidade());
         }
 
         [HttpPost]
@@ -34,6 +34,7 @@ namespace Pagamento.Controllers
         {
             if (ModelState.IsValid)
             {
+                 
                 _cidadeDAO.Inserir(cidade);
                 return RedirectToAction("Index");
             }
@@ -45,6 +46,9 @@ namespace Pagamento.Controllers
         {
             var cidade = _cidadeDAO.Listar().FirstOrDefault(c => c.IdCidade == id);
             if (cidade == null) return NotFound();
+
+            ViewBag.NomeEstado = _estadoDAO.BuscarPorId(cidade.IdEstado)?.NomeEstado ?? "";
+
             return View(cidade);
         }
 
@@ -57,7 +61,7 @@ namespace Pagamento.Controllers
 
         public IActionResult Editar(int id)
         {
-            var cidade = _cidadeDAO.Listar().FirstOrDefault(c => c.IdCidade == id);
+            var cidade = _cidadeDAO.BuscarPorId(id);
             if (cidade == null) return NotFound();
 
             var estados = _estadoDAO.Listar();
@@ -67,14 +71,18 @@ namespace Pagamento.Controllers
                 Text = e.NomeEstado
             }).ToList();
 
+            ViewBag.NomeEstado = _estadoDAO.BuscarPorId(cidade.IdEstado)?.NomeEstado ?? "";
+
             return View(cidade);
         }
+
 
         [HttpPost]
         public IActionResult Editar(Cidade cidade)
         {
             if (ModelState.IsValid)
             {
+                
                 _cidadeDAO.Atualizar(cidade);
                 return RedirectToAction("Index");
             }
@@ -86,8 +94,46 @@ namespace Pagamento.Controllers
                 Text = e.NomeEstado
             }).ToList();
 
+            ViewBag.NomeEstado = _estadoDAO.BuscarPorId(cidade.IdEstado)?.NomeEstado ?? "";
+
+
             return View(cidade);
         }
+
+        public IActionResult FormModal()
+        {
+            ViewBag.Estados = _estadoDAO.Listar().Select(e => new SelectListItem
+            {
+                Value = e.IdEstado.ToString(),
+                Text = e.NomeEstado
+            }).ToList();
+
+            return PartialView("FormCidadeModal", new Cidade());
+        }
+
+        [HttpPost]
+        public IActionResult FormModal(Cidade cidade)
+        {
+            if (ModelState.IsValid)
+            {
+                _cidadeDAO.Inserir(cidade);
+                return Json(new
+                {
+                    sucesso = true,
+                    cidade = new { id = cidade.IdCidade, nome = cidade.NomeCidade }
+                });
+            }
+
+            ViewBag.Estados = _estadoDAO.Listar().Select(e => new SelectListItem
+            {
+                Value = e.IdEstado.ToString(),
+                Text = e.NomeEstado
+            }).ToList();
+
+            return PartialView("FormCidadeModal", cidade);
+        }
+
+
 
     }
 }

@@ -7,6 +7,21 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Pagamento.styles.css" asp-append-version="true" />
+
+    <style>
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="password"],
+    textarea {
+        text-transform: uppercase;
+    }
+
+        select {
+            text-transform: uppercase;
+        }
+</style>
+
 </head>
 <body>
     <header>
@@ -18,38 +33,28 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                   
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="FormaPagamento" asp-action="FormaPagamento">Forma de Pagamento</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="CondicaoPagamento" asp-action="Index">Condição de Pagamento</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Cidade" asp-action="Index">Cidade</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Estado" asp-action="Index">Estado</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Pais" asp-action="Index">Pais</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Fornecedor" asp-action="Index">Fornecedor</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Cliente" asp-action="Index">Cliente</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Funcionario" asp-action="Index">Funcionario</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="cadastroDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Cadastro
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="cadastroDropdown">
+                                <li><a class="dropdown-item" asp-controller="FormaPagamento" asp-action="FormaPagamento">Forma de Pagamento</a></li>
+                                <li><a class="dropdown-item" asp-controller="CondicaoPagamento" asp-action="Index">Condição de Pagamento</a></li>
+                                <li><a class="dropdown-item" asp-controller="Cidade" asp-action="Index">Cidade</a></li>
+                                <li><a class="dropdown-item" asp-controller="Estado" asp-action="Index">Estado</a></li>
+                                <li><a class="dropdown-item" asp-controller="Pais" asp-action="Index">País</a></li>
+                                <li><a class="dropdown-item" asp-controller="Fornecedor" asp-action="Index">Fornecedor</a></li>
+                                <li><a class="dropdown-item" asp-controller="Cliente" asp-action="Index">Cliente</a></li>
+                                <li><a class="dropdown-item" asp-controller="Funcionario" asp-action="Index">Funcionário</a></li>
+                                <li><a class="dropdown-item" asp-controller="Marca" asp-action="Index">Marca</a></li>
+                                <li><a class="dropdown-item" asp-controller="UnidadeMedida" asp-action="Index">Unidade de Medida</a></li>
+                                <li><a class="dropdown-item" asp-controller="Produto" asp-action="Index">Produto</a></li>
+                            </ul>
                         </li>
                     </ul>
+
                 </div>
             </div>
         </nav>

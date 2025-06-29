@@ -23,7 +23,12 @@ namespace Pagamento.DAO
                     lista.Add(new Pais
                     {
                         IdPais = reader.GetInt32("IdPais"),
-                        NomePais = reader.GetString("NomePais")
+                        NomePais = reader.GetString("NomePais"),
+                        Status = reader.GetBoolean("Status"),
+                        DataCriacao = reader.GetDateTime("DataCriacao"),
+                        DataEdicao = reader.IsDBNull(reader.GetOrdinal("DataEdicao"))
+                                     ? (DateTime?)null
+                                     : reader.GetDateTime("DataEdicao")
                     });
                 }
             }
@@ -36,25 +41,34 @@ namespace Pagamento.DAO
             using (MySqlConnection conexao = new MySqlConnection(connectionString))
             {
                 conexao.Open();
-                string sql = "INSERT INTO Pais (NomePais) VALUES (@NomePais)";
+                string sql = "INSERT INTO Pais (NomePais, Status, DataCriacao) VALUES (@NomePais, @Status, @DataCriacao)";
                 MySqlCommand cmd = new MySqlCommand(sql, conexao);
-                cmd.Parameters.AddWithValue("@NomePais", pais.NomePais);
+                cmd.Parameters.AddWithValue("@NomePais", pais.NomePais.ToUpper());
+                cmd.Parameters.AddWithValue("@Status", pais.Status);
+                cmd.Parameters.AddWithValue("@DataCriacao", DateTime.Now); 
                 cmd.ExecuteNonQuery();
+
+                pais.IdPais = (int)cmd.LastInsertedId;
+
             }
         }
+
 
         public void Atualizar(Pais pais)
         {
             using (MySqlConnection conexao = new MySqlConnection(connectionString))
             {
                 conexao.Open();
-                string sql = "UPDATE Pais SET NomePais = @NomePais WHERE IdPais = @IdPais";
+                string sql = "UPDATE Pais SET NomePais = @NomePais, Status = @Status, DataEdicao = @DataEdicao WHERE IdPais = @IdPais";
                 MySqlCommand cmd = new MySqlCommand(sql, conexao);
+                cmd.Parameters.AddWithValue("@NomePais", pais.NomePais.ToUpper());
+                cmd.Parameters.AddWithValue("@Status", pais.Status);
+                cmd.Parameters.AddWithValue("@DataEdicao", DateTime.Now); 
                 cmd.Parameters.AddWithValue("@IdPais", pais.IdPais);
-                cmd.Parameters.AddWithValue("@NomePais", pais.NomePais);
                 cmd.ExecuteNonQuery();
             }
         }
+
 
         public void Excluir(int id)
         {
@@ -83,12 +97,18 @@ namespace Pagamento.DAO
                     return new Pais
                     {
                         IdPais = reader.GetInt32("IdPais"),
-                        NomePais = reader.GetString("NomePais")
+                        NomePais = reader.GetString("NomePais"),
+                        Status = reader.GetBoolean("Status"),
+                        DataCriacao = reader.GetDateTime("DataCriacao"),
+                        DataEdicao = reader.IsDBNull(reader.GetOrdinal("DataEdicao"))
+                                     ? (DateTime?)null
+                                     : reader.GetDateTime("DataEdicao")
                     };
                 }
             }
 
             return null;
         }
+
     }
 }

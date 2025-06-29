@@ -9,6 +9,8 @@ namespace Pagamento.Controllers
     {
         private readonly ClienteDAO _clienteDAO = new ClienteDAO();
         private readonly CidadeDAO _cidadeDAO = new CidadeDAO();
+        private readonly CondicaoPagamentoDAO _condicaoPagamentoDAO = new CondicaoPagamentoDAO(); 
+
 
         public IActionResult Index()
         {
@@ -24,12 +26,31 @@ namespace Pagamento.Controllers
                 Text = c.NomeCidade
             }).ToList();
 
-            return View();
+            ViewBag.CondicoesPagamento = _condicaoPagamentoDAO.Listar().Select(c => new SelectListItem
+            {
+                Value = c.IdCondPgto.ToString(),
+                Text = c.Descricao
+            }).ToList();
+
+            return View(new Cliente());
         }
 
         [HttpPost]
         public IActionResult Criar(Cliente cliente)
         {
+            bool estrangeiro = _cidadeDAO.CidadeEstrangeira(cliente.IdCidade);
+
+
+            
+
+            if (!estrangeiro)
+            {
+                if (string.IsNullOrWhiteSpace(cliente.CPF_CNPJ))
+                {
+                    ModelState.AddModelError("CPF_CNPJ", "O CPF/CNPJ é obrigatório para clientes brasileiros.");
+                }
+            }
+
             if (ModelState.IsValid)
             {
                 _clienteDAO.Inserir(cliente);
@@ -40,6 +61,13 @@ namespace Pagamento.Controllers
             {
                 Value = c.IdCidade.ToString(),
                 Text = c.NomeCidade
+            }).ToList();
+
+
+            ViewBag.CondicoesPagamento = _condicaoPagamentoDAO.Listar().Select(c => new SelectListItem
+            {
+                Value = c.IdCondPgto.ToString(),
+                Text = c.Descricao
             }).ToList();
 
             return View(cliente);
@@ -56,12 +84,35 @@ namespace Pagamento.Controllers
                 Text = c.NomeCidade
             }).ToList();
 
+            ViewBag.CondicoesPagamento = _condicaoPagamentoDAO.Listar().Select(c => new SelectListItem
+            {
+                Value = c.IdCondPgto.ToString(),
+                Text = c.Descricao
+            }).ToList();
+
+            ViewBag.NomeCidade = _cidadeDAO.BuscarPorId(cliente.IdCidade)?.NomeCidade ?? "Não encontrado";
+            ViewBag.NomeCondicao = _condicaoPagamentoDAO.BuscarPorId(cliente.IdCondPgto)?.Descricao ?? "Não encontrado";
+
+
             return View(cliente);
         }
 
         [HttpPost]
         public IActionResult Editar(Cliente cliente)
         {
+            bool estrangeiro = _cidadeDAO.CidadeEstrangeira(cliente.IdCidade);
+
+
+            
+
+            if (!estrangeiro)
+            {
+                if (string.IsNullOrWhiteSpace(cliente.CPF_CNPJ))
+                {
+                    ModelState.AddModelError("CPF_CNPJ", "O CPF/CNPJ é obrigatório para clientes brasileiros.");
+                }
+            }
+
             if (ModelState.IsValid)
             {
                 _clienteDAO.Atualizar(cliente);
@@ -74,6 +125,15 @@ namespace Pagamento.Controllers
                 Text = c.NomeCidade
             }).ToList();
 
+            ViewBag.CondicoesPagamento = _condicaoPagamentoDAO.Listar().Select(c => new SelectListItem
+            {
+                Value = c.IdCondPgto.ToString(),
+                Text = c.Descricao
+            }).ToList();
+
+            ViewBag.NomeCidade = _cidadeDAO.BuscarPorId(cliente.IdCidade)?.NomeCidade ?? "Não encontrado";
+            ViewBag.NomeCondicao = _condicaoPagamentoDAO.BuscarPorId(cliente.IdCondPgto)?.Descricao ?? "Não encontrado";
+
             return View(cliente);
         }
 
@@ -81,6 +141,10 @@ namespace Pagamento.Controllers
         {
             var cliente = _clienteDAO.BuscarPorId(id);
             if (cliente == null) return NotFound();
+
+            ViewBag.NomeCidade = _cidadeDAO.BuscarPorId(cliente.IdCidade)?.NomeCidade ?? "Não encontrado";
+            ViewBag.NomeCondicao = _condicaoPagamentoDAO.BuscarPorId(cliente.IdCondPgto)?.Descricao;
+
             return View(cliente);
         }
 

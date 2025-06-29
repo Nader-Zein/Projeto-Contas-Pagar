@@ -1,3 +1,5 @@
+using System.Globalization;
+
 namespace Pagamento
 {
     public class Program
@@ -8,6 +10,11 @@ namespace Pagamento
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+
+            var defaultCulture = new CultureInfo("pt-BR");
+            CultureInfo.DefaultThreadCurrentCulture = defaultCulture;
+            CultureInfo.DefaultThreadCurrentUICulture = defaultCulture;
 
             var app = builder.Build();
 

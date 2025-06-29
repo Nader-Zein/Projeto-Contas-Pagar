@@ -4,37 +4,155 @@
     ViewData["Title"] = "Excluir Funcionário";
 }
 
-<h2>@ViewData["Title"]</h2>
-
-<div class="alert alert-danger">
-    <strong>Tem certeza que deseja excluir este funcionário?</strong>
-</div>
-
-<div class="row mb-3">
-    <div class="col-md-6">
-        <label class="form-label">Nome / Razão Social:</label>
-        <p class="form-control-plaintext">@Model.Nome_RazaoSocial</p>
-    </div>
-    <div class="col-md-6">
-        <label class="form-label">CPF / CNPJ:</label>
-        <p class="form-control-plaintext">@Model.CPF_CNPJ</p>
-    </div>
-    <div class="col-md-6">
-        <label class="form-label">Email:</label>
-        <p class="form-control-plaintext">@Model.Email</p>
-    </div>
-    <div class="col-md-6">
-        <label class="form-label">Telefone:</label>
-        <p class="form-control-plaintext">@Model.Telefone</p>
-    </div>
-    <div class="col-md-6">
-        <label class="form-label">Status:</label>
-        <p class="form-control-plaintext">@Model.Status</p>
-    </div>
-</div>
+<h2 class="text-danger">@ViewData["Title"]</h2>
+<h5 class="mb-4">Tem certeza que deseja excluir este funcionário?</h5>
 
 <form asp-action="Excluir" method="post">
     <input type="hidden" asp-for="IdPessoa" />
-    <button type="submit" class="btn btn-danger">Confirmar Exclusão</button>
-    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+
+    <div class="row">
+        <div class="d-flex justify-content-end mt-3">
+            <div class="d-flex justify-content-end mt-3">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" checked="@Model.Status" disabled />
+                    <label class="form-check-label">Ativo</label>
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Tipo de Pessoa</label>
+            <input type="text" class="form-control" value="@Model.TipoPessoa" disabled />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Nome </label>
+            <input type="text" class="form-control" value="@Model.Nome_RazaoSocial" disabled />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Gênero</label>
+            <input type="text" class="form-control" value="@Model.Genero" readonly />
+        </div>
+
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Matrícula</label>
+            <input type="text" class="form-control" value="@Model.Matricula" readonly />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Endereço</label>
+            <input type="text" class="form-control" value="@Model.Endereco" disabled />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Número</label>
+            <input type="text" class="form-control" value="@Model.Numero" readonly />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Complemento</label>
+            <input type="text" class="form-control" value="@Model.Complemento" readonly />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Número</label>
+            <input type="text" class="form-control" value="@Model.Numero" readonly />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Complemento</label>
+            <input type="text" class="form-control" value="@Model.Complemento" readonly />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Bairro</label>
+            <input type="text" class="form-control" value="@Model.Bairro" disabled />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">CEP</label>
+            <input type="text" class="form-control" value="@Model.Cep" disabled />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Cidade</label>
+            <input type="text" class="form-control" value="@ViewBag.NomeCidade" disabled />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Data de Nascimento / Fundação</label>
+            <input type="date" class="form-control" value="@Model.DataNascimento_Fundacao.ToString("yyyy-MM-dd")" disabled />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">CPF / CNPJ</label>
+            <input type="text" class="form-control" value="@Model.CPF_CNPJ" disabled />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">RG / Inscrição Estadual</label>
+            <input type="text" class="form-control" value="@Model.RG_InsEstadual" disabled />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Email</label>
+            <input type="text" class="form-control" value="@Model.Email" disabled />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Telefone</label>
+            <input type="text" class="form-control" value="@Model.Telefone" disabled />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Cargo</label>
+            <input type="text" class="form-control" value="@Model.Cargo" readonly />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Salário</label>
+            <input type="text" class="form-control" value="@Model.Salario.ToString("C")" readonly />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Turno</label>
+            <input type="text" class="form-control" value="@Model.Turno" readonly />
+        </div>
+
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Carga Horária (h/semana)</label>
+            <input type="text" class="form-control" value="@Model.CargaHoraria" readonly />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Data de Admissão</label>
+            <input type="text" class="form-control" value="@Model.DataAdmissao.ToString("yyyy-MM-dd")" readonly />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Data de Demissão</label>
+            <input type="text" class="form-control" value="@(Model.DataDemissao?.ToString("yyyy-MM-dd") ?? "Ainda em exercício")" readonly />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Data de Criação</label>
+            <input type="text" class="form-control" value="@Model.DataCriacao.ToString("dd/MM/yyyy HH:mm")" disabled />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Última Edição</label>
+            <input type="text" class="form-control"
+                   value="@(Model.DataEdicao?.ToString("dd/MM/yyyy HH:mm") ?? "Nunca editado")" disabled />
+        </div>
+    </div>
+
+    <div class="text-end mt-4">
+        <button type="submit" class="btn btn-danger">Excluir</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+    </div>
 </form>

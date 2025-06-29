@@ -8,10 +8,11 @@
     <h1 class="display-4">Clientes</h1>
 
     <div class="d-flex justify-content-start mb-3">
-        <a asp-action="Criar" class="btn btn-primary">Novo Cliente</a>
+        <a asp-controller="Cliente" asp-action="Criar" class="btn btn-primary">Novo Cliente</a>
+
     </div>
 
-    <table class="table table-striped">
+    <table class="table table-bordered table-striped">
         <thead>
             <tr>
                 <th>Nome</th>
@@ -20,6 +21,7 @@
                 <th>Email</th>
                 <th>Telefone</th>
                 <th>Status</th>
+                <th>Cidade</th>
                 <th>Ações</th>
             </tr>
         </thead>
@@ -34,7 +36,17 @@
                         <td>@cliente.CPF_CNPJ</td>
                         <td>@cliente.Email</td>
                         <td>@cliente.Telefone</td>
-                        <td>@cliente.Status</td>
+                        <td>
+                            @if (cliente.Status)
+                            {
+                                <span class="badge bg-success">Ativo</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Desativado</span>
+                            }
+                        </td>
+                        <td>@cliente.NomeCidade</td>
                         <td>
                             <a asp-action="Editar" asp-route-id="@cliente.IdPessoa" class="btn btn-sm btn-warning">Editar</a>
                             <a asp-action="Excluir" asp-route-id="@cliente.IdPessoa" class="btn btn-sm btn-danger">Excluir</a>

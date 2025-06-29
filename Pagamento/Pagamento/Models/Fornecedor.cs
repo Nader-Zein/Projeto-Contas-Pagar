@@ -2,7 +2,10 @@
 {
     public class Fornecedor : Pessoa
     {
-        public string InscricaoEstadual { get; set; }
-        public string InscricaoSubstitutoTributario { get; set; }
+        public int IdCondPgto { get; set; }
+
+        public string? Apelido_NomeFantasia { get; set; }
+
+        public decimal? LimiteCredito { get; set; }
     }
 }

@@ -1,0 +1,247 @@
+﻿@model Pagamento.Models.Fornecedor
+
+<form id="formCadastrarFornecedor" method="post">
+    <div class="modal-header">
+        <h5 class="modal-title">Cadastrar Fornecedor</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+
+
+            <div class="d-flex justify-content-end mt-3">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" asp-for="Status" />
+                    <label class="form-check-label" asp-for="Status">Ativo</label>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label asp-for="TipoPessoa" class="form-label">Tipo de Pessoa</label>
+                <select asp-for="TipoPessoa" class="form-control">
+                    <option value="Física">Física</option>
+                    <option value="Jurídica">Jurídica</option>
+                </select>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label id="labelNomeRazao" asp-for="Nome_RazaoSocial" class="form-label">Nome / Razão Social</label>
+                <input asp-for="Nome_RazaoSocial" class="form-control" />
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label id="labelApelidoFantasia" asp-for="Apelido_NomeFantasia" class="form-label">Apelido / Nome Fantasia</label>
+                <input asp-for="Apelido_NomeFantasia" class="form-control" />
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label asp-for="Endereco" class="form-label">Endereço</label>
+                <input asp-for="Endereco" class="form-control" />
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label asp-for="Numero" class="form-label">Número</label>
+                <input asp-for="Numero" class="form-control" />
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label asp-for="Complemento" class="form-label">Complemento</label>
+                <input asp-for="Complemento" class="form-control" />
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label asp-for="Bairro" class="form-label">Bairro</label>
+                <input asp-for="Bairro" class="form-control" />
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label asp-for="Cep" class="form-label">CEP</label>
+                <input asp-for="Cep" class="form-control" />
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Cidade</label>
+                <div class="input-group">
+                    <input type="text" id="NomeCidadeSelecionada" class="form-control" readonly placeholder="Nenhuma cidade selecionada" />
+                    <input type="hidden" asp-for="IdCidade" id="IdCidade" />
+                    <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#modalCidade">
+                        Selecionar Cidade
+                    </button>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label id="labelNascimentoFundacao" asp-for="DataNascimento_Fundacao" class="form-label">Data de Nascimento / Fundação</label>
+                <input asp-for="DataNascimento_Fundacao" type="date" class="form-control" />
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label id="labelCpfCnpj" asp-for="CPF_CNPJ" class="form-label">CPF / CNPJ</label>
+                <input asp-for="CPF_CNPJ" class="form-control" />
+                <span asp-validation-for="CPF_CNPJ" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label id="labelRgIe" asp-for="RG_InsEstadual" class="form-label">RG / Inscrição Estadual</label>
+                <input asp-for="RG_InsEstadual" class="form-control" />
+                <span asp-validation-for="RG_InsEstadual" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label asp-for="Email" class="form-label">Email</label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label asp-for="Telefone" class="form-label">Telefone</label>
+                <input asp-for="Telefone" class="form-control" />
+            </div>
+
+            
+
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Condição de Pagamento</label>
+                <div class="input-group">
+                    <input type="text" id="NomeCondicaoSelecionada" class="form-control" readonly placeholder="Nenhuma condição selecionada" />
+                    <input type="hidden" asp-for="IdCondPgto" id="IdCondPgto" />
+                    <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#modalCondicaoPgto">
+                        Selecionar Condição
+                    </button>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label asp-for="LimiteCredito" class="form-label">Limite de Crédito </label>
+                <input asp-for="LimiteCredito" class="form-control" type="text" data-val="false" />
+            </div>
+
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-success">Salvar</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+    </div>
+</form>
+
+<div class="modal fade" id="modalCidade" tabindex="-1" aria-labelledby="modalCidadeLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Selecionar Cidade</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <input type="text" id="filtroCidade" class="form-control" placeholder="Digite para buscar..." onkeyup="filtrarTabelaCidade()" />
+                </div>
+
+                <table class="table table-bordered" id="tabelaCidades">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var cidade in ViewBag.Cidades as List<SelectListItem>)
+                        {
+                            <tr>
+                                <td>@cidade.Text</td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-primary"
+                                            onclick="selecionarCidade(@cidade.Value, '@cidade.Text')">
+                                        Selecionar
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                <hr />
+                <button class="btn btn-success" type="button" onclick="abrirFormNovaCidade()">+ Cadastrar nova Cidade</button>
+                <div id="formNovaCidadeContainer"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalCondicaoPgto" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Selecionar Condição de Pagamento</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="filtroCondicao" class="form-control mb-2" placeholder="Buscar..." onkeyup="filtrarTabelaCondicao()" />
+                <table class="table table-bordered" id="tabelaCondicoes">
+                    <thead>
+                        <tr>
+                            <th>Descrição</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var condicao in ViewBag.CondicoesPagamento as List<SelectListItem>)
+                        {
+                            <tr>
+                                <td>@condicao.Text</td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-primary"
+                                            onclick="selecionarCondicao(@condicao.Value, '@condicao.Text')">
+                                        Selecionar
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                <hr />
+                <button class="btn btn-success" type="button" onclick="abrirFormNovaCondicao()">+ Cadastrar nova Condição</button>
+                <div id="formNovaCondicaoContainer"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalNovaCidade" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" id="modalNovaCidadeContent">
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalNovaCondicao" tabindex="-1" aria-hidden="true">
+    <div id="modalNovaCondicaoContent"></div>
+</div>
+
+<script>
+        function atualizarLabels(tipo) {
+            if (tipo === "Física") {
+                $('#labelNomeRazao').text("Nome");
+                $('#labelApelidoFantasia').text("Apelido");
+                $('#labelCpfCnpj').text("CPF");
+                $('#labelNascimentoFundacao').text("Data Nascimento");
+                $('#labelRgIe').text("RG");
+            } else if (tipo === "Jurídica") {
+                $('#labelNomeRazao').text("Razão Social");
+                $('#labelApelidoFantasia').text("Nome Fantasia");
+                $('#labelCpfCnpj').text("CNPJ");
+                $('#labelNascimentoFundacao').text("Fundação");
+                $('#labelRgIe').text("Inscrição Estadual");
+            }
+        }
+
+        $(document).ready(function () {
+            $('#TipoPessoa').change(function () {
+                atualizarLabels($(this).val());
+            });
+
+            atualizarLabels($('#TipoPessoa').val());
+        });
+</script>
+
+

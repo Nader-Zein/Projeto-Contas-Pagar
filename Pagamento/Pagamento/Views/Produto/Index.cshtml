@@ -1,0 +1,54 @@
+﻿@model IEnumerable<Pagamento.Models.Produto>
+@{
+    ViewData["Title"] = "Produtos";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="mb-3 text-end">
+    <a asp-action="Criar" class="btn btn-success">+ Novo Produto</a>
+</div>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th style="width: 200px;">Descrição</th>
+            <th>Código de Barras</th>
+            <th>Referência</th>
+            <th>Marca</th>
+            <th>Unidade</th>
+            <th>Valor Venda</th>
+            <th>Qtd</th>
+            <th>Status</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var produto in Model)
+        {
+            <tr>
+                <td style="width: 200px;">@produto.Descricao</td>
+                <td>@produto.Codigo_Barras</td>
+                <td>@produto.Referencia</td>
+                <td>@produto.NomeMarca</td>
+                <td>@produto.NomeUnidade</td>
+                <td>@produto.ValorVenda.ToString("C2")</td>
+                <td>@produto.Quantidade</td>
+                <td>
+                    @if (produto.Status)
+                    {
+                        <span class="badge bg-success">Ativo</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Desativado</span>
+                    }
+                </td>
+                <td>
+                    <a asp-action="Editar" asp-route-id="@produto.IdProduto" class="btn btn-sm btn-primary">Editar</a>
+                    <a asp-action="Excluir" asp-route-id="@produto.IdProduto" class="btn btn-sm btn-danger">Excluir</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

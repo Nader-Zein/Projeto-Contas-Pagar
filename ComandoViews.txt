@@ -1,0 +1,78 @@
+CREATE OR REPLACE VIEW vw_CidadeEstadoPais AS
+SELECT 
+    c.IdCidade,
+    c.NomeCidade,
+    e.IdEstado,
+    e.NomeEstado,
+    e.Uf,
+    p.IdPais,
+    p.NomePais
+FROM Cidade c
+JOIN Estado e ON c.IdEstado = e.IdEstado
+JOIN Pais p ON e.IdPais = p.IdPais;
+
+
+CREATE OR REPLACE VIEW vw_estado_pais AS
+SELECT 
+    e.IdEstado,
+    e.NomeEstado,
+    e.Uf,
+    p.IdPais,
+    p.NomePais
+FROM Estado e
+JOIN Pais p ON e.IdPais = p.IdPais;
+
+
+CREATE OR REPLACE VIEW vw_fornecedor_cidade AS
+SELECT 
+    f.IdPessoa,
+    c.NomeCidade
+FROM Fornecedor f
+JOIN Cidade c ON f.IdCidade = c.IdCidade;
+
+
+CREATE OR REPLACE VIEW vw_transportadora_cidade AS
+SELECT 
+    t.IdPessoa,
+    c.NomeCidade
+FROM Transportadora t
+JOIN Cidade c ON t.IdCidade = c.IdCidade;
+
+
+CREATE OR REPLACE VIEW vw_cliente_cidade AS
+SELECT 
+    c.IdPessoa, -- ou c.IdCliente, se for diferente
+    cid.NomeCidade
+FROM Cliente c
+JOIN Cidade cid ON c.IdCidade = cid.IdCidade;
+
+
+CREATE OR REPLACE VIEW vw_funcionario_cidade AS
+SELECT 
+    f.IdPessoa,
+    c.NomeCidade
+FROM Funcionario f
+JOIN Cidade c ON f.IdCidade = c.IdCidade;
+
+
+CREATE OR REPLACE VIEW vw_produto_marca_unidade AS
+SELECT 
+    p.IdProduto,
+    m.Descricao AS NomeMarca,
+    u.Descricao AS NomeUnidade
+FROM Produto p
+JOIN Marca m ON p.MarcaId = m.IdMarca
+JOIN UnidadeMedida u ON p.UnidadeMedidaId = u.IdUnidadeMedida;
+
+CREATE OR REPLACE VIEW vw_ParcelasCondicaoForma AS
+SELECT 
+    p.IdCondPgto,
+    p.NumeroParcela,
+    p.IdFormaPgto,
+    f.Descricao AS NomeFormaPgto
+FROM 
+    ParcelaCondicaoPagamento p
+JOIN 
+    FormaPagamento f ON p.IdFormaPgto = f.IdFormaPgto;
+
+

@@ -1,17 +1,47 @@
-﻿@{
+﻿@model Pagamento.Models.FormaPagamento
+
+@{
     ViewData["Title"] = "Excluir Forma de Pagamento";
 }
 
-@model Pagamento.Models.FormaPagamento
-   
-<div>
-    <h1 class="display-4">Excluir Forma de Pagamento</h1>
-</div>
-
-<p>Tem certeza que deseja excluir a forma de pagamento <strong>@Model.Descricao</strong>?</p>
+<h1 class="display-4">Excluir Forma de Pagamento</h1>
 
 <form asp-action="Excluir" asp-controller="FormaPagamento" method="post">
     <input type="hidden" asp-for="IdFormaPgto" />
-    <button class="btn btn-danger" type="submit">Excluir</button>
-    <a class="btn btn-secondary" href="@Url.Action("FormaPagamento", "FormaPagamento")">Cancelar</a> 
+
+    <div class="d-flex justify-content-end mt-3">
+        <div class="d-flex justify-content-end mt-3">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" checked="@Model.Status" disabled />
+                <label class="form-check-label">Ativo</label>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Descricao" class="form-label">Descrição</label>
+        <input asp-for="Descricao" class="form-control" readonly />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Data de Criação</label>
+        <input type="text" class="form-control"
+               value="@Model.DataCriacao.ToString("dd/MM/yyyy HH:mm")" readonly />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Última Edição</label>
+        <input type="text" class="form-control"
+               value="@(Model.DataEdicao?.ToString("dd/MM/yyyy HH:mm") ?? "Nunca editado")" readonly />
+    </div>
+
+    <div class="text-end mt-3">
+        <button class="btn btn-danger" type="submit">Excluir</button>
+        <a class="btn btn-secondary" href="@Url.Action("FormaPagamento", "FormaPagamento")">Cancelar</a>
+    </div>
 </form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

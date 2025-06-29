@@ -26,7 +26,7 @@ namespace Pagamento.Controllers
                 Text = p.NomePais 
             }).ToList();
 
-            return View();
+            return View(new Estado());
         }
 
         [HttpPost]
@@ -37,6 +37,8 @@ namespace Pagamento.Controllers
                 _estadoDAO.Inserir(estado);
                 return RedirectToAction("Index");
             }
+
+          
 
             ViewBag.Paises = _paisDAO.Listar().Select(p => new SelectListItem
             {
@@ -58,6 +60,9 @@ namespace Pagamento.Controllers
                 Text = p.NomePais
             }).ToList();
 
+            ViewBag.NomePais = _paisDAO.BuscarPorId(estado.IdPais)?.NomePais ?? "";
+
+
             return View(estado);
         }
 
@@ -70,6 +75,9 @@ namespace Pagamento.Controllers
                 return RedirectToAction("Index");
             }
             ViewBag.Paises = _paisDAO.Listar();
+
+            ViewBag.NomePais = _paisDAO.BuscarPorId(estado.IdPais)?.NomePais ?? "";
+
             return View(estado);
         }
 
@@ -77,6 +85,9 @@ namespace Pagamento.Controllers
         {
             var estado = _estadoDAO.BuscarPorId(id);
             if (estado == null) return NotFound();
+
+            ViewBag.NomePais = _paisDAO.BuscarPorId(estado.IdPais)?.NomePais ?? "";
+
             return View(estado);
         }
 
@@ -86,5 +97,40 @@ namespace Pagamento.Controllers
             _estadoDAO.Excluir(id);
             return RedirectToAction("Index");
         }
+
+        public IActionResult FormModal()
+        {
+            ViewBag.Paises = _paisDAO.Listar().Select(p => new SelectListItem
+            {
+                Value = p.IdPais.ToString(),
+                Text = p.NomePais
+            }).ToList();
+
+            return PartialView("FormEstadoModal", new Estado());
+        }
+
+        [HttpPost]
+        public IActionResult FormModal(Estado estado)
+        {
+            if (ModelState.IsValid)
+            {
+                _estadoDAO.Inserir(estado);
+                return Json(new
+                {
+                    sucesso = true,
+                    estado = new { id = estado.IdEstado, nome = estado.NomeEstado }
+                });
+            }
+
+            ViewBag.Paises = _paisDAO.Listar().Select(p => new SelectListItem
+            {
+                Value = p.IdPais.ToString(),
+                Text = p.NomePais
+            }).ToList();
+
+
+            return PartialView("FormEstadoModal", estado);
+        }
+
     }
 }

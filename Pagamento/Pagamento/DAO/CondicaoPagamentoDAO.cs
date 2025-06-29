@@ -24,7 +24,15 @@ namespace Pagamento.DAO
                     {
                         IdCondPgto = reader.GetInt32("IdCondPgto"),
                         Descricao = reader.GetString("Descricao"),
-                        QuantidadeParcelas = reader.GetInt32("QuantidadeParcelas")
+                        QuantidadeParcelas = reader.GetInt32("QuantidadeParcelas"),
+                        Juros = reader.GetDecimal("Juros"),
+                        Multa = reader.GetDecimal("Multa"),
+                        Desconto = reader.GetDecimal("Desconto"),
+                        Status = reader.GetBoolean("Status"),
+                        DataCriacao = reader.GetDateTime("DataCriacao"),
+                        DataEdicao = reader.IsDBNull(reader.GetOrdinal("DataEdicao"))
+                                     ? (DateTime?)null
+                                     : reader.GetDateTime("DataEdicao")
                     });
                 }
             }
@@ -37,12 +45,21 @@ namespace Pagamento.DAO
             using (MySqlConnection conexao = new MySqlConnection(connectionString))
             {
                 conexao.Open();
-                string sql = "INSERT INTO CondicaoPagamento (Descricao, QuantidadeParcelas) VALUES (@descricao, @quantidade);SELECT LAST_INSERT_ID();";
-                MySqlCommand cmd = new MySqlCommand(sql, conexao);
-                cmd.Parameters.AddWithValue("@descricao", condicao.Descricao);
-                cmd.Parameters.AddWithValue("@quantidade", condicao.QuantidadeParcelas);
+                string sql = @"INSERT INTO CondicaoPagamento 
+                               (Descricao, QuantidadeParcelas, Juros, Multa, Desconto, Status, DataCriacao) 
+                               VALUES (@descricao, @quantidade, @juros, @multa, @desconto, @status, @dataCriacao);
+                               SELECT LAST_INSERT_ID();";
 
-                condicao.IdCondPgto = Convert.ToInt32(cmd.ExecuteScalar()); 
+                MySqlCommand cmd = new MySqlCommand(sql, conexao);
+                cmd.Parameters.AddWithValue("@descricao", condicao.Descricao.ToUpper());
+                cmd.Parameters.AddWithValue("@quantidade", condicao.QuantidadeParcelas);
+                cmd.Parameters.AddWithValue("@juros", condicao.Juros);
+                cmd.Parameters.AddWithValue("@multa", condicao.Multa);
+                cmd.Parameters.AddWithValue("@desconto", condicao.Desconto);
+                cmd.Parameters.AddWithValue("@status", condicao.Status);
+                cmd.Parameters.AddWithValue("@dataCriacao", DateTime.Now);
+
+                condicao.IdCondPgto = Convert.ToInt32(cmd.ExecuteScalar());
                 return condicao.IdCondPgto;
             }
         }
@@ -52,10 +69,24 @@ namespace Pagamento.DAO
             using (MySqlConnection conexao = new MySqlConnection(connectionString))
             {
                 conexao.Open();
-                string sql = "UPDATE CondicaoPagamento SET Descricao = @descricao, QuantidadeParcelas = @quantidade WHERE IdCondPgto = @IdCondPgto";
+                string sql = @"UPDATE CondicaoPagamento 
+                               SET Descricao = @descricao, 
+                                   QuantidadeParcelas = @quantidade,
+                                   Juros = @juros,
+                                   Multa = @multa,
+                                   Desconto = @desconto,
+                                   Status = @status, 
+                                   DataEdicao = @dataEdicao 
+                               WHERE IdCondPgto = @IdCondPgto";
+
                 MySqlCommand cmd = new MySqlCommand(sql, conexao);
-                cmd.Parameters.AddWithValue("@descricao", condicao.Descricao);
+                cmd.Parameters.AddWithValue("@descricao", condicao.Descricao.ToUpper());
                 cmd.Parameters.AddWithValue("@quantidade", condicao.QuantidadeParcelas);
+                cmd.Parameters.AddWithValue("@juros", condicao.Juros);
+                cmd.Parameters.AddWithValue("@multa", condicao.Multa);
+                cmd.Parameters.AddWithValue("@desconto", condicao.Desconto);
+                cmd.Parameters.AddWithValue("@status", condicao.Status);
+                cmd.Parameters.AddWithValue("@dataEdicao", DateTime.Now);
                 cmd.Parameters.AddWithValue("@IdCondPgto", condicao.IdCondPgto);
                 cmd.ExecuteNonQuery();
             }
@@ -89,12 +120,20 @@ namespace Pagamento.DAO
                     {
                         IdCondPgto = reader.GetInt32("IdCondPgto"),
                         Descricao = reader.GetString("Descricao"),
-                        QuantidadeParcelas = reader.GetInt32("QuantidadeParcelas")
+                        QuantidadeParcelas = reader.GetInt32("QuantidadeParcelas"),
+                        Juros = reader.GetDecimal("Juros"),
+                        Multa = reader.GetDecimal("Multa"),
+                        Desconto = reader.GetDecimal("Desconto"),
+                        Status = reader.GetBoolean("Status"),
+                        DataCriacao = reader.GetDateTime("DataCriacao"),
+                        DataEdicao = reader.IsDBNull(reader.GetOrdinal("DataEdicao"))
+                                     ? (DateTime?)null
+                                     : reader.GetDateTime("DataEdicao")
                     };
                 }
             }
 
-            return null;  
+            return null;
         }
     }
 }

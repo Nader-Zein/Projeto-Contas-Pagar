@@ -1,0 +1,104 @@
+﻿@model Pagamento.Models.Produto
+@{
+    ViewData["Title"] = "Excluir Produto";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Excluir" method="post">
+    <input type="hidden" asp-for="IdProduto" />
+
+    <div class="row">
+
+        <div class="d-flex justify-content-end mt-3">
+            <div class="d-flex justify-content-end mt-3">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" checked="@Model.Status" disabled />
+                    <label class="form-check-label">Ativo</label>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Descrição</label>
+            <input class="form-control" value="@Model.Descricao" readonly />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Código de Barras</label>
+            <input class="form-control" value="@Model.Codigo_Barras" readonly />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Referência</label>
+            <input class="form-control" value="@Model.Referencia" readonly />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Marca</label>
+            <input class="form-control" value="@ViewBag.NomeMarca" readonly />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Unidade de Medida</label>
+            <input class="form-control" value="@ViewBag.NomeUnidade" readonly />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Fornecedor</label>
+            <input class="form-control" value="@ViewBag.NomeFornecedor" readonly />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Valor de Compra</label>
+            <input class="form-control" value="@Model.ValorCompra.ToString("C2")" readonly />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">% Lucro</label>
+            <input class="form-control" value="@Model.PercentualLucro " %" " readonly   />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Valor de Venda</label>
+            <input class="form-control" value="@Model.ValorVenda.ToString("C2")" readonly />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Quantidade</label>
+            <input class="form-control" value="@Model.Quantidade" readonly />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Quantidade Mínima</label>
+            <input class="form-control" value="@Model.QuantidadeMinima" readonly />
+        </div>
+
+        
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Observações</label>
+            <textarea class="form-control" readonly>@Model.Observacoes</textarea>
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Data de Criação</label>
+            <input type="text" class="form-control" value="@Model.DataCriacao.ToString("dd/MM/yyyy HH:mm")" readonly />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Última Edição</label>
+            <input type="text" class="form-control" value="@(Model.DataEdicao?.ToString("dd/MM/yyyy HH:mm") ?? "Nunca editado")" readonly />
+        </div>
+    </div>
+
+    <div class="alert alert-danger mt-3">
+        Tem certeza que deseja excluir este produto?
+    </div>
+
+    <div class="text-end mt-3">
+        <button type="submit" class="btn btn-danger">Excluir</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+    </div>
+</form>

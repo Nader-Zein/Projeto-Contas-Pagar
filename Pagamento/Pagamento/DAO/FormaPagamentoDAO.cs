@@ -23,7 +23,12 @@ namespace Pagamento.DAO
                     lista.Add(new FormaPagamento
                     {
                         IdFormaPgto = reader.GetInt32("IdFormaPgto"),
-                        Descricao = reader.GetString("Descricao")
+                        Descricao = reader.GetString("Descricao"),
+                        Status = reader.GetBoolean("Status"),
+                        DataCriacao = reader.GetDateTime("DataCriacao"),
+                        DataEdicao = reader.IsDBNull(reader.GetOrdinal("DataEdicao"))
+                                     ? (DateTime?)null
+                                     : reader.GetDateTime("DataEdicao")
                     });
                 }
             }
@@ -36,10 +41,15 @@ namespace Pagamento.DAO
             using (MySqlConnection conexao = new MySqlConnection(connectionString))
             {
                 conexao.Open();
-                string sql = "INSERT INTO FormaPagamento (Descricao) VALUES (@descricao)";
+                string sql = "INSERT INTO FormaPagamento (Descricao, Status, DataCriacao) VALUES (@descricao, @status, @dataCriacao)";
                 MySqlCommand cmd = new MySqlCommand(sql, conexao);
-                cmd.Parameters.AddWithValue("@descricao", forma.Descricao);
+                cmd.Parameters.AddWithValue("@descricao", forma.Descricao.ToUpper());
+                cmd.Parameters.AddWithValue("@status", forma.Status);
+                cmd.Parameters.AddWithValue("@dataCriacao", DateTime.Now);
                 cmd.ExecuteNonQuery();
+
+                forma.IdFormaPgto = (int)cmd.LastInsertedId;
+
             }
         }
 
@@ -48,9 +58,15 @@ namespace Pagamento.DAO
             using (MySqlConnection conexao = new MySqlConnection(connectionString))
             {
                 conexao.Open();
-                string sql = "UPDATE FormaPagamento SET Descricao = @descricao WHERE IdFormaPgto = @IdFormaPgto";
+                string sql = @"UPDATE FormaPagamento 
+                               SET Descricao = @descricao, 
+                                   Status = @status, 
+                                   DataEdicao = @dataEdicao 
+                               WHERE IdFormaPgto = @IdFormaPgto";
                 MySqlCommand cmd = new MySqlCommand(sql, conexao);
-                cmd.Parameters.AddWithValue("@descricao", forma.Descricao);
+                cmd.Parameters.AddWithValue("@descricao", forma.Descricao.ToUpper());
+                cmd.Parameters.AddWithValue("@status", forma.Status);
+                cmd.Parameters.AddWithValue("@dataEdicao", DateTime.Now);
                 cmd.Parameters.AddWithValue("@IdFormaPgto", forma.IdFormaPgto);
                 cmd.ExecuteNonQuery();
             }
@@ -83,7 +99,12 @@ namespace Pagamento.DAO
                     return new FormaPagamento
                     {
                         IdFormaPgto = reader.GetInt32("IdFormaPgto"),
-                        Descricao = reader.GetString("Descricao")
+                        Descricao = reader.GetString("Descricao"),
+                        Status = reader.GetBoolean("Status"),
+                        DataCriacao = reader.GetDateTime("DataCriacao"),
+                        DataEdicao = reader.IsDBNull(reader.GetOrdinal("DataEdicao"))
+                                     ? (DateTime?)null
+                                     : reader.GetDateTime("DataEdicao")
                     };
                 }
             }
