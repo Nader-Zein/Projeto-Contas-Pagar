@@ -1,0 +1,45 @@
+﻿@model IEnumerable<Pagamento.Models.Categoria>
+
+@{
+    ViewData["Title"] = "Categoria";
+}
+
+<h1 class="display-4">Categorias Cadastradas</h1>
+
+<div class="mb-3 text-end">
+    <a class="btn btn-primary" href="@Url.Action("Criar", "Categoria")">+ Nova Categoria</a>
+</div>
+
+
+    <table class="table table-bordered table-striped">
+        <thead class="table-light">
+            <tr>
+                <th>Descrição</th>
+                <th>Status</th>
+                <th class="text-center">Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var categoria in Model)
+            {
+                <tr>
+                    <td>@categoria.Descricao</td>
+                    <td>
+                        @if (categoria.Status)
+                        {
+                            <span class="badge bg-success">Ativo</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">Desativado</span>
+                        }
+                    </td>
+                    <td class="text-center">
+                        <a class="btn btn-sm btn-warning" href="@Url.Action("Editar", "Categoria", new { id = categoria.IdCategoria })">Editar</a>
+                        <a class="btn btn-sm btn-danger" href="@Url.Action("Excluir", "Categoria", new { id = categoria.IdCategoria })">Excluir</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+

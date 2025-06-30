@@ -9,7 +9,6 @@ namespace Pagamento.Models
         [Required(ErrorMessage = "A descrição é obrigatória.")]
         public string Descricao { get; set; }
 
-        [Required(ErrorMessage = "O status é obrigatório.")]
         public bool Status { get; set; }
 
         public DateTime DataCriacao { get; set; }

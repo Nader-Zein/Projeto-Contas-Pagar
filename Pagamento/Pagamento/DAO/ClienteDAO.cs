@@ -21,7 +21,7 @@ namespace Pagamento.DAO
                 {
                     lista.Add(new Cliente
                     {
-                        IdPessoa = reader.GetInt32("IdPessoa"),
+                        IdPessoa = reader.GetInt32("IdCliente"),
                         TipoPessoa = reader.GetString("TipoPessoa"),
                         Nome_RazaoSocial = reader.GetString("Nome_RazaoSocial"),
                         Apelido_NomeFantasia = reader.IsDBNull(reader.GetOrdinal("Apelido_NomeFantasia")) ? null : reader.GetString("Apelido_NomeFantasia"),
@@ -46,7 +46,7 @@ namespace Pagamento.DAO
 
                 reader.Close();
 
-                string sqlView = "SELECT IdPessoa, NomeCidade FROM vw_cliente_cidade";
+                string sqlView = "SELECT IdCliente, NomeCidade FROM vw_cliente_cidade";
                 MySqlCommand cmdView = new MySqlCommand(sqlView, conexao);
                 MySqlDataReader viewReader = cmdView.ExecuteReader();
 
@@ -54,7 +54,7 @@ namespace Pagamento.DAO
 
                 while (viewReader.Read())
                 {
-                    int idCliente = viewReader.GetInt32("IdPessoa");
+                    int idCliente = viewReader.GetInt32("IdCliente");
                     string nomeCidade = viewReader.GetString("NomeCidade");
 
                     nomesCidade[idCliente] = nomeCidade;
@@ -116,7 +116,7 @@ namespace Pagamento.DAO
                            RG_InsEstadual = @RG_InsEstadual, Email = @Email, Telefone = @Telefone, Endereco = @Endereco,
                            Numero = @Numero, Complemento = @Complemento, Bairro = @Bairro, Cep = @Cep, Status = @Status,
                            IdCidade = @IdCidade, IdCondPgto = @IdCondPgto, LimiteCredito = @LimiteCredito, DataEdicao = @DataEdicao
-                           WHERE IdPessoa = @Id";
+                           WHERE IdCliente = @Id";
                 var cmd = new MySqlCommand(sql, conexao);
                 cmd.Parameters.AddWithValue("@TipoPessoa", cliente.TipoPessoa.ToUpper());
                 cmd.Parameters.AddWithValue("@Nome", cliente.Nome_RazaoSocial.ToUpper());
@@ -146,7 +146,7 @@ namespace Pagamento.DAO
             using (var conexao = new MySqlConnection(connectionString))
             {
                 conexao.Open();
-                var cmd = new MySqlCommand("DELETE FROM Cliente WHERE IdPessoa = @Id", conexao);
+                var cmd = new MySqlCommand("DELETE FROM Cliente WHERE IdCliente = @Id", conexao);
                 cmd.Parameters.AddWithValue("@Id", id);
                 cmd.ExecuteNonQuery();
             }
@@ -157,7 +157,7 @@ namespace Pagamento.DAO
             using (var conexao = new MySqlConnection(connectionString))
             {
                 conexao.Open();
-                string sql = "SELECT * FROM Cliente WHERE IdPessoa = @Id";
+                string sql = "SELECT * FROM Cliente WHERE IdCliente = @Id";
                 var cmd = new MySqlCommand(sql, conexao);
                 cmd.Parameters.AddWithValue("@Id", id);
                 var reader = cmd.ExecuteReader();
@@ -166,7 +166,7 @@ namespace Pagamento.DAO
                 {
                     return new Cliente
                     {
-                        IdPessoa = reader.GetInt32("IdPessoa"),
+                        IdPessoa = reader.GetInt32("IdCliente"),
                         TipoPessoa = reader.GetString("TipoPessoa"),
                         Nome_RazaoSocial = reader.GetString("Nome_RazaoSocial"),
                         Apelido_NomeFantasia = reader.IsDBNull(reader.GetOrdinal("Apelido_NomeFantasia")) ? null : reader.GetString("Apelido_NomeFantasia"),
@@ -191,6 +191,21 @@ namespace Pagamento.DAO
             }
             return null;
         }
+
+        public bool ExisteCpfCnpj(string cpfCnpj)
+        {
+            using (var conexao = new MySqlConnection(connectionString))
+            {
+                conexao.Open();
+                string sql = "SELECT COUNT(*) FROM Cliente WHERE CPF_CNPJ = @CPF_CNPJ";
+                using (var cmd = new MySqlCommand(sql, conexao))
+                {
+                    cmd.Parameters.AddWithValue("@CPF_CNPJ", cpfCnpj.Trim());
+                    return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
+                }
+            }
+        }
+
     }
 }
 

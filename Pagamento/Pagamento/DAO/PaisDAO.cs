@@ -109,6 +109,23 @@ namespace Pagamento.DAO
 
             return null;
         }
+        public bool NomeExiste(string nome)
+        {
+            using (MySqlConnection conexao = new MySqlConnection(connectionString))
+            {
+                conexao.Open();
+
+                string query = "SELECT COUNT(*) FROM Pais WHERE NomePais = @NomePais";
+                using (MySqlCommand cmd = new MySqlCommand(query, conexao))
+                {
+                    cmd.Parameters.AddWithValue("@NomePais", nome.Trim());
+
+                    int count = Convert.ToInt32(cmd.ExecuteScalar());
+                    return count > 0;
+                }
+            }
+        }
+
 
     }
 }

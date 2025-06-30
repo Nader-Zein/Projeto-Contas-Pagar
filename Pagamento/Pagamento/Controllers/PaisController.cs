@@ -22,13 +22,20 @@ namespace Pagamento.Controllers
         [HttpPost]
         public IActionResult Criar(Pais pais)
         {
+            if (_paisDAO.NomeExiste(pais.NomePais))
+            {
+                ModelState.AddModelError("NomePais", "Este país já está cadastrado!");
+            }
+
             if (ModelState.IsValid)
             {
                 _paisDAO.Inserir(pais);
                 return RedirectToAction("Index");
             }
+
             return View(pais);
         }
+
 
         public IActionResult Editar(int id)
         {

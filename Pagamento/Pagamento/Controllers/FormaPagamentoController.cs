@@ -23,6 +23,11 @@ namespace Pagamento.Controllers
         [HttpPost]
         public IActionResult CriarForma(FormaPagamento forma)
         {
+            if (_dao.ExisteForma(forma.Descricao))
+            {
+                ModelState.AddModelError("Descricao", "Esta forma de pagamento já está cadastrada!");
+                return View(forma);
+            }
             if (!string.IsNullOrEmpty(forma.Descricao))
             {
                 _dao.Inserir(forma);

@@ -106,5 +106,19 @@ namespace Pagamento.DAO
 
             return null;
         }
+
+        public bool MarcaDuplicada(string descricao)
+        {
+            using (var conexao = new MySqlConnection(connectionString))
+            {
+                conexao.Open();
+
+                var cmd = new MySqlCommand("SELECT COUNT(*) FROM Marca WHERE Descricao = @Descricao", conexao);
+                cmd.Parameters.AddWithValue("@Descricao", descricao.ToUpper());
+
+                return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
+            }
+        }
+
     }
 }

@@ -9,249 +9,269 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = Pagamento
 build_property.RootNamespace = Pagamento
-build_property.ProjectDir = C:\Users\User\Documents\Pratica Profissional\Versao 13\Pagamento\Pagamento\
+build_property.ProjectDir = C:\Users\User\Documents\Pratica Profissional\Versao 15\Pagamento\Pagamento\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 8.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\Users\User\Documents\Pratica Profissional\Versao 13\Pagamento\Pagamento
+build_property.MSBuildProjectDirectory = C:\Users\User\Documents\Pratica Profissional\Versao 15\Pagamento\Pagamento
 build_property._RazorSourceGeneratorDebug = 
 build_property.EffectiveAnalysisLevelStyle = 8.0
 build_property.EnableCodeStyleSeverity = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/Cidade/Criar.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/Categoria/Criar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2F0ZWdvcmlhXENyaWFyLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/Categoria/Editar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2F0ZWdvcmlhXEVkaXRhci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/Categoria/Excluir.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2F0ZWdvcmlhXEV4Y2x1aXIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/Categoria/FormCategoriaModal.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2F0ZWdvcmlhXEZvcm1DYXRlZ29yaWFNb2RhbC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/Categoria/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2F0ZWdvcmlhXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/Cidade/Criar.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2lkYWRlXENyaWFyLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/Cidade/Editar.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/Cidade/Editar.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2lkYWRlXEVkaXRhci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/Cidade/Excluir.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/Cidade/Excluir.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2lkYWRlXEV4Y2x1aXIuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/Cidade/FormCidadeModal.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/Cidade/FormCidadeModal.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2lkYWRlXEZvcm1DaWRhZGVNb2RhbC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/Cidade/Index.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/Cidade/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2lkYWRlXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/Cliente/Criar.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/Cliente/Criar.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50ZVxDcmlhci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/Cliente/Editar.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/Cliente/Editar.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50ZVxFZGl0YXIuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/Cliente/Excluir.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/Cliente/Excluir.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50ZVxFeGNsdWlyLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/Cliente/Index.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/Cliente/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50ZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/CondicaoPagamento/Criar.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/CondicaoPagamento/Criar.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29uZGljYW9QYWdhbWVudG9cQ3JpYXIuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/CondicaoPagamento/Editar.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/CondicaoPagamento/Editar.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29uZGljYW9QYWdhbWVudG9cRWRpdGFyLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/CondicaoPagamento/Excluir.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/CondicaoPagamento/Excluir.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29uZGljYW9QYWdhbWVudG9cRXhjbHVpci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/CondicaoPagamento/FormCondicaoPagamento.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/CondicaoPagamento/FormCondicaoPagamento.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29uZGljYW9QYWdhbWVudG9cRm9ybUNvbmRpY2FvUGFnYW1lbnRvLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/CondicaoPagamento/Index.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/CondicaoPagamento/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29uZGljYW9QYWdhbWVudG9cSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/Estado/Criar.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/Estado/Criar.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXN0YWRvXENyaWFyLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/Estado/Editar.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/Estado/Editar.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXN0YWRvXEVkaXRhci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/Estado/Excluir.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/Estado/Excluir.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXN0YWRvXEV4Y2x1aXIuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/Estado/FormEstadoModal.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/Estado/FormEstadoModal.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXN0YWRvXEZvcm1Fc3RhZG9Nb2RhbC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/Estado/Index.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/Estado/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXN0YWRvXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/FormaPagamento/CriarForma.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/FormaPagamento/CriarForma.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRm9ybWFQYWdhbWVudG9cQ3JpYXJGb3JtYS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/FormaPagamento/Editar.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/FormaPagamento/Editar.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRm9ybWFQYWdhbWVudG9cRWRpdGFyLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/FormaPagamento/Excluir.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/FormaPagamento/Excluir.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRm9ybWFQYWdhbWVudG9cRXhjbHVpci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/FormaPagamento/FormaPagamento.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/FormaPagamento/FormaPagamento.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRm9ybWFQYWdhbWVudG9cRm9ybWFQYWdhbWVudG8uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/FormaPagamento/FormFormaPagamentoModal.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/FormaPagamento/FormFormaPagamentoModal.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRm9ybWFQYWdhbWVudG9cRm9ybUZvcm1hUGFnYW1lbnRvTW9kYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/Fornecedor/Criar.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/Fornecedor/Criar.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRm9ybmVjZWRvclxDcmlhci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/Fornecedor/Editar.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/Fornecedor/Editar.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRm9ybmVjZWRvclxFZGl0YXIuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/Fornecedor/Excluir.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/Fornecedor/Excluir.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRm9ybmVjZWRvclxFeGNsdWlyLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/Fornecedor/FormFornecedorModal.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/Fornecedor/FormFornecedorModal.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRm9ybmVjZWRvclxGb3JtRm9ybmVjZWRvck1vZGFsLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/Fornecedor/Index.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/Fornecedor/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRm9ybmVjZWRvclxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/Funcionario/Criar.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/Funcionario/Criar.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRnVuY2lvbmFyaW9cQ3JpYXIuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/Funcionario/Editar.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/Funcionario/Editar.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRnVuY2lvbmFyaW9cRWRpdGFyLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/Funcionario/Excluir.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/Funcionario/Excluir.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRnVuY2lvbmFyaW9cRXhjbHVpci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/Funcionario/Index.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/Funcionario/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRnVuY2lvbmFyaW9cSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/Home/Index.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/Home/Privacy.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/Home/Privacy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/Marca/Criar.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/Marca/Criar.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFyY2FcQ3JpYXIuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/Marca/Editar.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/Marca/Editar.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFyY2FcRWRpdGFyLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/Marca/Excluir.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/Marca/Excluir.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFyY2FcRXhjbHVpci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/Marca/FormMarcaModal.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/Marca/FormMarcaModal.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFyY2FcRm9ybU1hcmNhTW9kYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/Marca/Index.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/Marca/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFyY2FcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/Pais/Criar.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/Pais/Criar.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGFpc1xDcmlhci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/Pais/Editar.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/Pais/Editar.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGFpc1xFZGl0YXIuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/Pais/Excluir.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/Pais/Excluir.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGFpc1xFeGNsdWlyLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/Pais/FormPaisModal.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/Pais/FormPaisModal.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGFpc1xGb3JtUGFpc01vZGFsLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/Pais/Index.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/Pais/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGFpc1xJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/Produto/Criar.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/Produto/Criar.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHV0b1xDcmlhci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/Produto/Editar.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/Produto/Editar.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHV0b1xFZGl0YXIuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/Produto/Excluir.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/Produto/Excluir.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHV0b1xFeGNsdWlyLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/Produto/Index.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/Produto/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHV0b1xJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/Shared/Error.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/Shared/_ValidationScriptsPartial.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/UnidadeMedida/Criar.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/UnidadeMedida/Criar.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVW5pZGFkZU1lZGlkYVxDcmlhci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/UnidadeMedida/Editar.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/UnidadeMedida/Editar.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVW5pZGFkZU1lZGlkYVxFZGl0YXIuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/UnidadeMedida/Excluir.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/UnidadeMedida/Excluir.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVW5pZGFkZU1lZGlkYVxFeGNsdWlyLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/UnidadeMedida/FormUnidadeModal.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/UnidadeMedida/FormUnidadeModal.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVW5pZGFkZU1lZGlkYVxGb3JtVW5pZGFkZU1vZGFsLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/UnidadeMedida/Index.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/UnidadeMedida/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVW5pZGFkZU1lZGlkYVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/_ViewImports.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/_ViewStart.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/User/Documents/Pratica Profissional/Versao 13/Pagamento/Pagamento/Views/Shared/_Layout.cshtml]
+[C:/Users/User/Documents/Pratica Profissional/Versao 15/Pagamento/Pagamento/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = b-ucxdxeu1wv

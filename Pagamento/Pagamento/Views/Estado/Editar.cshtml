@@ -18,10 +18,14 @@
     <div class="mb-3">
         <label asp-for="NomeEstado" class="form-label">Nome</label>
         <input asp-for="NomeEstado" class="form-control" required />
+        <span asp-validation-for="NomeEstado" class="text-danger"></span>
+
     </div>
     <div class="mb-3">
         <label asp-for="Uf" class="form-label">UF</label>
         <input asp-for="Uf" class="form-control" required />
+        <span asp-validation-for="Uf" class="text-danger"></span>
+
     </div>
     <div class="mb-3">
         <label class="form-label">País</label>

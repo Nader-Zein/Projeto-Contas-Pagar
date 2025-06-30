@@ -28,6 +28,7 @@ namespace Pagamento.Models
         public string Email { get; set; }
 
         [Required(ErrorMessage = "O telefone é obrigatório.")]
+        [RegularExpression(@"^\(?\d{2}\)?[\s-]?\d{4,5}[\s-]?\d{4}$", ErrorMessage = "Informe um telefone válido.")]
         public string Telefone { get; set; }
 
         [Required(ErrorMessage = "O endereço é obrigatório.")]
@@ -52,7 +53,6 @@ namespace Pagamento.Models
 
         public DateTime? DataEdicao { get; set; }
 
-        [Required(ErrorMessage = "A cidade é obrigatória.")]
         public int IdCidade { get; set; }
 
         public string? NomeCidade { get; set; }

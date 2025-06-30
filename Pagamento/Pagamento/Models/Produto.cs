@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Google.Protobuf.WellKnownTypes;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace Pagamento.Models
@@ -18,25 +19,22 @@ namespace Pagamento.Models
         [Required(ErrorMessage = "A referencia é obrigatória.")]
         public string Referencia { get; set; }
 
-        [Required(ErrorMessage = "A marca é obrigatória.")]
         public int MarcaId { get; set; }
         public string? NomeMarca { get; set; }
 
-        [Required(ErrorMessage = "A unidade de medida é obrigatória.")]
         public int UnidadeMedidaId { get; set; }
         public string? NomeUnidade { get; set; }
 
-        [Required(ErrorMessage = "O fornecedor é obrigatório.")]
-        public int FornecedorId { get; set; }
+        
 
+        public int CategoriaId { get; set; }
+        public string? NomeCategoria { get; set; }
 
-        [Required(ErrorMessage = "O valor de compra é obrigatório.")]
         public decimal ValorCompra { get; set; }
 
         [Required(ErrorMessage = "O valor de venda é obrigatório.")]
         public decimal ValorVenda { get; set; }
 
-        [Required(ErrorMessage = "A quantidade é obrigatória.")]
         public int Quantidade { get; set; }
 
         [Required(ErrorMessage = "A quantidade minima é obrigatória.")]

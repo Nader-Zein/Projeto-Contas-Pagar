@@ -10,12 +10,7 @@
     <a class="btn btn-primary" href="@Url.Action("Criar", "UnidadeMedida")">+ Nova Unidade de Medida</a>
 </div>
 
-@if (!Model.Any())
-{
-    <p class="text-muted">Nenhuma unidade de medida cadastrada.</p>
-}
-else
-{
+
     <table class="table table-bordered table-striped">
         <thead class="table-light">
             <tr>
@@ -47,4 +42,4 @@ else
             }
         </tbody>
     </table>
-}
+

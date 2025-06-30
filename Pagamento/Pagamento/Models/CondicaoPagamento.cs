@@ -6,14 +6,19 @@ namespace Pagamento.Models
     {
         public int IdCondPgto { get; set; }
 
+        [Required(ErrorMessage = "Insira a condição de pagamento.")]
         public string Descricao { get; set; }
 
+        [Required(ErrorMessage = "Insira a quantidade de parcelas.")]
         public int QuantidadeParcelas { get; set; }
 
+        [Required(ErrorMessage = "Insira os juros.")]
         public decimal Juros { get; set; }
 
+        [Required(ErrorMessage = "Insira a multa.")]
         public decimal Multa { get; set; }
 
+        [Required(ErrorMessage = "Insira o desconto.")]
         public decimal Desconto { get; set; }
 
         public bool Status { get; set; }

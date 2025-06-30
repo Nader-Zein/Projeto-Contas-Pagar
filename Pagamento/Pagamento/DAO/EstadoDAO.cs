@@ -149,6 +149,22 @@ namespace Pagamento.DAO
             return null;
         }
 
+        public bool ExisteEstadoPorNome(string nome)
+        {
+            using (var conexao = new MySqlConnection(connectionString))
+            {
+                conexao.Open();
+                var query = "SELECT COUNT(*) FROM Estado WHERE NomeEstado = @NomeEstado";
+                using (var cmd = new MySqlCommand(query, conexao))
+                {
+                    cmd.Parameters.AddWithValue("@NomeEstado", nome);
+
+                    var resultado = Convert.ToInt32(cmd.ExecuteScalar());
+                    return resultado > 0;
+                }
+            }
+        }
+
 
 
     }

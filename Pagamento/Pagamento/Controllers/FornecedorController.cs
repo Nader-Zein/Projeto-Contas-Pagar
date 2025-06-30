@@ -39,16 +39,29 @@ namespace Pagamento.Controllers
         {
 
 
-            bool estrangeiro = _cidadeDAO.CidadeEstrangeira(fornecedor.IdCidade);
-
-
-            
-
-            if (!estrangeiro)
+            if (fornecedor.IdCondPgto == 0)
             {
-                if (string.IsNullOrWhiteSpace(fornecedor.CPF_CNPJ))
+                ModelState.AddModelError("IdCondPgto", "Selecione uma condição de pagamento.");
+            }
+
+            if (fornecedor.IdCidade == 0)
+            {
+                ModelState.AddModelError("IdCidade", "Selecione uma cidade.");
+            }
+            else
+            {
+                bool estrangeiro = _cidadeDAO.CidadeEstrangeira(fornecedor.IdCidade);
+
+                if (!estrangeiro)
                 {
-                    ModelState.AddModelError("CPF_CNPJ", "O CPF/CNPJ é obrigatório para fornecedores brasileiros.");
+                    if (string.IsNullOrWhiteSpace(fornecedor.CPF_CNPJ))
+                    {
+                        ModelState.AddModelError("CPF_CNPJ", "O CPF/CNPJ é obrigatório para fornecedores brasileiros.");
+                    }
+                    else if (_fornecedorDAO.ExisteCpfCnpj(fornecedor.CPF_CNPJ))
+                    {
+                        ModelState.AddModelError("CPF_CNPJ", "Já existe um fornecedor com este CPF ou CNPJ.");
+                    }
                 }
             }
 

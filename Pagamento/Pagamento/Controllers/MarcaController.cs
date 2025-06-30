@@ -22,6 +22,10 @@ namespace Pagamento.Controllers
         [HttpPost]
         public IActionResult Criar(Marca marca)
         {
+            if (_marcaDAO.MarcaDuplicada(marca.Descricao))
+            {
+                ModelState.AddModelError("Descricao", "Já existe uma marca com essa descrição.");
+            }
             if (ModelState.IsValid)
             {
                 _marcaDAO.Inserir(marca);

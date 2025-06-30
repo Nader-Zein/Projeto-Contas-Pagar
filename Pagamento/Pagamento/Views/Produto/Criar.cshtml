@@ -18,16 +18,22 @@
         <div class="col-md-6 mb-3">
             <label asp-for="Descricao" class="form-label">Descrição</label>
             <input asp-for="Descricao" class="form-control" />
+            <span asp-validation-for="Descricao" class="text-danger"></span>
+
         </div>
 
         <div class="col-md-6 mb-3">
             <label asp-for="Codigo_Barras" class="form-label">Código de Barras</label>
             <input asp-for="Codigo_Barras" class="form-control" />
+            <span asp-validation-for="Codigo_Barras" class="text-danger"></span>
+
         </div>
 
         <div class="col-md-6 mb-3">
             <label asp-for="Referencia" class="form-label">Referência</label>
             <input asp-for="Referencia" class="form-control" />
+            <span asp-validation-for="Referencia" class="text-danger"></span>
+
         </div>
 
         <div class="col-md-6 mb-3">
@@ -39,6 +45,7 @@
                     Selecionar
                 </button>
             </div>
+            <span asp-validation-for="MarcaId" class="text-danger"></span>
         </div>
 
         <div class="col-md-6 mb-3">
@@ -50,18 +57,38 @@
                     Selecionar
                 </button>
             </div>
+            <span asp-validation-for="UnidadeMedidaId" class="text-danger"></span>
+
         </div>
 
         <div class="col-md-6 mb-3">
-        <label class="form-label">Fornecedor</label>
-        <div class="input-group">
-            <input type="text" id="NomeFornecedorSelecionado" class="form-control" placeholder="Nenhum fornecedor selecionado" readonly />
-            <input type="hidden" asp-for="FornecedorId" id="FornecedorId" />
-            <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#modalFornecedorSelecionar">Selecionar</button>
+            <label class="form-label">Fornecedores</label>
+            <div class="input-group">
+                <input type="text" id="NomeFornecedorSelecionado" class="form-control" placeholder="Nenhum fornecedor selecionado" readonly />
+                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#modalFornecedorSelecionar">
+                    Selecionar
+                </button>
+            </div>
+            @if (ViewData.ModelState["FornecedoresSelecionados"]?.Errors.Count > 0)
+            {
+                <span class="text-danger">@ViewData.ModelState["FornecedoresSelecionados"].Errors[0].ErrorMessage</span>
+            }
         </div>
-        </div>
+        <input type="hidden" id="fornecedoresSelecionados" name="FornecedoresSelecionados" />
 
 
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Categoria</label>
+            <div class="input-group">
+                <input type="text" id="NomeCategoriaSelecionada" class="form-control" placeholder="Nenhuma categoria selecionada" readonly />
+                <input type="hidden" asp-for="CategoriaId" id="CategoriaId" />
+                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#modalCategoriaSelecionar">
+                    Selecionar
+                </button>
+            </div>
+            <span asp-validation-for="CategoriaId" class="text-danger"></span>
+
+        </div>
         <div class="col-md-6 mb-3">
             <label asp-for="ValorCompra" class="form-label">Valor de Compra</label>
             <input asp-for="ValorCompra" class="form-control" type="text" disabled />
@@ -70,11 +97,15 @@
         <div class="col-md-6 mb-3">
             <label asp-for="PercentualLucro" class="form-label">% Lucro</label>
             <input asp-for="PercentualLucro" class="form-control" type="text" />
+            <span asp-validation-for="PercentualLucro" class="text-danger"></span>
+
         </div>
 
         <div class="col-md-6 mb-3">
             <label asp-for="ValorVenda" class="form-label">Valor de Venda</label>
             <input asp-for="ValorVenda" class="form-control" type="text" />
+            <span asp-validation-for="ValorVenda" class="text-danger"></span>
+
         </div>
 
         <div class="col-md-6 mb-3">
@@ -85,6 +116,8 @@
         <div class="col-md-6 mb-3">
             <label asp-for="QuantidadeMinima" class="form-label">Quantidade Mínima</label>
             <input asp-for="QuantidadeMinima" class="form-control" />
+            <span asp-validation-for="QuantidadeMinima" class="text-danger"></span>
+
         </div>
 
         
@@ -190,16 +223,16 @@
     </div>
 </div>
 
-<div class="modal fade" id="modalFornecedorSelecionar" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="modalCategoriaSelecionar" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Selecionar Fornecedor</h5>
+                <h5 class="modal-title">Selecionar Categoria</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
             </div>
             <div class="modal-body">
-                <input type="text" id="filtroFornecedor" class="form-control mb-2" placeholder="Buscar..." onkeyup="filtrarTabelaFornecedor()" />
-                <table class="table table-bordered" id="tabelaFornecedores">
+                <input type="text" id="filtroCategoria" class="form-control mb-2" placeholder="Buscar..." onkeyup="filtrarTabelaCategoria()" />
+                <table class="table table-bordered" id="tabelaCategorias">
                     <thead>
                         <tr>
                             <th>Nome</th>
@@ -207,13 +240,13 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var t in ViewBag.Fornecedores as List<SelectListItem>)
+                        @foreach (var categoria in ViewBag.Categorias as List<SelectListItem>)
                         {
                             <tr>
-                                <td>@t.Text</td>
+                                <td>@categoria.Text</td>
                                 <td>
                                     <button type="button" class="btn btn-sm btn-primary"
-                                            onclick="selecionarFornecedor(@t.Value, '@t.Text')">
+                                            onclick="selecionarCategoria(@categoria.Value, '@categoria.Text')">
                                         Selecionar
                                     </button>
                                 </td>
@@ -223,11 +256,55 @@
                 </table>
 
                 <hr />
+                <button class="btn btn-success" type="button" onclick="abrirFormCategoria()">+ Cadastrar nova Categoria</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalFornecedorSelecionar" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Selecionar Fornecedores</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+
+            <div class="modal-body">
+                <input type="text" id="filtroFornecedor" class="form-control mb-2" placeholder="Buscar..." onkeyup="filtrarTabelaFornecedor()" />
+
+                <table class="table table-bordered" id="tabelaFornecedores">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Nome</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var t in ViewBag.Fornecedores as List<SelectListItem>)
+                        {
+                            <tr>
+                                <td>
+                                    <input type="checkbox" class="chk-fornecedor" value="@t.Value" data-nome="@t.Text" />
+                                </td>
+                                <td>@t.Text</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                <h6 class="mt-3">Fornecedores Selecionados:</h6>
+                <ul id="listaFornecedoresSelecionados"></ul>
+
+                <hr />
                 <button class="btn btn-success" type="button" onclick="abrirFormFornecedor()">+ Cadastrar novo Fornecedor</button>
             </div>
         </div>
     </div>
 </div>
+
+
 
 
 
@@ -241,6 +318,13 @@
 <div class="modal fade" id="modalUnidade" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content" id="modalUnidadeContent">
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalCategoria" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" id="modalCategoriaContent">
         </div>
     </div>
 </div>
@@ -282,10 +366,39 @@
             bootstrap.Modal.getInstance(document.getElementById('modalUnidadeSelecionar')).hide();
             }
 
-            function selecionarFornecedor(id, nome) {
-            $('#FornecedorId').val(id);
-            $('#NomeFornecedorSelecionado').val(nome);
-            bootstrap.Modal.getInstance(document.getElementById('modalFornecedorSelecionar')).hide();
+            function selecionarCategoria(id, nome) {
+            $('#CategoriaId').val(id);
+            $('#NomeCategoriaSelecionada').val(nome);
+            bootstrap.Modal.getInstance(document.getElementById('modalCategoriaSelecionar')).hide();
+            }
+
+
+
+            $(document).on('change', '.chk-fornecedor', function () {
+            const fornecedoresSelecionados = [];
+            const nomesSelecionados = [];
+
+            $('.chk-fornecedor:checked').each(function () {
+                fornecedoresSelecionados.push($(this).val());
+                nomesSelecionados.push($(this).data('nome'));
+            });
+
+            $('#fornecedoresSelecionados').val(fornecedoresSelecionados.join(','));
+            $('#NomeFornecedorSelecionado').val(nomesSelecionados.join(', '));
+        });
+
+            function atualizarListaFornecedores() {
+            const selecionados = [];
+            const nomes = [];
+
+            document.querySelectorAll('.chk-fornecedor:checked').forEach(chk => {
+                selecionados.push(chk.value);
+                nomes.push(chk.dataset.nome);
+            });
+
+            document.getElementById('fornecedoresSelecionados').value = selecionados.join(',');
+
+            document.getElementById('NomeFornecedorSelecionado').value = nomes.join(', ');
             }
 
             function filtrarTabelaMarca() {
@@ -299,7 +412,7 @@
             function filtrarTabelaFornecedor() {
             const filtro = $('#filtroFornecedor').val().toLowerCase();
             $('#tabelaFornecedores tbody tr').each(function () {
-                const nome = $(this).find('td:first').text().toLowerCase();
+                const nome = $(this).find('td:nth-child(2)').text().toLowerCase(); 
                 $(this).toggle(nome.includes(filtro));
             });
             }
@@ -308,6 +421,14 @@
             function filtrarTabelaUnidade() {
             const filtro = $('#filtroUnidade').val().toLowerCase();
             $('#tabelaUnidades tbody tr').each(function () {
+                const nome = $(this).find('td:first').text().toLowerCase();
+                $(this).toggle(nome.includes(filtro));
+            });
+            }
+
+            function filtrarTabelaCategoria() {
+            const filtro = $('#filtroCategoria').val().toLowerCase();
+            $('#tabelaCategorias tbody tr').each(function () {
                 const nome = $(this).find('td:first').text().toLowerCase();
                 $(this).toggle(nome.includes(filtro));
             });
@@ -324,6 +445,13 @@
             $.get('/UnidadeMedida/FormModal', function (data) {
                 $('#modalUnidadeContent').html(data);
                 new bootstrap.Modal(document.getElementById('modalUnidade')).show();
+            });
+            }
+
+            function abrirFormCategoria() {
+            $.get('/Categoria/FormModal', function (data) {
+                $('#modalCategoriaContent').html(data);
+                new bootstrap.Modal(document.getElementById('modalCategoria')).show();
             });
             }
 
@@ -396,8 +524,38 @@
 
             });
         });
+        $(document).on('submit', '#formCadastrarCategoria', function (e) {
+            e.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: '/Categoria/FormModal',
+                data: $(this).serialize(),
+                        success: function (res) {
+            if (res.sucesso) {
+                $('#CategoriaId').val(res.categoria.id);
+                $('#NomeCategoriaSelecionada').val(res.categoria.nome);
+                bootstrap.Modal.getInstance(document.getElementById('modalCategoria')).hide();
 
-                $(document).on('submit', '#formCadastrarFornecedor', function (e) {
+                const novaLinha = `
+                    <tr>
+                        <td>${res.categoria.nome}</td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-primary"
+                                    onclick="selecionarCategoria(${res.categoria.id}, '${res.categoria.nome}')">
+                                Selecionar
+                            </button>
+                        </td>
+                    </tr>`;
+                $('#tabelaCategorias tbody').append(novaLinha);
+            } else {
+                $('#modalCategoriaContent').html(res);
+            }
+            }
+
+            });
+            });
+
+            $(document).on('submit', '#formCadastrarFornecedor', function (e) {
             e.preventDefault();
             $.ajax({
                 type: 'POST',
@@ -405,27 +563,25 @@
                 data: $(this).serialize(),
                 success: function (res) {
                     if (res.sucesso) {
-                        $('#FornecedorId').val(res.fornecedor.id);
-                        $('#NomeFornecedorSelecionado').val(res.fornecedor.nome);
-                        bootstrap.Modal.getInstance(document.getElementById('modalFornecedor')).hide();
-
-                        $('#tabelaFornecedores tbody').append(`
+                        const novaLinha = `
                             <tr>
-                                <td>${res.fornecedor.nome}</td>
                                 <td>
-                                    <button type="button" class="btn btn-sm btn-primary"
-                                            onclick="selecionarFornecedor(${res.fornecedor.id}, '${res.fornecedor.nome}')">
-                                        Selecionar
-                                    </button>
+                                    <input type="checkbox" class="chk-fornecedor" value="${res.fornecedor.id}" data-nome="${res.fornecedor.nome}" checked />
                                 </td>
+                                <td>${res.fornecedor.nome}</td>
                             </tr>
-                        `);
+                        `;
+
+                        $('#tabelaFornecedores tbody').append(novaLinha);
+                        $('.chk-fornecedor').off('change').on('change', atualizarListaFornecedores);
+                        atualizarListaFornecedores();
+                        bootstrap.Modal.getInstance(document.getElementById('modalFornecedor')).hide();
                     } else {
                         $('#modalFornecedorContent').html(res);
                     }
                 }
             });
-        });
+            });
 
 
 

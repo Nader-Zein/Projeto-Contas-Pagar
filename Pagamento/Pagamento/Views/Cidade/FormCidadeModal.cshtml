@@ -102,7 +102,7 @@
         });
     }
 
-    $(document).on('submit', '#formCadastrarEstado', function (e) {
+        $(document).on('submit', '#formCadastrarEstado', function (e) {
         e.preventDefault();
 
         const $form = $(this);
@@ -114,17 +114,22 @@
             url: '@Url.Action("FormModal", "Estado")',
             data: $form.serialize(),
             success: function (response) {
-                if (response.sucesso) {
-                    $('#modalNovoEstado').modal('hide');
+                if (typeof response === "object" && response !== null) {
+                    if (response.sucesso) {
+                        $('#modalNovoEstado').modal('hide');
 
-                    var novaLinha = `<tr>
-                        <td>${response.estado.nome}</td>
-                        <td>
-                            <button class='btn btn-sm btn-primary' onclick='selecionarEstado(${response.estado.id}, "${response.estado.nome}")'>Selecionar</button>
-                        </td>
-                    </tr>`;
-                    $('#tabelaEstados tbody').append(novaLinha);
-                } else {
+                        var novaLinha = `<tr>
+                            <td>${response.estado.nome}</td>
+                            <td>
+                                <button class='btn btn-sm btn-primary' onclick='selecionarEstado(${response.estado.id}, "${response.estado.nome}")'>Selecionar</button>
+                            </td>
+                        </tr>`;
+                        $('#tabelaEstados tbody').append(novaLinha);
+                    } else {
+                        alert(response.mensagem || 'Erro ao cadastrar o estado.');
+                    }
+                }
+                else {
                     $('#modalNovoEstadoContent').html(response);
                 }
             },

@@ -22,7 +22,7 @@ namespace Pagamento.DAO
                 {
                     lista.Add(new Funcionario
                     {
-                        IdPessoa = reader.GetInt32("IdPessoa"),
+                        IdPessoa = reader.GetInt32("IdFuncionario"),
                         TipoPessoa = reader.GetString("TipoPessoa"),
                         Nome_RazaoSocial = reader.GetString("Nome_RazaoSocial"),
                         DataNascimento_Fundacao = reader.GetDateTime("DataNascimento_Fundacao"),
@@ -51,7 +51,7 @@ namespace Pagamento.DAO
                 }
                 reader.Close();
 
-                string sqlView = "SELECT IdPessoa, NomeCidade FROM vw_funcionario_cidade";
+                string sqlView = "SELECT IdFuncionario, NomeCidade FROM vw_funcionario_cidade";
                 MySqlCommand cmdView = new MySqlCommand(sqlView, conexao);
                 MySqlDataReader viewReader = cmdView.ExecuteReader();
 
@@ -59,7 +59,7 @@ namespace Pagamento.DAO
 
                 while (viewReader.Read())
                 {
-                    int id = viewReader.GetInt32("IdPessoa");
+                    int id = viewReader.GetInt32("IdFuncionario");
                     string nomeCidade = viewReader.GetString("NomeCidade");
 
                     nomesCidade[id] = nomeCidade;
@@ -133,7 +133,7 @@ namespace Pagamento.DAO
                                    DataEdicao = @DataEdicao, Matricula = @Matricula, Cargo = @Cargo, Salario = @Salario,
                                    Turno = @Turno, CargaHoraria = @CargaHoraria,
                                    DataAdmissao = @DataAdmissao, DataDemissao = @DataDemissao
-                               WHERE IdPessoa = @Id";
+                               WHERE IdFuncionario = @Id";
                 var cmd = new MySqlCommand(sql, conexao);
                 cmd.Parameters.AddWithValue("@TipoPessoa", funcionario.TipoPessoa.ToUpper());
                 cmd.Parameters.AddWithValue("@Nome", funcionario.Nome_RazaoSocial.ToUpper());
@@ -168,7 +168,7 @@ namespace Pagamento.DAO
             using (var conexao = new MySqlConnection(connectionString))
             {
                 conexao.Open();
-                string sql = "SELECT * FROM Funcionario WHERE IdPessoa = @Id";
+                string sql = "SELECT * FROM Funcionario WHERE IdFuncionario = @Id";
                 var cmd = new MySqlCommand(sql, conexao);
                 cmd.Parameters.AddWithValue("@Id", id);
                 var reader = cmd.ExecuteReader();
@@ -177,7 +177,7 @@ namespace Pagamento.DAO
                 {
                     return new Funcionario
                     {
-                        IdPessoa = reader.GetInt32("IdPessoa"),
+                        IdPessoa = reader.GetInt32("IdFuncionario"),
                         TipoPessoa = reader.GetString("TipoPessoa"),
                         Nome_RazaoSocial = reader.GetString("Nome_RazaoSocial"),
                         DataNascimento_Fundacao = reader.GetDateTime("DataNascimento_Fundacao"),
@@ -214,9 +214,23 @@ namespace Pagamento.DAO
             using (var conexao = new MySqlConnection(connectionString))
             {
                 conexao.Open();
-                var cmd = new MySqlCommand("DELETE FROM Funcionario WHERE IdPessoa = @Id", conexao);
+                var cmd = new MySqlCommand("DELETE FROM Funcionario WHERE IdFuncionario = @Id", conexao);
                 cmd.Parameters.AddWithValue("@Id", id);
                 cmd.ExecuteNonQuery();
+            }
+        }
+
+        public bool ExisteCpfCnpj(string cpfCnpj)
+        {
+            using (var conexao = new MySqlConnection(connectionString))
+            {
+                conexao.Open();
+                string sql = "SELECT COUNT(*) FROM Funcionario WHERE CPF_CNPJ = @CpfCnpj";
+                using (var cmd = new MySqlCommand(sql, conexao))
+                {
+                    cmd.Parameters.AddWithValue("@CpfCnpj", cpfCnpj.Trim());
+                    return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
+                }
             }
         }
     }

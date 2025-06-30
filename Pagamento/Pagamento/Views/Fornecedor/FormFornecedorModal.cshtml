@@ -96,6 +96,8 @@
             <div class="col-md-6 mb-3">
                 <label asp-for="Telefone" class="form-label">Telefone</label>
                 <input asp-for="Telefone" class="form-control" />
+                <span asp-validation-for="Telefone" class="text-danger"></span>
+
             </div>
 
             
@@ -219,6 +221,9 @@
 </div>
 
 <script>
+    @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
         function atualizarLabels(tipo) {
             if (tipo === "Física") {
                 $('#labelNomeRazao').text("Nome");

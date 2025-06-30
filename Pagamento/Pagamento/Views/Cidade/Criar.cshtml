@@ -16,6 +16,7 @@
     <div class="mb-3">
         <label asp-for="NomeCidade" class="form-label">Nome da Cidade</label>
         <input asp-for="NomeCidade" class="form-control" required />
+        <span asp-validation-for="NomeCidade" class="text-danger"></span>
     </div>
     
     <div class="mb-3">
@@ -27,6 +28,7 @@
                 Selecionar Estado
             </button>
         </div>
+        <span asp-validation-for="IdEstado" class="text-danger"></span>
     </div>
 
     @if (Model != null)
@@ -100,6 +102,9 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 
     <script>
         function selecionarEstado(id, nome) {

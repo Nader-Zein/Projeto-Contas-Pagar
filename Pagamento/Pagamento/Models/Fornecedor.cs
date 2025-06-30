@@ -1,4 +1,6 @@
-﻿namespace Pagamento.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Pagamento.Models
 {
     public class Fornecedor : Pessoa
     {
@@ -7,5 +9,7 @@
         public string? Apelido_NomeFantasia { get; set; }
 
         public decimal? LimiteCredito { get; set; }
+        public List<Produto>? Produtos { get; set; }
+
     }
 }

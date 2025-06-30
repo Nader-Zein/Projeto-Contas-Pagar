@@ -22,6 +22,11 @@ namespace Pagamento.Controllers
         [HttpPost]
         public IActionResult Criar(UnidadeMedida unidade)
         {
+
+            if (_unidadeDAO.UnidadeDuplicada(unidade.Descricao))
+            {
+                ModelState.AddModelError("Descricao", "Já existe uma unidade de medida com essa descrição.");
+            }
             if (ModelState.IsValid)
             {
                 _unidadeDAO.Inserir(unidade);

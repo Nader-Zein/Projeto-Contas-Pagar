@@ -22,7 +22,7 @@ namespace Pagamento.DAO
                 {
                     lista.Add(new Fornecedor
                     {
-                        IdPessoa = reader.GetInt32("IdPessoa"),
+                        IdPessoa = reader.GetInt32("IdFornecedor"),
                         TipoPessoa = reader.GetString("TipoPessoa"),
                         Nome_RazaoSocial = reader.GetString("Nome_RazaoSocial"),
                         Apelido_NomeFantasia = reader.IsDBNull(reader.GetOrdinal("Apelido_NomeFantasia")) ? null : reader.GetString("Apelido_NomeFantasia"),
@@ -46,7 +46,7 @@ namespace Pagamento.DAO
                 }
                 reader.Close();
 
-                string sqlView = "SELECT IdPessoa, NomeCidade FROM vw_fornecedor_cidade";
+                string sqlView = "SELECT IdFornecedor, NomeCidade FROM vw_fornecedor_cidade";
                 MySqlCommand cmdView = new MySqlCommand(sqlView, conexao);
                 MySqlDataReader viewReader = cmdView.ExecuteReader();
 
@@ -54,7 +54,7 @@ namespace Pagamento.DAO
 
                 while (viewReader.Read())
                 {
-                    int idFornecedor = viewReader.GetInt32("IdPessoa");
+                    int idFornecedor = viewReader.GetInt32("IdFornecedor");
                     string nomeCidade = viewReader.GetString("NomeCidade");
 
                     nomesCidade[idFornecedor] = nomeCidade;
@@ -125,7 +125,7 @@ namespace Pagamento.DAO
                                    Complemento = @Complemento, Bairro = @Bairro, Cep = @Cep, Status = @Status, 
                                    IdCidade = @IdCidade, IdCondPgto = @IdCondPgto, LimiteCredito = @LimiteCredito, 
                                    DataEdicao = @DataEdicao
-                               WHERE IdPessoa = @Id";
+                               WHERE IdFornecedor = @Id";
 
                 var cmd = new MySqlCommand(sql, conexao);
                 cmd.Parameters.AddWithValue("@TipoPessoa", fornecedor.TipoPessoa.ToUpper());
@@ -157,7 +157,7 @@ namespace Pagamento.DAO
             using (var conexao = new MySqlConnection(connectionString))
             {
                 conexao.Open();
-                var cmd = new MySqlCommand("SELECT * FROM Fornecedor WHERE IdPessoa = @Id", conexao);
+                var cmd = new MySqlCommand("SELECT * FROM Fornecedor WHERE IdFornecedor = @Id", conexao);
                 cmd.Parameters.AddWithValue("@Id", id);
                 var reader = cmd.ExecuteReader();
 
@@ -165,7 +165,7 @@ namespace Pagamento.DAO
                 {
                     return new Fornecedor
                     {
-                        IdPessoa = reader.GetInt32("IdPessoa"),
+                        IdPessoa = reader.GetInt32("IdFornecedor"),
                         TipoPessoa = reader.GetString("TipoPessoa"),
                         Nome_RazaoSocial = reader.GetString("Nome_RazaoSocial"),
                         Apelido_NomeFantasia = reader.IsDBNull(reader.GetOrdinal("Apelido_NomeFantasia")) ? null : reader.GetString("Apelido_NomeFantasia"),
@@ -197,9 +197,23 @@ namespace Pagamento.DAO
             using (var conexao = new MySqlConnection(connectionString))
             {
                 conexao.Open();
-                var cmd = new MySqlCommand("DELETE FROM Fornecedor WHERE IdPessoa = @Id", conexao);
+                var cmd = new MySqlCommand("DELETE FROM Fornecedor WHERE IdFornecedor = @Id", conexao);
                 cmd.Parameters.AddWithValue("@Id", id);
                 cmd.ExecuteNonQuery();
+            }
+        }
+
+        public bool ExisteCpfCnpj(string cpfCnpj)
+        {
+            using (var conexao = new MySqlConnection(connectionString))
+            {
+                conexao.Open();
+                string sql = "SELECT COUNT(*) FROM Fornecedor WHERE CPF_CNPJ = @CPF_CNPJ";
+                using (var cmd = new MySqlCommand(sql, conexao))
+                {
+                    cmd.Parameters.AddWithValue("@CPF_CNPJ", cpfCnpj.Trim());
+                    return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
+                }
             }
         }
     }

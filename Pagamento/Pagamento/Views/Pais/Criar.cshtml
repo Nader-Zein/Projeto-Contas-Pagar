@@ -17,6 +17,7 @@
     </div>
     <label>Nome do País</label>
     <input class="form-control" type="text" placeholder="Nome do país" asp-for="NomePais" required />
+    <span asp-validation-for="NomePais" class="text-danger"></span>
 
     @if (Model != null)
     {
@@ -36,3 +37,8 @@
         <a class="btn btn-secondary" href="@Url.Action("Index", "Pais")">Cancelar</a>
     </div>
 </form>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

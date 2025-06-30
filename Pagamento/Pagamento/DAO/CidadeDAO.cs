@@ -171,6 +171,22 @@ namespace Pagamento.DAO
             }
         }
 
+        public bool ExisteCidadePorNome(string nomeCidade, int estadoId)
+        {
+            using (var conexao = new MySqlConnection(connectionString))
+            {
+                conexao.Open();
+                string sql = "SELECT COUNT(*) FROM Cidade WHERE NomeCidade = @NomeCidade AND IdEstado  = @IdEstado";
+
+                using (var cmd = new MySqlCommand(sql, conexao))
+                {
+                    cmd.Parameters.AddWithValue("@NomeCidade", nomeCidade);
+                    cmd.Parameters.AddWithValue("@IdEstado", estadoId);
+
+                    return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
+                }
+            }
+        }
 
     }
 }

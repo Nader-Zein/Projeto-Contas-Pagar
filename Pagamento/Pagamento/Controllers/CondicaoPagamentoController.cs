@@ -32,6 +32,13 @@ namespace Pagamento.Controllers
         [HttpPost]
         public IActionResult Criar(CondicaoPagamento condicaoPagamento, string ParcelasJson)
         {
+
+            if (condicaodao.ExisteCondicao(condicaoPagamento.Descricao))
+            {
+                ModelState.AddModelError("Descricao", "Esta condição de pagamento já está cadastrada!");
+                condicaoPagamento.FormasPagamento = formaPgtoDAO.Listar() ?? new List<FormaPagamento>();
+                return View(condicaoPagamento);
+            }
             if (ModelState.IsValid)
             {
                 condicaoPagamento.IdCondPgto = condicaodao.Inserir(condicaoPagamento);

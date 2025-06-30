@@ -32,16 +32,24 @@ namespace Pagamento.Controllers
         public IActionResult Criar(Funcionario funcionario)
         {
 
-            bool estrangeiro = _cidadeDAO.CidadeEstrangeira(funcionario.IdCidade);
-
-
-            
-
-            if (!estrangeiro)
+            if (funcionario.IdCidade == 0)
             {
-                if (string.IsNullOrWhiteSpace(funcionario.CPF_CNPJ))
+                ModelState.AddModelError("IdCidade", "Selecione uma cidade.");
+            }
+            else
+            {
+                bool estrangeiro = _cidadeDAO.CidadeEstrangeira(funcionario.IdCidade);
+
+                if (!estrangeiro)
                 {
-                    ModelState.AddModelError("CPF_CNPJ", "O CPF é obrigatório para funcionarios brasileiros.");
+                    if (string.IsNullOrWhiteSpace(funcionario.CPF_CNPJ))
+                    {
+                        ModelState.AddModelError("CPF_CNPJ", "O CPF é obrigatório para funcionarios brasileiros.");
+                    }
+                    else if (_funcionarioDAO.ExisteCpfCnpj(funcionario.CPF_CNPJ))
+                    {
+                        ModelState.AddModelError("CPF_CNPJ", "Já existe um funcionario com este CPF.");
+                    }
                 }
             }
 
@@ -92,6 +100,8 @@ namespace Pagamento.Controllers
                     ModelState.AddModelError("CPF_CNPJ", "O CPF é obrigatório para funcionarios brasileiros.");
                 }
             }
+
+            
 
             if (ModelState.IsValid)
             {

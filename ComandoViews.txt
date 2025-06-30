@@ -25,23 +25,18 @@ JOIN Pais p ON e.IdPais = p.IdPais;
 
 CREATE OR REPLACE VIEW vw_fornecedor_cidade AS
 SELECT 
-    f.IdPessoa,
+    f.IdFornecedor,
     c.NomeCidade
 FROM Fornecedor f
 JOIN Cidade c ON f.IdCidade = c.IdCidade;
 
 
-CREATE OR REPLACE VIEW vw_transportadora_cidade AS
-SELECT 
-    t.IdPessoa,
-    c.NomeCidade
-FROM Transportadora t
-JOIN Cidade c ON t.IdCidade = c.IdCidade;
+
 
 
 CREATE OR REPLACE VIEW vw_cliente_cidade AS
 SELECT 
-    c.IdPessoa, -- ou c.IdCliente, se for diferente
+    c.IdCliente, 
     cid.NomeCidade
 FROM Cliente c
 JOIN Cidade cid ON c.IdCidade = cid.IdCidade;
@@ -49,7 +44,7 @@ JOIN Cidade cid ON c.IdCidade = cid.IdCidade;
 
 CREATE OR REPLACE VIEW vw_funcionario_cidade AS
 SELECT 
-    f.IdPessoa,
+    f.IdFuncionario,
     c.NomeCidade
 FROM Funcionario f
 JOIN Cidade c ON f.IdCidade = c.IdCidade;

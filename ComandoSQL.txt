@@ -60,7 +60,7 @@ CREATE TABLE Cidade (
 );
 
 CREATE TABLE Cliente (
-    IdPessoa INT PRIMARY KEY AUTO_INCREMENT,
+    IdCliente INT PRIMARY KEY AUTO_INCREMENT,
     TipoPessoa VARCHAR(20) NOT NULL,
     Nome_RazaoSocial VARCHAR(40) NOT NULL,
     Apelido_NomeFantasia VARCHAR(40),
@@ -85,7 +85,7 @@ CREATE TABLE Cliente (
 );
 
 CREATE TABLE Funcionario (
-    IdPessoa INT PRIMARY KEY AUTO_INCREMENT,
+    IdFuncionario INT PRIMARY KEY AUTO_INCREMENT,
     TipoPessoa VARCHAR(20) NOT NULL,
     Nome_RazaoSocial VARCHAR(40) NOT NULL,
     Genero VARCHAR(20),
@@ -114,7 +114,7 @@ CREATE TABLE Funcionario (
 );
 
 CREATE TABLE Fornecedor (
-    IdPessoa INT PRIMARY KEY AUTO_INCREMENT,
+    IdFornecedor INT PRIMARY KEY AUTO_INCREMENT,
     TipoPessoa VARCHAR(20) NOT NULL,
     Nome_RazaoSocial VARCHAR(40) NOT NULL,
     Apelido_NomeFantasia VARCHAR(40),
@@ -138,29 +138,7 @@ CREATE TABLE Fornecedor (
     FOREIGN KEY (IdCondPgto) REFERENCES CondicaoPagamento(IdCondPgto)
 );
 
-CREATE TABLE Transportadora (
-    IdPessoa INT PRIMARY KEY AUTO_INCREMENT,
-    TipoPessoa VARCHAR(20) NOT NULL,
-    Nome_RazaoSocial VARCHAR(40) NOT NULL,
-    Apelido_NomeFantasia VARCHAR(40),
-    DataNascimento_Fundacao DATE NOT NULL,
-    CPF_CNPJ VARCHAR(14),
-    RG_InsEstadual VARCHAR(10),
-    Email VARCHAR(30),
-    Telefone VARCHAR(20),
-    Endereco VARCHAR(25),
-    Numero VARCHAR(10),
-    Complemento VARCHAR(25),
-    Bairro VARCHAR(25),
-    Cep VARCHAR(8),
-    Status BOOLEAN NOT NULL,
-    IdCidade INT NOT NULL,
-    IdCondPgto INT NOT NULL,
-    DataCriacao DATETIME NOT NULL,
-    DataEdicao DATETIME NULL,
-    FOREIGN KEY (IdCidade) REFERENCES Cidade(IdCidade),
-    FOREIGN KEY (IdCondPgto) REFERENCES CondicaoPagamento(IdCondPgto)
-);
+
 
 CREATE TABLE Marca (
     IdMarca INT PRIMARY KEY AUTO_INCREMENT,
@@ -178,6 +156,14 @@ CREATE TABLE UnidadeMedida (
     DataEdicao DATETIME NULL
 );
 
+CREATE TABLE Categoria(
+    IdCategoria INT PRIMARY KEY AUTO_INCREMENT,
+    Descricao VARCHAR(40) NOT NULL,
+    Status BOOLEAN NOT NULL,
+    DataCriacao DATETIME NOT NULL,
+    DataEdicao DATETIME NULL
+);
+
 CREATE TABLE Produto (
     IdProduto INT PRIMARY KEY AUTO_INCREMENT,
     Descricao VARCHAR(40) NOT NULL,
@@ -185,7 +171,7 @@ CREATE TABLE Produto (
     Referencia VARCHAR(10) NOT NULL,
     MarcaId INT NOT NULL,
     UnidadeMedidaId INT NOT NULL,
-    FornecedorId INT NOT NULL,
+    CategoriaId INT NOT NULL,
     ValorCompra DECIMAL(10,2) NOT NULL,
     ValorVenda DECIMAL(10,2) NOT NULL,
     Quantidade INT NOT NULL,
@@ -197,5 +183,13 @@ CREATE TABLE Produto (
     DataEdicao DATETIME NULL,
     FOREIGN KEY (MarcaId) REFERENCES Marca(IdMarca),
     FOREIGN KEY (UnidadeMedidaId) REFERENCES UnidadeMedida(IdUnidadeMedida),
-    FOREIGN KEY (FornecedorId) REFERENCES Fornecedor(IdPessoa)
+    FOREIGN KEY (CategoriaId) REFERENCES Categoria(IdCategoria)
+);
+
+CREATE TABLE ProdutoFornecedor (
+    IdProduto INT NOT NULL,
+    IdFornecedor INT NOT NULL,
+    PRIMARY KEY (IdProduto, IdFornecedor),
+    FOREIGN KEY (IdProduto) REFERENCES Produto(IdProduto) ON DELETE CASCADE,
+    FOREIGN KEY (IdFornecedor) REFERENCES Fornecedor(IdFornecedor) ON DELETE CASCADE
 );

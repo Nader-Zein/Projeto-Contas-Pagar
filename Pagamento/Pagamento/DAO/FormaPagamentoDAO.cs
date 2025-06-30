@@ -111,5 +111,21 @@ namespace Pagamento.DAO
 
             return null;
         }
+
+        public bool ExisteForma(string descricao)
+        {
+            using (var conexao = new MySqlConnection(connectionString))
+            {
+                conexao.Open();
+                string sql = "SELECT COUNT(*) FROM FormaPagamento WHERE Descricao = @Descricao";
+                using (var cmd = new MySqlCommand(sql, conexao))
+                {
+                    cmd.Parameters.AddWithValue("@Descricao", descricao.Trim());
+                    long count = (long)cmd.ExecuteScalar();
+                    return count > 0;
+                }
+            }
+        }
+
     }
 }

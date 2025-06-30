@@ -38,16 +38,29 @@ namespace Pagamento.Controllers
         [HttpPost]
         public IActionResult Criar(Cliente cliente)
         {
-            bool estrangeiro = _cidadeDAO.CidadeEstrangeira(cliente.IdCidade);
-
-
-            
-
-            if (!estrangeiro)
+            if (cliente.IdCondPgto == 0)
             {
-                if (string.IsNullOrWhiteSpace(cliente.CPF_CNPJ))
+                ModelState.AddModelError("IdCondPgto", "Selecione uma condição de pagamento.");
+            }
+
+            if (cliente.IdCidade == 0)
+            {
+                ModelState.AddModelError("IdCidade", "Selecione uma cidade.");
+            }
+            else
+            {
+                bool estrangeiro = _cidadeDAO.CidadeEstrangeira(cliente.IdCidade);
+
+                if (!estrangeiro)
                 {
-                    ModelState.AddModelError("CPF_CNPJ", "O CPF/CNPJ é obrigatório para clientes brasileiros.");
+                    if (string.IsNullOrWhiteSpace(cliente.CPF_CNPJ))
+                    {
+                        ModelState.AddModelError("CPF_CNPJ", "O CPF/CNPJ é obrigatório para clientes brasileiros.");
+                    }
+                    else if (_clienteDAO.ExisteCpfCnpj(cliente.CPF_CNPJ))
+                    {
+                        ModelState.AddModelError("CPF_CNPJ", "Já existe um cliente com este CPF ou CNPJ.");
+                    }
                 }
             }
 

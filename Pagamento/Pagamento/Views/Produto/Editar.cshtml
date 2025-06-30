@@ -9,9 +9,7 @@
     <input type="hidden" asp-for="IdProduto" />
 
     <div class="row">
-
-
-        <div class="d-flex justify-content-end mt-3">
+        <div class="col-md-12 d-flex justify-content-end mb-3">
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" asp-for="Status" />
                 <label class="form-check-label" asp-for="Status">Ativo</label>
@@ -58,15 +56,30 @@
         </div>
 
         <div class="col-md-6 mb-3">
-            <label class="form-label">Fornecedor</label>
+            <label class="form-label">Categoria</label>
             <div class="input-group">
-                <input type="text" id="NomeFornecedorSelecionado" class="form-control" placeholder="Nenhum fornecedor selecionado"
-                       value="@ViewBag.NomeFornecedor" readonly />
-                <input type="hidden" asp-for="FornecedorId" id="FornecedorId" />
-                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#modalFornecedorSelecionar">Selecionar</button>
+                <input type="text" id="CategoriaSelecionada" class="form-control" placeholder="Nenhuma categoria selecionada"
+                       value="@ViewBag.NomeCategoria" readonly />
+                <input type="hidden" asp-for="CategoriaId" id="CategoriaId" />
+                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#modalCategoriaSelecionar">
+                    Selecionar
+                </button>
             </div>
         </div>
 
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Fornecedores</label>
+            <div class="input-group">
+                <input type="text" id="NomeFornecedorSelecionado" class="form-control" placeholder="Nenhum fornecedor selecionado" readonly />
+                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#modalFornecedorSelecionar">
+                    Selecionar
+                </button>
+            </div>
+        
+
+            @Html.ValidationMessage("FornecedoresSelecionados", new { @class = "text-danger mb-1", id = "erro-fornecedor" })
+            <input type="hidden" id="fornecedoresSelecionados" name="FornecedoresSelecionados" />
+        </div>
         <div class="col-md-6 mb-3">
             <label asp-for="ValorCompra" class="form-label">Valor de Compra</label>
             <input asp-for="ValorCompra" class="form-control" type="text" disabled />
@@ -92,8 +105,6 @@
             <input asp-for="QuantidadeMinima" class="form-control" />
         </div>
 
-        
-
         <div class="col-md-6 mb-3">
             <label asp-for="Observacoes" class="form-label">Observações</label>
             <textarea asp-for="Observacoes" class="form-control"></textarea>
@@ -108,7 +119,6 @@
             <label class="form-label">Última Edição</label>
             <input type="text" class="form-control" value="@(Model.DataEdicao?.ToString("dd/MM/yyyy HH:mm") ?? "Nunca editado")" readonly />
         </div>
-
     </div>
 
     <div class="text-end mt-3">
@@ -116,6 +126,7 @@
         <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
     </div>
 </form>
+
 
 <div class="modal fade" id="modalMarcaSelecionar" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -195,16 +206,16 @@
     </div>
 </div>
 
-<div class="modal fade" id="modalFornecedorSelecionar" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="modalCategoriaSelecionar" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Selecionar Fornecedor</h5>
+                <h5 class="modal-title">Selecionar Categoria</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
             </div>
             <div class="modal-body">
-                <input type="text" id="filtroFornecedor" class="form-control mb-2" placeholder="Buscar..." onkeyup="filtrarTabelaFornecedor()" />
-                <table class="table table-bordered" id="tabelaFornecedores">
+                <input type="text" id="filtroCategoria" class="form-control mb-2" placeholder="Buscar..." onkeyup="filtrarTabelaCategoria()" />
+                <table class="table table-bordered" id="tabelaCategorias">
                     <thead>
                         <tr>
                             <th>Nome</th>
@@ -212,13 +223,13 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var t in ViewBag.Fornecedores as List<SelectListItem>)
+                        @foreach (var categoria in ViewBag.Categorias as List<SelectListItem>)
                         {
                             <tr>
-                                <td>@t.Text</td>
+                                <td>@categoria.Text</td>
                                 <td>
                                     <button type="button" class="btn btn-sm btn-primary"
-                                            onclick="selecionarFornecedor(@t.Value, '@t.Text')">
+                                            onclick="selecionarCategoria(@categoria.Value, '@categoria.Text')">
                                         Selecionar
                                     </button>
                                 </td>
@@ -228,11 +239,58 @@
                 </table>
 
                 <hr />
-                <button class="btn btn-success" type="button" onclick="abrirFormFornecedor()">+ Cadastrar nova Fornecedor</button>
+                <button class="btn btn-success" type="button" onclick="abrirFormCategoria()">+ Cadastrar nova Categoria</button>
             </div>
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="modalFornecedorSelecionar" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Selecionar Fornecedores</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+
+            <div class="modal-body">
+                <input type="text" id="filtroFornecedor" class="form-control mb-2" placeholder="Buscar..." onkeyup="filtrarTabelaFornecedor()" />
+
+                <table class="table table-bordered" id="tabelaFornecedores">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Nome</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            var selecionados = ViewBag.FornecedoresSelecionadosIds as List<int> ?? new List<int>();
+                            foreach (var t in ViewBag.Fornecedores as List<SelectListItem>)
+                            {
+                                var isChecked = selecionados.Contains(int.Parse(t.Value)) ? "checked" : "";
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" class="chk-fornecedor" value="@t.Value" data-nome="@t.Text" @isChecked />
+                                    </td>
+                                    <td>@t.Text</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+
+                <h6 class="mt-3">Fornecedores Selecionados:</h6>
+                <ul id="listaFornecedoresSelecionados"></ul>
+
+                <hr />
+                <button class="btn btn-success" type="button" onclick="abrirFormFornecedor()">+ Cadastrar novo Fornecedor</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 
 <div class="modal fade" id="modalMarca" tabindex="-1" aria-hidden="true">
@@ -244,6 +302,12 @@
 <div class="modal fade" id="modalUnidade" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content" id="modalUnidadeContent"></div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalCategoria" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" id="modalCategoriaContent"></div>
     </div>
 </div>
 
@@ -270,19 +334,42 @@
             bootstrap.Modal.getInstance(document.getElementById('modalUnidadeSelecionar')).hide();
             }
 
-            function selecionarFornecedor(id, nome) {
-            $('#FornecedorId').val(id);
-            $('#NomeFornecedorSelecionado').val(nome);
-            bootstrap.Modal.getInstance(document.getElementById('modalFornecedorSelecionar')).hide();
+            function selecionarCategoria(id, nome) {
+            $('#CategoriaId').val(id);
+            $('#NomeCategoriaSelecionada').val(nome);
+            bootstrap.Modal.getInstance(document.getElementById('modalCategoriaSelecionar')).hide();
             }
 
-            function filtrarTabelaMarca() {
-            const filtro = $('#filtroMarca').val().toLowerCase();
-            $('#tabelaMarcas tbody tr').each(function () {
-                const nome = $(this).find('td:first').text().toLowerCase();
-                $(this).toggle(nome.includes(filtro));
+            function atualizarListaFornecedores() {
+            const selecionados = [];
+            const nomes = [];
+
+            document.querySelectorAll('.chk-fornecedor:checked').forEach(chk => {
+                selecionados.push(chk.value);
+                nomes.push(chk.dataset.nome);
+            });
+
+            document.getElementById('fornecedoresSelecionados').value = selecionados.join(',');
+            document.getElementById('NomeFornecedorSelecionado').value = nomes.join(', ');
+
+            const ul = document.getElementById('listaFornecedoresSelecionados');
+            ul.innerHTML = '';
+            nomes.forEach(nome => {
+                const li = document.createElement('li');
+                li.textContent = nome;
+                ul.appendChild(li);
             });
             }
+
+            document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.chk-fornecedor').forEach(function (chk) {
+                chk.addEventListener('change', atualizarListaFornecedores);
+            });
+
+            atualizarListaFornecedores();
+            });
+
+
 
             function filtrarTabelaFornecedor() {
             const filtro = $('#filtroFornecedor').val().toLowerCase();
@@ -301,6 +388,14 @@
             });
             }
 
+            function filtrarTabelaCategoria() {
+            const filtro = $('#filtroCategoria').val().toLowerCase();
+            $('#tabelaCategorias tbody tr').each(function () {
+                const nome = $(this).find('td:first').text().toLowerCase();
+                $(this).toggle(nome.includes(filtro));
+            });
+            }
+
             function abrirFormMarca() {
             $.get('/Marca/FormModal', function (data) {
                 $('#modalMarcaContent').html(data);
@@ -312,6 +407,13 @@
             $.get('/UnidadeMedida/FormModal', function (data) {
                 $('#modalUnidadeContent').html(data);
                 new bootstrap.Modal(document.getElementById('modalUnidade')).show();
+            });
+            }
+
+            function abrirFormCategoria() {
+            $.get('/Categoria/FormModal', function (data) {
+                $('#modalCategoriaContent').html(data);
+                new bootstrap.Modal(document.getElementById('modalCategoria')).show();
             });
             }
 
@@ -385,6 +487,37 @@
             });
         });
 
+        $(document).on('submit', '#formCadastrarCategoria', function (e) {
+            e.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: '/Categoria/FormModal',
+                data: $(this).serialize(),
+                        success: function (res) {
+            if (res.sucesso) {
+                $('#CategoriaId').val(res.categoria.id);
+                $('#NomeCategoriaSelecionada').val(res.categoria.nome);
+                bootstrap.Modal.getInstance(document.getElementById('modalCategoria')).hide();
+
+                const novaLinha = `
+                    <tr>
+                        <td>${res.categoria.nome}</td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-primary"
+                                    onclick="selecionarCategoria(${res.categoria.id}, '${res.categoria.nome}')">
+                                Selecionar
+                            </button>
+                        </td>
+                    </tr>`;
+                $('#tabelaCategorias tbody').append(novaLinha);
+            } else {
+                $('#modalCategoriaContent').html(res);
+            }
+        }
+
+            });
+        });
+
                 $(document).on('submit', '#formCadastrarFornecedor', function (e) {
             e.preventDefault();
             $.ajax({
@@ -393,21 +526,15 @@
                 data: $(this).serialize(),
                 success: function (res) {
                     if (res.sucesso) {
-                        $('#FornecedorId').val(res.fornecedor.id);
-                        $('#NomeFornecedorSelecionado').val(res.fornecedor.nome);
-                        bootstrap.Modal.getInstance(document.getElementById('modalFornecedor')).hide();
-
-                        $('#tabelaFornecedores tbody').append(`
+                        const novaLinha = `
                             <tr>
+                                <td><input type="checkbox" class="chk-fornecedor" value="${res.fornecedor.id}" data-nome="${res.fornecedor.nome}" checked /></td>
                                 <td>${res.fornecedor.nome}</td>
-                                <td>
-                                    <button type="button" class="btn btn-sm btn-primary"
-                                            onclick="selecionarFornecedor(${res.fornecedor.id}, '${res.fornecedor.nome}')">
-                                        Selecionar
-                                    </button>
-                                </td>
-                            </tr>
-                        `);
+                            </tr>`;
+                        $('#tabelaFornecedores tbody').append(novaLinha);
+                        $('.chk-fornecedor').off('change').on('change', atualizarListaFornecedores);
+                        atualizarListaFornecedores();
+                        bootstrap.Modal.getInstance(document.getElementById('modalFornecedor')).hide();
                     } else {
                         $('#modalFornecedorContent').html(res);
                     }

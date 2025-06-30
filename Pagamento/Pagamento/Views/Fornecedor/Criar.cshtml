@@ -27,6 +27,7 @@
         <div class="col-md-6 mb-3">
             <label id="labelNomeRazao" asp-for="Nome_RazaoSocial" class="form-label">Nome / Razão Social</label>
             <input asp-for="Nome_RazaoSocial" class="form-control" />
+            <span asp-validation-for="Nome_RazaoSocial" class="text-danger"></span>
         </div>
 
         <div class="col-md-6 mb-3">
@@ -37,6 +38,8 @@
         <div class="col-md-6 mb-3">
             <label asp-for="Endereco" class="form-label">Endereço</label>
             <input asp-for="Endereco" class="form-control" />
+            <span asp-validation-for="Endereco" class="text-danger"></span>
+
         </div>
 
         <div class="col-md-6 mb-3">
@@ -53,6 +56,8 @@
         <div class="col-md-6 mb-3">
             <label asp-for="Bairro" class="form-label">Bairro</label>
             <input asp-for="Bairro" class="form-control" />
+            <span asp-validation-for="Bairro" class="text-danger"></span>
+
         </div>
 
         <div class="col-md-6 mb-3">
@@ -70,11 +75,14 @@
                     Selecionar Cidade
                 </button>
             </div>
+            <span asp-validation-for="IdCidade" class="text-danger"></span>
         </div>
 
         <div class="col-md-6 mb-3">
-            <label id="labelNascimentoFundacao" asp-for="DataNascimento_Fundacao" class="form-label">Data de Nascimento / Fundação</label>
+            <label asp-for="DataNascimento_Fundacao" class="form-label">Data de Nascimento</label>
             <input asp-for="DataNascimento_Fundacao" type="date" class="form-control" />
+            <span asp-validation-for="DataNascimento_Fundacao" class="text-danger"></span>
+
         </div>
 
         <div class="col-md-6 mb-3">
@@ -98,6 +106,8 @@
         <div class="col-md-6 mb-3">
             <label asp-for="Telefone" class="form-label">Telefone</label>
             <input asp-for="Telefone" class="form-control" />
+            <span asp-validation-for="Telefone" class="text-danger"></span>
+
         </div>
 
         <div class="col-md-6 mb-3">
@@ -109,6 +119,8 @@
                     Selecionar
                 </button>
             </div>
+            <span asp-validation-for="IdCondPgto" class="text-danger"></span>
+
         </div>
 
         <div class="col-md-6 mb-3">

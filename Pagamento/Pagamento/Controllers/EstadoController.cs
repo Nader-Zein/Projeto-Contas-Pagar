@@ -32,6 +32,16 @@ namespace Pagamento.Controllers
         [HttpPost]
         public IActionResult Criar(Estado estado)
         {
+            if (estado.IdPais == 0)
+            {
+                ModelState.AddModelError("IdPais", "Selecione um Pais.");
+            }
+
+            if (_estadoDAO.ExisteEstadoPorNome(estado.NomeEstado))
+            {
+                ModelState.AddModelError("NomeEstado", "Este estado já está cadastrado!");
+            }
+
             if (ModelState.IsValid)
             {
                 _estadoDAO.Inserir(estado);
@@ -112,6 +122,7 @@ namespace Pagamento.Controllers
         [HttpPost]
         public IActionResult FormModal(Estado estado)
         {
+
             if (ModelState.IsValid)
             {
                 _estadoDAO.Inserir(estado);

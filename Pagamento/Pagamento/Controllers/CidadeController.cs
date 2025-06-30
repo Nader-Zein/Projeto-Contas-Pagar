@@ -32,15 +32,40 @@ namespace Pagamento.Controllers
         [HttpPost]
         public IActionResult Criar(Cidade cidade)
         {
+
+            if (cidade.IdEstado == 0)
+            {
+                ModelState.AddModelError("IdEstado", "Selecione um estado.");
+            }
+
+            if (_cidadeDAO.ExisteCidadePorNome(cidade.NomeCidade, cidade.IdEstado))
+            {
+                ModelState.AddModelError("NomeCidade", "Esta cidade já está cadastrada!");
+
+                ViewBag.Estados = _estadoDAO.Listar().Select(e => new SelectListItem
+                {
+                    Value = e.IdEstado.ToString(),
+                    Text = e.NomeEstado
+                }).ToList();
+
+                return View(cidade);
+            }
+
             if (ModelState.IsValid)
             {
-                 
                 _cidadeDAO.Inserir(cidade);
                 return RedirectToAction("Index");
             }
-            ViewBag.Estados = _estadoDAO.Listar();
+
+            ViewBag.Estados = _estadoDAO.Listar().Select(e => new SelectListItem
+            {
+                Value = e.IdEstado.ToString(),
+                Text = e.NomeEstado
+            }).ToList();
+
             return View(cidade);
         }
+
 
         public IActionResult Excluir(int id)
         {
@@ -80,6 +105,7 @@ namespace Pagamento.Controllers
         [HttpPost]
         public IActionResult Editar(Cidade cidade)
         {
+
             if (ModelState.IsValid)
             {
                 
@@ -114,6 +140,7 @@ namespace Pagamento.Controllers
         [HttpPost]
         public IActionResult FormModal(Cidade cidade)
         {
+
             if (ModelState.IsValid)
             {
                 _cidadeDAO.Inserir(cidade);
