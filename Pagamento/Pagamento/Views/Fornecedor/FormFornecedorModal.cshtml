@@ -220,10 +220,13 @@
     <div id="modalNovaCondicaoContent"></div>
 </div>
 
+@{
+    Html.RenderPartialAsync("_ValidationScriptsPartial");
+}
+
 <script>
-    @{
-            await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+   
+
         function atualizarLabels(tipo) {
             if (tipo === "Física") {
                 $('#labelNomeRazao').text("Nome");
