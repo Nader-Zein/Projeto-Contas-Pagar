@@ -1,0 +1,189 @@
+﻿@model Pagamento.Models.Estado
+
+<form id="formCadastrarEstado">
+
+    <div class="d-flex justify-content-end mt-3">
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" asp-for="Status" />
+            <label class="form-check-label" asp-for="Status">Ativo</label>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="NomeEstado" class="form-label">Nome do Estado</label>
+        <input asp-for="NomeEstado" class="form-control" required />
+        <span asp-validation-for="NomeEstado" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Uf" class="form-label">UF</label>
+        <input asp-for="Uf" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">País</label>
+        <div class="input-group">
+            <input type="text" id="NomePaisSelecionado" class="form-control" placeholder="Nenhum país selecionado" value="@ViewBag.NomePais" readonly />
+            <input type="hidden" asp-for="IdPais" id="IdPais" />
+            <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#modalSelecaoPais">
+                Selecionar País
+            </button>
+        </div>
+        <span asp-validation-for="IdPais" class="text-danger"></span>
+    </div>
+
+    <div class="d-flex justify-content-between">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="submit" class="btn btn-success">Salvar</button>
+    </div>
+</form>
+
+<div class="modal fade" id="modalSelecaoPais" tabindex="-1" aria-labelledby="modalSelecaoPaisLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Selecionar País</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <input type="text" id="filtroPais" class="form-control" placeholder="Digite para buscar..." onkeyup="filtrarTabelaPais()" />
+                </div>
+
+                <table class="table table-bordered" id="tabelaPaises">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var pais in ViewBag.Paises as List<SelectListItem>)
+                        {
+                            <tr>
+                                <td>@pais.Text</td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-primary"
+                                            onclick="selecionarPais(@pais.Value, '@pais.Text')">
+                                        Selecionar
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                <hr />
+                <button class="btn btn-success" type="button" onclick="abrirFormNovoPais()">+ Cadastrar novo País</button>
+                <div id="formNovoPaisContainer"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalNovoPais" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" id="modalNovoPaisContent">
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).off('submit', '#formCadastrarEstado');
+    $(document).on('submit', '#formCadastrarEstado', function (e) {
+        e.preventDefault();
+
+        const $form = $(this);
+        const $submitButton = $form.find('button[type=submit]');
+        $submitButton.prop('disabled', true);
+
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("FormModal", "Estado")',
+            data: $form.serialize(),
+            success: function (response) {
+                if (response.sucesso) {
+                    $('#modalNovoEstado').modal('hide');
+
+                    var novaLinha = `<tr>
+                        <td>${response.estado.nome}</td>
+                        <td>
+                            <button class='btn btn-sm btn-primary' onclick='selecionarEstado(${response.estado.id}, "${response.estado.nome}")'>Selecionar</button>
+                        </td>
+                    </tr>`;
+                    $('#tabelaEstados tbody').append(novaLinha);
+                } else {
+                    $('#modalNovoEstadoContent').html(response);
+                }
+            },
+            error: function () {
+                alert('Erro ao cadastrar o estado.');
+            },
+            complete: function () {
+                $submitButton.prop('disabled', false);
+            }
+        });
+    });
+
+    function selecionarPais(id, nome) {
+        document.getElementById('IdPais').value = id;
+        document.getElementById('NomePaisSelecionado').value = nome;
+        var modal = bootstrap.Modal.getInstance(document.getElementById('modalSelecaoPais'));
+        modal.hide();
+    }
+
+    function abrirFormNovoPais() {
+        $.get('@Url.Action("FormModal", "Pais")', function (data) {
+            $('#modalNovoPaisContent').html(data);
+            var modal = new bootstrap.Modal(document.getElementById('modalNovoPais'));
+            modal.show();
+        });
+    }
+
+    function filtrarTabelaPais() {
+        var input = document.getElementById("filtroPais");
+        var filtro = input.value.toLowerCase();
+        var linhas = document.querySelectorAll("#tabelaPaises tbody tr");
+
+        linhas.forEach(function (linha) {
+            var nomePais = linha.cells[0].textContent.toLowerCase();
+            linha.style.display = nomePais.includes(filtro) ? "" : "none";
+        });
+    }
+
+    $(document).off('submit', '#formCadastrarPais');
+    $(document).on('submit', '#formCadastrarPais', function (e) {
+        e.preventDefault();
+
+        const $form = $(this);
+        const $submitButton = $form.find('button[type=submit]');
+        $submitButton.prop('disabled', true);
+
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("FormModal", "Pais")',
+            data: $form.serialize(),
+            success: function (response) {
+                if (response.sucesso) {
+                    $('#modalNovoPais').modal('hide');
+
+                    var novaLinha = `<tr>
+                        <td>${response.pais.nome}</td>
+                        <td>
+                            <button class='btn btn-sm btn-primary' onclick='selecionarPais(${response.pais.id}, "${response.pais.nome}")'>Selecionar</button>
+                        </td>
+                    </tr>`;
+                    $('#tabelaPaises tbody').append(novaLinha);
+                } else {
+                    $('#modalNovoPaisContent').html(response);
+                }
+            },
+            error: function () {
+                alert('Erro ao cadastrar o país.');
+            },
+            complete: function () {
+                $submitButton.prop('disabled', false);
+            }
+        });
+    });
+</script>

@@ -1,0 +1,58 @@
+﻿@{
+    ViewData["Title"] = "Cidades";
+}
+
+@model List<Pagamento.Models.Cidade>
+
+<div class="text-center">
+    <h1 class="display-4">Cidades</h1>
+
+    <div class="d-flex justify-content-start mb-3">
+        <a asp-controller="Cidade" asp-action="Criar" class="btn btn-primary">Criar</a>
+    </div>
+
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Nome do Estado</th>
+                <th>Status</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Count > 0)
+            {
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.IdCidade</td>
+                        <td>@item.NomeCidade</td>
+                        <td>@item.NomeEstado</td>
+                        <td>
+                            @if (item.Status)
+                            {
+                                <span class="badge bg-success">Ativo</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Desativado</span>
+                            }
+                        </td>
+                        <td>
+                            <a asp-controller="Cidade" asp-action="Editar" asp-route-id="@item.IdCidade" class="btn btn-warning btn-sm">Editar</a>
+                            <a asp-controller="Cidade" asp-action="Excluir" asp-route-id="@item.IdCidade" class="btn btn-danger btn-sm">Excluir</a>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="4" class="text-center">Nenhuma cidade encontrada.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
