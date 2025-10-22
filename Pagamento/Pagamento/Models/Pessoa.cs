@@ -12,6 +12,8 @@ namespace Pagamento.Models
         public string TipoPessoa { get; set; }  
 
         [Required(ErrorMessage = "Campo obrigatório.")]
+        [StringLength(40, ErrorMessage = "O nome do produto não pode exceder 40 caracteres.")]
+
         public string Nome_RazaoSocial { get; set; }
 
         [Required(ErrorMessage = "Campo obrigatório.")]
@@ -32,6 +34,7 @@ namespace Pagamento.Models
         public string Telefone { get; set; }
 
         [Required(ErrorMessage = "O endereço é obrigatório.")]
+        [StringLength(40, ErrorMessage = "O endereço não pode exceder 40 caracteres.")]
         public string Endereco { get; set; }
 
         [Required(ErrorMessage = "O bairro é obrigatório.")]

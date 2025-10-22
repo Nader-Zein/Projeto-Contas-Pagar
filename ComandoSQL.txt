@@ -1,0 +1,254 @@
+CREATE TABLE CondicaoPagamento (
+    IdCondPgto INT PRIMARY KEY AUTO_INCREMENT,
+    Descricao VARCHAR(40) NOT NULL,
+    QuantidadeParcelas INT NOT NULL,
+    Juros DECIMAL(5,2) NOT NULL DEFAULT 0,
+    Multa DECIMAL(5,2) NOT NULL DEFAULT 0,
+    Desconto DECIMAL(5,2) NOT NULL DEFAULT 0,
+    Status BOOLEAN NOT NULL,
+    DataCriacao DATETIME NOT NULL,
+    DataEdicao DATETIME NULL
+);
+
+
+CREATE TABLE FormaPagamento (
+    IdFormaPgto INT PRIMARY KEY AUTO_INCREMENT,
+    Descricao VARCHAR(40) NOT NULL,
+    Status BOOLEAN NOT NULL,
+    DataCriacao DATETIME NOT NULL,
+    DataEdicao DATETIME NULL
+);
+
+CREATE TABLE ParcelaCondicaoPagamento (
+    IdCondPgto INT NOT NULL,
+    NumeroParcela INT NOT NULL,
+    IdFormaPgto INT NOT NULL,
+    ValorPercentual DECIMAL(10,2) NOT NULL,
+    DiasAposVenda INT NOT NULL,
+    PRIMARY KEY (IdCondPgto, NumeroParcela, IdFormaPgto),
+    FOREIGN KEY (IdCondPgto) REFERENCES CondicaoPagamento(IdCondPgto) ON DELETE CASCADE,
+    FOREIGN KEY (IdFormaPgto) REFERENCES FormaPagamento(IdFormaPgto)
+);
+
+CREATE TABLE Pais (
+    IdPais INT PRIMARY KEY AUTO_INCREMENT,
+    NomePais VARCHAR(40) NOT NULL,
+    Status BOOLEAN NOT NULL,
+    DataCriacao DATETIME NOT NULL,
+    DataEdicao DATETIME NULL
+);
+
+CREATE TABLE Estado (
+    IdEstado INT PRIMARY KEY AUTO_INCREMENT,
+    NomeEstado VARCHAR(40) NOT NULL,
+    UF VARCHAR(5) NOT NULL,
+    IdPais INT NOT NULL,
+    Status BOOLEAN NOT NULL,
+    DataCriacao DATETIME NOT NULL,
+    DataEdicao DATETIME NULL,
+    FOREIGN KEY (IdPais) REFERENCES Pais(IdPais) ON DELETE CASCADE
+);
+
+CREATE TABLE Cidade (
+    IdCidade INT PRIMARY KEY AUTO_INCREMENT,
+    NomeCidade VARCHAR(40) NOT NULL,
+    IdEstado INT NOT NULL,
+    Status BOOLEAN NOT NULL,
+    DataCriacao DATETIME NOT NULL,
+    DataEdicao DATETIME NULL,
+    FOREIGN KEY (IdEstado) REFERENCES Estado(IdEstado) ON DELETE CASCADE
+);
+
+CREATE TABLE Cliente (
+    IdCliente INT PRIMARY KEY AUTO_INCREMENT,
+    TipoPessoa VARCHAR(20) NOT NULL,
+    Nome_RazaoSocial VARCHAR(40) NOT NULL,
+    Apelido_NomeFantasia VARCHAR(40),
+    DataNascimento_Fundacao DATE NOT NULL,
+    CPF_CNPJ VARCHAR(14) NULL,
+    RG_InsEstadual VARCHAR(10),
+    Email VARCHAR(30),
+    Telefone VARCHAR(15),
+    Endereco VARCHAR(25),
+    Numero VARCHAR(10),
+    Complemento VARCHAR(50),
+    Bairro VARCHAR(25),
+    Cep VARCHAR(8),
+    LimiteCredito DECIMAL(10,2),
+    Status BOOLEAN NOT NULL,
+    IdCidade INT NOT NULL,
+    IdCondPgto INT NOT NULL,
+    DataCriacao DATETIME NOT NULL,
+    DataEdicao DATETIME NULL,
+    FOREIGN KEY (IdCidade) REFERENCES Cidade(IdCidade),
+    FOREIGN KEY (IdCondPgto) REFERENCES CondicaoPagamento(IdCondPgto)
+);
+
+CREATE TABLE Funcionario (
+    IdFuncionario INT PRIMARY KEY AUTO_INCREMENT,
+    TipoPessoa VARCHAR(20) NOT NULL,
+    Nome_RazaoSocial VARCHAR(40) NOT NULL,
+    Genero VARCHAR(20),
+    Matricula VARCHAR(15) NOT NULL,
+    DataNascimento_Fundacao DATE NOT NULL,
+    CPF_CNPJ VARCHAR(14) NULL,
+    RG_InsEstadual VARCHAR(10),
+    Email VARCHAR(30),
+    Telefone VARCHAR(15),
+    Cargo VARCHAR(20) NOT NULL,
+    Salario DECIMAL(10, 2) NOT NULL,
+    Turno VARCHAR(20) NOT NULL,
+    CargaHoraria INT NOT NULL,
+    DataAdmissao DATE NOT NULL,
+    DataDemissao DATE,
+    Endereco VARCHAR(25),
+    Numero VARCHAR(10),
+    Complemento VARCHAR(25),
+    Bairro VARCHAR(25),
+    Cep VARCHAR(8),
+    Status BOOLEAN NOT NULL,
+    IdCidade INT NOT NULL,
+    DataCriacao DATETIME NOT NULL,
+    DataEdicao DATETIME NULL,
+    FOREIGN KEY (IdCidade) REFERENCES Cidade(IdCidade)
+);
+
+CREATE TABLE Fornecedor (
+    IdFornecedor INT PRIMARY KEY AUTO_INCREMENT,
+    TipoPessoa VARCHAR(20) NOT NULL,
+    Nome_RazaoSocial VARCHAR(40) NOT NULL,
+    Apelido_NomeFantasia VARCHAR(40),
+    DataNascimento_Fundacao DATE NOT NULL,
+    CPF_CNPJ VARCHAR(14) NULL,
+    RG_InsEstadual VARCHAR(10),
+    Email VARCHAR(30),
+    Telefone VARCHAR(20),
+    Endereco VARCHAR(25),
+    Numero VARCHAR(10),
+    Complemento VARCHAR(25),
+    Bairro VARCHAR(25),
+    Cep VARCHAR(8),
+    LimiteCredito DECIMAL(10,2),
+    Status BOOLEAN NOT NULL,
+    IdCidade INT NOT NULL,
+    IdCondPgto INT NOT NULL,
+    DataCriacao DATETIME NOT NULL,
+    DataEdicao DATETIME NULL,
+    FOREIGN KEY (IdCidade) REFERENCES Cidade(IdCidade),
+    FOREIGN KEY (IdCondPgto) REFERENCES CondicaoPagamento(IdCondPgto)
+);
+
+
+
+CREATE TABLE Marca (
+    IdMarca INT PRIMARY KEY AUTO_INCREMENT,
+    Descricao VARCHAR(40) NOT NULL,
+    Status BOOLEAN NOT NULL,
+    DataCriacao DATETIME NOT NULL,
+    DataEdicao DATETIME NULL
+);
+
+CREATE TABLE UnidadeMedida (
+    IdUnidadeMedida INT PRIMARY KEY AUTO_INCREMENT,
+    Descricao VARCHAR(40) NOT NULL,
+    Status BOOLEAN NOT NULL,
+    DataCriacao DATETIME NOT NULL,
+    DataEdicao DATETIME NULL
+);
+
+CREATE TABLE Categoria(
+    IdCategoria INT PRIMARY KEY AUTO_INCREMENT,
+    Descricao VARCHAR(40) NOT NULL,
+    Status BOOLEAN NOT NULL,
+    DataCriacao DATETIME NOT NULL,
+    DataEdicao DATETIME NULL
+);
+
+CREATE TABLE Produto (
+    IdProduto INT PRIMARY KEY AUTO_INCREMENT,
+    Descricao VARCHAR(40) NOT NULL,
+    Codigo_Barras VARCHAR(50) NOT NULL,
+    Referencia VARCHAR(10) NOT NULL,
+    MarcaId INT NOT NULL,
+    UnidadeMedidaId INT NOT NULL,
+    CategoriaId INT NOT NULL,
+    ValorCompra DECIMAL(10,2) NOT NULL,
+    ValorVenda DECIMAL(10,2) NOT NULL,
+    PrecoMedioCusto DECIMAL(10,2) NULL, = valor de compra na tela = valor unitario mais rateio, este valor soma e devide por 2 com o anterior
+    PrecoUltimaCompra DECIMAL(10,2) NULL, 
+    Quantidade INT NOT NULL,
+    QuantidadeMinima INT NOT NULL,
+    PercentualLucro DECIMAL(10,2) NOT NULL,
+    Observacoes VARCHAR(255),
+    Status BOOLEAN NOT NULL,
+    DataCriacao DATETIME NOT NULL,
+    DataEdicao DATETIME NULL,
+    FOREIGN KEY (MarcaId) REFERENCES Marca(IdMarca),
+    FOREIGN KEY (UnidadeMedidaId) REFERENCES UnidadeMedida(IdUnidadeMedida),
+    FOREIGN KEY (CategoriaId) REFERENCES Categoria(IdCategoria)
+);
+
+CREATE TABLE ProdutoFornecedor (
+    IdProduto INT NOT NULL,
+    IdFornecedor INT NOT NULL,
+    PrecoUltimaCompra DECIMAL(10,2) NULL,
+    DataUltimaCompra DATETIME NULL,
+    Observacao VARCHAR(40) NULL,
+    PRIMARY KEY (IdProduto, IdFornecedor),
+    FOREIGN KEY (IdProduto) REFERENCES Produto(IdProduto) ON DELETE CASCADE,
+    FOREIGN KEY (IdFornecedor) REFERENCES Fornecedor(IdFornecedor) ON DELETE CASCADE
+);
+
+
+
+CREATE TABLE Compra (
+    -- Chave Primária Composta, que identifica unicamente uma Nota Fiscal de um Fornecedor
+    Modelo VARCHAR(10) NOT NULL,
+    Serie VARCHAR(10) NOT NULL,
+    NumeroNota INT NOT NULL,
+    FornecedorId INT NOT NULL,
+    
+    -- Dados da Compra
+    DataEmissao DATETIME NOT NULL,
+    DataChegada DATETIME NOT NULL,
+    CondicaoPagamentoId INT NOT NULL,
+    Frete DECIMAL(10,2) DEFAULT 0,
+    Seguro DECIMAL(10,2) DEFAULT 0,
+    Despesas DECIMAL(10,2) DEFAULT 0,
+    Status BOOLEAN NOT NULL,
+    
+    -- Campos de Auditoria
+    DataCriacao DATETIME NOT NULL,
+    
+
+    -- Definição da Chave Primária e Chaves Estrangeiras
+    PRIMARY KEY (Modelo, Serie, NumeroNota, FornecedorId),
+    FOREIGN KEY (FornecedorId) REFERENCES Fornecedor(IdFornecedor),
+    FOREIGN KEY (CondicaoPagamentoId) REFERENCES CondicaoPagamento(IdCondPgto)
+);
+
+
+
+CREATE TABLE ItemCompra (
+    -- Chave Estrangeira Composta que referencia a tabela Compra
+    CompraModelo VARCHAR(10) NOT NULL,
+    CompraSerie VARCHAR(10) NOT NULL,
+    CompraNumeroNota INT NOT NULL,
+    CompraFornecedorId INT NOT NULL,
+
+    -- Parte da Chave Primária que referencia o Produto
+    ProdutoId INT NOT NULL,
+
+    -- Dados do Item
+    Quantidade INT NOT NULL,
+    ValorUnitario DECIMAL(10,2) NOT NULL,
+
+    -- Definição da Chave Primária (5 colunas para garantir que um produto não se repita na mesma nota)
+    PRIMARY KEY (CompraModelo, CompraSerie, CompraNumeroNota, CompraFornecedorId, ProdutoId),
+
+    -- Definição das Chaves Estrangeiras
+    FOREIGN KEY (CompraModelo, CompraSerie, CompraNumeroNota, CompraFornecedorId) 
+        REFERENCES Compra(Modelo, Serie, NumeroNota, FornecedorId) 
+        ON DELETE CASCADE, -- Se a compra for deletada, os itens são deletados juntos.
+    FOREIGN KEY (ProdutoId) REFERENCES Produto(IdProduto)
+);

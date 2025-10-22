@@ -22,9 +22,18 @@
         </div>
         <div class="card-body">
             <div class="row">
-                <div class="col-md-2"><label asp-for="Modelo" class="form-label"></label><input asp-for="Modelo" class="form-control" /></div>
-                <div class="col-md-2"><label asp-for="Serie" class="form-label"></label><input asp-for="Serie" class="form-control" /></div>
-                <div class="col-md-2"><label asp-for="NumeroNota" class="form-label">Número da Nota</label><input asp-for="NumeroNota" class="form-control" /></div>
+                <div class="col-md-2"><label asp-for="Modelo" class="form-label"></label>
+                    <input asp-for="Modelo" class="form-control" />
+                    <span asp-validation-for="Modelo" class="text-danger"></span>
+                    </div>
+                <div class="col-md-2"><label asp-for="Serie" class="form-label"></label>
+                    <input asp-for="Serie" class="form-control" />
+                    <span asp-validation-for="Serie" class="text-danger"></span>
+                    </div>
+                <div class="col-md-2"><label asp-for="NumeroNota" class="form-label">Número da Nota</label>
+                    <input asp-for="NumeroNota" class="form-control" />
+                     <span asp-validation-for="NumeroNota" class="text-danger"></span>
+                    </div>
                
                 <div class="col-md-6 mt-2">
                     <label class="form-label">Fornecedor</label>
@@ -47,8 +56,14 @@
 
             </div>
             <div class="row mt-3">
-                <div class="col-md-3"><label asp-for="DataEmissao" class="form-label"></label><input asp-for="DataEmissao" type="date" class="form-control" /></div>
-                <div class="col-md-3"><label asp-for="DataChegada" class="form-label"></label><input asp-for="DataChegada" type="date" class="form-control" /></div>
+                <div class="col-md-3"><label asp-for="DataEmissao" class="form-label">
+                </label><input asp-for="DataEmissao" type="date" class="form-control" />
+                <span asp-validation-for="DataEmissao" class="text-danger"></span>
+                </div>
+                <div class="col-md-3"><label asp-for="DataChegada" class="form-label">
+                </label><input asp-for="DataChegada" type="date" class="form-control" />
+                    <span asp-validation-for="DataChegada" class="text-danger"></span>
+                </div>
             </div>
         </div>
     </div>
@@ -116,6 +131,14 @@
         </div>
     </div>
 
+    <div class="row mt-3">
+        <div class="col-md-12">
+            <label asp-for="Observacoes" class="form-label">Observações Gerais da Compra</label>
+            <textarea asp-for="Observacoes" class="form-control" rows="3" placeholder="Digite aqui observações gerais sobre a nota, entrega, etc."></textarea>
+        </div>
+    </div>
+
+
     <div class="mt-4 text-end">
         <button type="submit" class="btn btn-success">Salvar Compra</button>
         <a asp-action="Index" asp-controller="Home" class="btn btn-secondary">Cancelar</a>
@@ -137,7 +160,7 @@
                                 <td>@fornecedor.Nome_RazaoSocial</td>
                                 <td>
                                     <button type="button" class="btn btn-sm btn-primary"
-                                            onclick="selecionarFornecedor(@fornecedor.IdPessoa, '@fornecedor.Nome_RazaoSocial')">
+                                            onclick="selecionarFornecedor(@fornecedor.IdPessoa, '@fornecedor.Nome_RazaoSocial', @fornecedor.IdCondPgto)">
                                         Selecionar
                                     </button>
                                 </td>
@@ -211,22 +234,54 @@
     <partial name="_ValidationScriptsPartial" />
     <script>
         
-            function selecionarFornecedor(id, nome) {
+        let idCondicaoPermitida = 0;
+
+        
+        function selecionarFornecedor(id, nome, idCondPgto) {
             document.getElementById('FornecedorId').value = id;
+            document.getElementById('tabela-fornecedor-selecionado').innerHTML = `<tr><td>${id}</td><td>${nome}</td></tr>`;
 
-            const tabelaBody = document.getElementById('tabela-fornecedor-selecionado');
+            idCondicaoPermitida = idCondPgto || 0;
 
-            tabelaBody.innerHTML = '';
+            document.getElementById('CondicaoPagamentoCompraId').value = '';
+            document.getElementById('NomeCondicaoCompra').value = '';
+            document.getElementById('tabela-parcelas').innerHTML = '';
 
-            const novaLinha = `<tr>
-                                   <td>${id}</td>
-                                   <td>${nome}</td>
-                               </tr>`;
-            tabelaBody.innerHTML = novaLinha; 
+            
+            bootstrap.Modal.getInstance(document.getElementById('modalFornecedor')).hide();
 
-            var modal = bootstrap.Modal.getInstance(document.getElementById('modalFornecedor'));
-            modal.hide();
+           
         }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const modalCondicaoEl = document.getElementById('modalCondicaoCompra');
+
+            if (modalCondicaoEl) {
+                modalCondicaoEl.addEventListener('show.bs.modal', function (event) {
+
+                    if (idCondicaoPermitida === 0) {
+                        alert("Por favor, selecione um fornecedor primeiro!");
+                        event.preventDefault(); 
+                        return;
+                    }
+
+                    const todasAsLinhas = modalCondicaoEl.querySelectorAll('#tabelaCondicoes tbody tr');
+
+                    todasAsLinhas.forEach(linha => {
+                        const idDaLinha = linha.getAttribute('data-id');
+
+                        if (idDaLinha == idCondicaoPermitida) {
+                            linha.style.display = ''; 
+                        }
+                        else {
+                            linha.style.display = 'none';
+                        }
+                    });
+                });
+            }
+
+            
+        });
 
         function abrirFormNovoFornecedor() {
             $.get('@Url.Action("FormModal", "Fornecedor")', function (data) {
@@ -488,6 +543,8 @@
             });
         });
 
+
+        
         function selecionarProduto(id, nome, unidade) {
             document.getElementById('IdProdutoSelecionado').value = id;
             document.getElementById('NomeProdutoSelecionado').value = nome;
@@ -536,7 +593,6 @@
             });
         }
 
-        
         function selecionarMarca(id, nome) {
             $('#MarcaId').val(id);
             $('#NomeMarcaSelecionada').val(nome);
@@ -717,44 +773,53 @@
             });
         });
 
-        
+       
         async function selecionarCondicaoCompra(id, descricao) {
             document.getElementById('CondicaoPagamentoCompraId').value = id;
             document.getElementById('NomeCondicaoCompra').value = descricao;
 
-            var modal = bootstrap.Modal.getInstance(document.getElementById('modalCondicaoCompra'));
-            modal.hide();
+            var modalEl = document.getElementById('modalCondicaoCompra');
+            var modal = bootstrap.Modal.getInstance(modalEl);
+            if (modal && modalEl.classList.contains('show')) {
+                modal.hide();
+            }
 
+            await gerarParcelas();
+        }
+       
+        async function gerarParcelas() {
+            const idCondicao = parseInt(document.getElementById('CondicaoPagamentoCompraId').value);
             const totalNotaStr = document.getElementById('total-nota').value;
             const totalNotaNum = parseMoeda(totalNotaStr);
             const dataEmissaoInput = document.getElementById('DataEmissao');
 
-            if (totalNotaNum <= 0) {
-                alert("O Total da Nota deve ser maior que zero para gerar as parcelas.");
+            if (!idCondicao || totalNotaNum <= 0) {
+                document.getElementById('tabela-parcelas').innerHTML = '';
                 return;
             }
+
             if (!dataEmissaoInput.value) {
                 alert("Por favor, preencha a Data de Emissão para calcular os vencimentos.");
                 return;
             }
 
-            const [ano, mes, dia] = dataEmissaoInput.value.split('-');
-            const dataBase = new Date(ano, mes - 1, dia);
-
-
             try {
-                const response = await fetch(`@Url.Action("ObterDetalhes", "CondicaoPagamento")?id=${id}`);
+                const [ano, mes, dia] = dataEmissaoInput.value.split('-');
+                const dataBase = new Date(ano, mes - 1, dia);
+
+                const response = await fetch(`@Url.Action("ObterDetalhes", "CondicaoPagamento")?id=${idCondicao}`);
                 if (!response.ok) {
                     throw new Error('Não foi possível buscar os detalhes da condição de pagamento.');
                 }
                 const condicao = await response.json();
 
+              
+
                 const tabelaParcelasBody = document.getElementById('tabela-parcelas');
-                tabelaParcelasBody.innerHTML = '';
+                tabelaParcelasBody.innerHTML = ''; 
 
                 condicao.parcelas.forEach(p => {
                     const valorParcela = totalNotaNum * (p.valorPercentual / 100);
-
                     const dataVencimento = new Date(dataBase.valueOf());
                     dataVencimento.setDate(dataVencimento.getDate() + p.diasAposVenda);
 
@@ -763,17 +828,16 @@
                             <td>${p.numeroParcela}</td>
                             <td>${formatarMoeda(valorParcela)}</td>
                             <td>${formatarData(dataVencimento)}</td>
-                            <td>${p.descricaoFormaPgto}</td>
-                        </tr>
-                    `;
+                            <td>${p.nomeFormaPagamento}</td>
+                        </tr>`;
                     tabelaParcelasBody.insertAdjacentHTML('beforeend', novaLinha);
                 });
-
             } catch (error) {
                 console.error('Erro ao gerar parcelas:', error);
-                alert('Ocorreu um erro ao gerar as parcelas. Verifique o console para mais detalhes.');
+                alert('Ocorreu um erro ao gerar as parcelas.');
             }
         }
+
 
         function abrirFormNovaCondicao() {
             $.get('@Url.Action("FormModal", "CondicaoPagamento")', function (data) {
@@ -825,7 +889,6 @@
             }
         }
 
-        
         function parseMoeda(valorString) {
             if (!valorString) return 0;
             let valorNumerico = valorString.replace('R$', '').trim().replace(/\./g, '').replace(',', '.');
@@ -862,6 +925,7 @@
 
             document.getElementById('total-produtos').value = formatarMoeda(totalProdutos);
             document.getElementById('total-nota').value = formatarMoeda(totalNota);
+            gerarParcelas(); 
         }
 
 
@@ -932,6 +996,7 @@
                 });
             }
 
+            
             ['Frete', 'Seguro', 'Despesas'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.addEventListener('input', atualizarTotais);

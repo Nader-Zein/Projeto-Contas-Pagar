@@ -16,7 +16,7 @@
 
     <div class="mb-3">
         <label asp-for="NomeEstado" class="form-label">Nome</label>
-        <input asp-for="NomeEstado" class="form-control" required />
+        <input asp-for="NomeEstado" class="form-control" required maxlength="40" />
         <span asp-validation-for="NomeEstado" class="text-danger"></span>
     </div>
 

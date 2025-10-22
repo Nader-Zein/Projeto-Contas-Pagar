@@ -10,16 +10,29 @@ namespace Pagamento.Controllers
 {
     public class CompraController : Controller
     {
+        
         private readonly FornecedorDAO _fornecedorDAO = new FornecedorDAO();
         private readonly ProdutoDAO _produtoDAO = new ProdutoDAO();
         private readonly CondicaoPagamentoDAO _condicaoPagamentoDAO = new CondicaoPagamentoDAO();
+        private readonly CompraDAO _compraDAO = new CompraDAO(); 
+
+        
 
         public IActionResult Index()
         {
-            
-            return View(new List<Compra>()); 
+            try
+            {
+                var listaDeCompras = _compraDAO.Listar();
+                return View(listaDeCompras); 
+            }
+            catch (Exception erro)
+            {
+                TempData["ErrorMessage"] = $"Não foi possível carregar a lista de compras. Erro: {erro.Message}";
+                return View(new List<Compra>());
+            }
         }
 
+        
         public IActionResult Criar()
         {
             PreencherViewBags();
@@ -27,7 +40,7 @@ namespace Pagamento.Controllers
             return View(new Compra());
         }
 
-        
+       
 
         private void PreencherViewBags()
         {
@@ -57,11 +70,13 @@ namespace Pagamento.Controllers
                     ModelState.AddModelError("", "A compra deve ter pelo menos um item.");
                 }
 
+                
                 if (ModelState.IsValid)
                 {
-                   
+                    
+                    _compraDAO.Inserir(compra);
 
-                    return RedirectToAction("Index"); 
+                    return RedirectToAction("Index");
                 }
             }
             catch (Exception erro)
@@ -69,6 +84,7 @@ namespace Pagamento.Controllers
                 ModelState.AddModelError("", "Ocorreu um erro ao salvar a compra: " + erro.Message);
             }
 
+            
             PreencherViewBags();
             return View(compra);
         }

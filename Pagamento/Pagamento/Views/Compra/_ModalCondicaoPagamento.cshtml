@@ -24,7 +24,7 @@
                         {
                             @foreach (var condicao in Model)
                             {
-                                <tr>
+                                <tr data-id="@condicao.IdCondPgto">
                                     <td>@condicao.Descricao</td>
                                     <td>
                                         <button type="button" class="btn btn-sm btn-primary"

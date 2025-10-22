@@ -203,10 +203,10 @@ namespace Pagamento.Controllers
                     return NotFound(); 
                 }
 
-               
+                
                 condicao.Parcelas = parcelaDAO.ListarPorCondicaoPagamento(id);
 
-                
+               
                 return Json(condicao);
             }
             catch (Exception ex)

@@ -1,20 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Pagamento.Models
 {
     public class Compra
     {
+        [Required(ErrorMessage = "O campo Modelo é obrigatório.")]
         public string Modelo { get; set; }
+
+        [Required(ErrorMessage = "O campo Serie é obrigatório.")]
         public string Serie { get; set; }
+
+        [Range(1, int.MaxValue, ErrorMessage = "O Número da Nota deve ser válido.")]
         public int NumeroNota { get; set; }
+
+        [Range(1, int.MaxValue, ErrorMessage = "É obrigatório selecionar um Fornecedor.")]
         public int FornecedorId { get; set; }
 
         public bool Status { get; set; }
 
+        [Required(ErrorMessage = "A Data de Emissão é obrigatória.")]
         public DateTime DataEmissao { get; set; }
+
+        [Required(ErrorMessage = "A Data de Chegada é obrigatória.")]
         public DateTime DataChegada { get; set; }
 
+        [Range(1, int.MaxValue, ErrorMessage = "É obrigatório selecionar uma Condição de Pagamento.")]
         public int CondicaoPagamentoId { get; set; }
 
         public decimal Frete { get; set; }
@@ -23,6 +35,7 @@ namespace Pagamento.Models
 
         public List<ItemCompra> Itens { get; set; } = new List<ItemCompra>();
 
+         
         public decimal TotalProdutos
         {
             get
@@ -39,5 +52,10 @@ namespace Pagamento.Models
             }
         }
         public decimal TotalNota => TotalProdutos + Frete + Seguro + Despesas;
+
+        public string? NomeFornecedor { get; set; }
+
+        public string? Observacoes { get; set; } 
+
     }
 }

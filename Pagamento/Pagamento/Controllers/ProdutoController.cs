@@ -207,6 +207,7 @@ namespace Pagamento.Controllers
 
             if (ModelState.IsValid)
             {
+                
                 _produtoDAO.Inserir(produto);
 
                 if (!string.IsNullOrEmpty(fornecedoresSelecionados))
@@ -225,7 +226,6 @@ namespace Pagamento.Controllers
                     {
                         id = produto.IdProduto,
                         nome = produto.Descricao,
-                       
                         unidade = _unidadeMedidaDAO.BuscarPorId(produto.UnidadeMedidaId)?.Descricao
                     }
                 });

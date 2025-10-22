@@ -1,17 +1,73 @@
-﻿@{
-    ViewData["Title"] = "Compras";
+﻿@model IEnumerable<Pagamento.Models.Compra>
+@using System.Globalization
+
+@{
+    ViewData["Title"] = "Lista de Compras";
 }
 
-@model List<Pagamento.Models.Compra>
+<h1>@ViewData["Title"]</h1>
 
-<div class="text-center">
-    <h1 class="display-4">Compras</h1>
+<p>
+    <a asp-action="Criar" class="btn btn-primary">Cadastrar Nova Compra</a>
+</p>
 
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
 
-    <div class="d-flex justify-content-start mb-3">
-        <a asp-controller="Compra" asp-action="Criar" class="btn btn-primary">Criar</a>
-    </div>
-
-
-
-</div>
+<table class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th>Nota Fiscal (Modelo/Série/Número)</th>
+            <th>Fornecedor</th>
+            <th>Produtos</th>
+            <th>Total da Nota</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var compra in Model)
+            {
+                <tr>
+                    <td>
+                        @compra.Modelo / @compra.Serie / @compra.NumeroNota
+                    </td>
+                    <td>
+                        @compra.NomeFornecedor
+                    </td>
+                    <td>
+                        @if (compra.Itens != null && compra.Itens.Any())
+                        {
+                            <ul>
+                                @foreach (var item in compra.Itens)
+                                {
+                                    <li>@item.NomeProduto</li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <span>(Sem itens)</span>
+                        }
+                    </td>
+                    <td>
+                        @compra.TotalNota.ToString("C", new CultureInfo("pt-BR"))
+                    </td>
+                    <td>
+                        <a asp-action="Detalhes" asp-route-id="@compra.NumeroNota" class="btn btn-sm btn-info">Detalhes</a>
+                        <a asp-action="Cancelar" asp-route-id="@compra.NumeroNota" class="btn btn-sm btn-danger">Cancelar</a>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="5" class="text-center">Nenhuma compra cadastrada.</td>
+            </tr>
+        }
+    </tbody>
+</table>

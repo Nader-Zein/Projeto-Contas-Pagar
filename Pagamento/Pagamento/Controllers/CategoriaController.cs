@@ -13,7 +13,7 @@ namespace Pagamento.Controllers
             var lista = _categoriaDAO.Listar();
             return View(lista);
         }
-
+        
         public IActionResult Criar()
         {
             return View(new Categoria());

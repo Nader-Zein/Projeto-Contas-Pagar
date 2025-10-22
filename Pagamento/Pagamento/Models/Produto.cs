@@ -25,7 +25,7 @@ namespace Pagamento.Models
         public int UnidadeMedidaId { get; set; }
         public string? NomeUnidade { get; set; }
 
-        
+        public decimal PrecoMedioCusto { get; set; }
 
         public int CategoriaId { get; set; }
         public string? NomeCategoria { get; set; }

@@ -50,5 +50,57 @@ namespace Pagamento.DAO
             }
             return lista;
         }
+
+        public void AtualizarDadosCompra(int idProduto, int idFornecedor, decimal precoRateado, DateTime dataCompra, string? observacao)
+        {
+
+            using (var conexao = new MySqlConnection(connectionString))
+            {
+                conexao.Open();
+                string sql = @"UPDATE ProdutoFornecedor SET
+                                PrecoUltimaCompra = @PrecoUltimaCompra,
+                                DataUltimaCompra = @DataUltimaCompra,
+                                Observacao = @Observacao
+                               WHERE 
+                                IdProduto = @IdProduto AND IdFornecedor = @IdFornecedor";
+
+                var cmd = new MySqlCommand(sql, conexao);
+                cmd.Parameters.AddWithValue("@PrecoUltimaCompra", precoRateado);
+                cmd.Parameters.AddWithValue("@DataUltimaCompra", dataCompra);
+                cmd.Parameters.AddWithValue("@Observacao", observacao ?? (object)DBNull.Value); 
+                cmd.Parameters.AddWithValue("@IdProduto", idProduto);
+                cmd.Parameters.AddWithValue("@IdFornecedor", idFornecedor);
+
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+
+       
+        public void GarantirAssociacao(int produtoId, int fornecedorId)
+        {
+            using (var conexao = new MySqlConnection(connectionString))
+            {
+                try
+                {
+                    conexao.Open();
+                    
+                    string sql = @"INSERT IGNORE INTO ProdutoFornecedor 
+                                   (IdProduto, IdFornecedor) 
+                                   VALUES 
+                                   (@ProdutoId, @FornecedorId)";
+
+                    var cmd = new MySqlCommand(sql, conexao);
+                    cmd.Parameters.AddWithValue("@ProdutoId", produtoId);
+                    cmd.Parameters.AddWithValue("@FornecedorId", fornecedorId);
+
+                    cmd.ExecuteNonQuery();
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception($"Erro ao garantir a associação produto-fornecedor. Detalhes: {ex.Message}");
+                }
+            }
+        }
     }
 }

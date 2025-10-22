@@ -16,7 +16,7 @@
         </div>
     </div>
     <label>Nome do País</label>
-    <input class="form-control" type="text" placeholder="Nome do país" asp-for="NomePais" required />
+    <input class="form-control" type="text" placeholder="Nome do país" asp-for="NomePais" required maxlength="40" />
     <span asp-validation-for="NomePais" class="text-danger"></span>
 
     @if (Model != null)

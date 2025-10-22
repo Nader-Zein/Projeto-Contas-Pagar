@@ -24,7 +24,7 @@
 
         <div class="col-md-6 mb-3">
             <label asp-for="Nome_RazaoSocial" class="form-label">Nome </label>
-            <input asp-for="Nome_RazaoSocial" class="form-control" />
+            <input asp-for="Nome_RazaoSocial" class="form-control" maxlength="40" />
             <span asp-validation-for="Nome_RazaoSocial" class="text-danger"></span>
 
         </div>
@@ -49,7 +49,7 @@
 
         <div class="col-md-6 mb-3">
             <label asp-for="Endereco" class="form-label">Endereço</label>
-            <input asp-for="Endereco" class="form-control" />
+            <input asp-for="Endereco" class="form-control" maxlength="40" />
             <span asp-validation-for="Endereco" class="text-danger"></span>
 
         </div>
@@ -62,12 +62,12 @@
 
         <div class="col-md-6 mb-3">
             <label asp-for="Complemento" class="form-label">Complemento</label>
-            <input asp-for="Complemento" class="form-control" />
+            <input asp-for="Complemento" class="form-control" maxlength="40" />
         </div>
 
         <div class="col-md-6 mb-3">
             <label asp-for="Bairro" class="form-label">Bairro</label>
-            <input asp-for="Bairro" class="form-control" />
+            <input asp-for="Bairro" class="form-control" maxlength="40" />
             <span asp-validation-for="Bairro" class="text-danger"></span>
 
         </div>
@@ -228,6 +228,47 @@
     <partial name="_ValidationScriptsPartial" />
 
     <script>
+
+
+
+        $(document).ready(function(){
+            var maskBehavior = function (val) {
+                return val.replace(/\D/g, '').length === 11 ? '(00) 00000-0000' : '(00) 0000-00009';
+            },
+            options = {
+                onKeyPress: function(val, e, field, options) {
+                    field.mask(maskBehavior.apply({}, arguments), options);
+                }
+            };
+
+            $('#Telefone').mask(maskBehavior, options);
+        });
+
+
+        $(document).ready(function () {
+            $('#CPF_CNPJ').on('keypress', function (event) {
+
+                if (event.which < 48 || event.which > 57) {
+                    event.preventDefault();
+                }
+            });
+        });
+
+
+        $(document).ready(function () {
+            var cepInput = $('#Cep');
+
+            cepInput.on('keypress', function (event) {
+                if (event.which < 48 || event.which > 57) {
+                    event.preventDefault();
+                }
+            });
+
+            cepInput.on('input', function () {
+                this.value = this.value.replace(/[^0-9]/g, '');
+            });
+        });
+
         function selecionarCidade(id, nome) {
             document.getElementById("IdCidade").value = id;
             document.getElementById("NomeCidadeSelecionada").value = nome;
