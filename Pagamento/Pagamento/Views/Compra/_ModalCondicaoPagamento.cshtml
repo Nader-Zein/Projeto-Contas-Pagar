@@ -10,7 +10,7 @@
             </div>
 
             <div class="modal-body">
-                <input type="text" id="filtroCondicao" class="form-control mb-3" placeholder="Digite para buscar..." onkeyup="filtrarTabela('filtroCondicao', 'tabelaCondicoes')" />
+                <input type="text" id="filtroCondicao" class="form-control mb-3" placeholder="Digite para buscar..." onkeyup="filtrarTabelaCondicao()" />
 
                 <table class="table table-bordered table-hover" id="tabelaCondicoes">
                     <thead>
@@ -38,7 +38,7 @@
                     </tbody>
                 </table>
                 <hr />
-                <button type="button" class="btn btn-success" onclick="abrirFormNovaCondicao()">
+                <button type="button" class="btn btn-success" onclick="abrirFormNovaCondicaoCompra()">
                     + Cadastrar Nova Condição
                 </button>
             </div>
@@ -46,9 +46,9 @@
     </div>
 </div>
 
-<div class="modal fade" id="modalNovaCondicao" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="modalNovaCondicaoCompra" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-xl">
-        <div class="modal-content" id="modalNovaCondicaoContent">
+        <div class="modal-content" id="modalNovaCondicaoContentCompra">
         </div>
     </div>
 </div>

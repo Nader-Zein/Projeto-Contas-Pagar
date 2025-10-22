@@ -50,7 +50,6 @@ namespace Pagamento.DAO
                         listaDeCompras.Add(compra);
                     }
                     readerPrincipal.Close(); 
-
                     foreach (var compra in listaDeCompras)
                     {
                         string sqlItens = @"SELECT 
@@ -151,6 +150,7 @@ namespace Pagamento.DAO
 
 
 
+                           
                             produtoFornecedorDAO.GarantirAssociacao(item.ProdutoId, compra.FornecedorId);
 
 
@@ -175,6 +175,7 @@ namespace Pagamento.DAO
                 }
                 catch (Exception ex)
                 {
+                    
                     throw new Exception("Ocorreu um erro durante a inserção da compra. O processo foi interrompido, mas alguns dados podem ter sido salvos. Detalhes: " + ex.Message);
                 }
             }

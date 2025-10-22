@@ -22,11 +22,13 @@ namespace Pagamento.Controllers
         {
             try
             {
+                
                 var listaDeCompras = _compraDAO.Listar();
                 return View(listaDeCompras); 
             }
             catch (Exception erro)
             {
+                
                 TempData["ErrorMessage"] = $"Não foi possível carregar a lista de compras. Erro: {erro.Message}";
                 return View(new List<Compra>());
             }
@@ -35,8 +37,10 @@ namespace Pagamento.Controllers
         
         public IActionResult Criar()
         {
+           
             PreencherViewBags();
 
+            
             return View(new Compra());
         }
 
@@ -44,10 +48,12 @@ namespace Pagamento.Controllers
 
         private void PreencherViewBags()
         {
+           
             var fornecedores = _fornecedorDAO.Listar();
             var produtos = _produtoDAO.Listar();
             var condicoes = _condicaoPagamentoDAO.Listar();
 
+            
             ViewBag.Fornecedores = fornecedores ?? new List<Fornecedor>();
             ViewBag.Produtos = produtos ?? new List<Produto>();
             ViewBag.CondicoesPagamento = condicoes ?? new List<CondicaoPagamento>();
@@ -60,11 +66,13 @@ namespace Pagamento.Controllers
         {
             try
             {
+                
                 if (!string.IsNullOrEmpty(itensJson))
                 {
                     compra.Itens = JsonSerializer.Deserialize<List<ItemCompra>>(itensJson);
                 }
 
+               
                 if (compra.Itens == null || !compra.Itens.Any())
                 {
                     ModelState.AddModelError("", "A compra deve ter pelo menos um item.");
@@ -76,6 +84,7 @@ namespace Pagamento.Controllers
                     
                     _compraDAO.Inserir(compra);
 
+                   
                     return RedirectToAction("Index");
                 }
             }
@@ -84,7 +93,6 @@ namespace Pagamento.Controllers
                 ModelState.AddModelError("", "Ocorreu um erro ao salvar a compra: " + erro.Message);
             }
 
-            
             PreencherViewBags();
             return View(compra);
         }

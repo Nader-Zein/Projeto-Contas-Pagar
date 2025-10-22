@@ -259,9 +259,9 @@
                 </div>
 
                 <div class="modal-body">
-                    <input type="text" id="filtroFornecedor" class="form-control mb-2" placeholder="Buscar..." onkeyup="filtrarTabelaFornecedor()" />
+                    <input type="text" id="filtroFornecedorProduto" class="form-control mb-2" placeholder="Buscar..." onkeyup="filtrarTabelaFornecedor()" />
 
-                    <table class="table table-bordered" id="tabelaFornecedores">
+                    <table class="table table-bordered" id="tabelaFornecedoresProduto">
                         <thead>
                             <tr>
                                 <th></th>
@@ -307,18 +307,27 @@
 
 <script>
     
-    function abrirFormNovoFornecedorProduto() {
-        var selectionModal = bootstrap.Modal.getInstance(document.getElementById('modalFornecedorSelecionarProduto'));
-        if (selectionModal) {
-            selectionModal.hide();
-        }
 
-        $.get('@Url.Action("FormModal", "Fornecedor")', function (data) {
-            $('#modalFornecedorProdutoContent').html(data);
-            var modal = new bootstrap.Modal(document.getElementById('modalFornecedorProduto'));
-            modal.show();
-        });
+
+        function abrirFormNovoFornecedorProduto() {
+      const selection = bootstrap.Modal.getInstance(document.getElementById('modalFornecedorSelecionarProduto'));
+      if (selection) selection.hide();
+
+      cleanupFornecedorSubModals();
+
+      $.get('@Url.Action("FormModal", "Fornecedor")', function (html) {
+        document.getElementById('modalFornecedorProdutoContent').innerHTML = html;
+
+        dedupeFornecedorSubModals();
+
+        const el = document.getElementById('modalFornecedorProduto');
+        const m = new bootstrap.Modal(el);
+        m.show();
+
+        el.addEventListener('hidden.bs.modal', cleanupFornecedorSubModals, { once: true });
+      });
     }
+
 
     
 

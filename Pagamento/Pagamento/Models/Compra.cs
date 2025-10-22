@@ -35,7 +35,6 @@ namespace Pagamento.Models
 
         public List<ItemCompra> Itens { get; set; } = new List<ItemCompra>();
 
-         
         public decimal TotalProdutos
         {
             get

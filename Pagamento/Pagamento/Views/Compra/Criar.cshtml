@@ -150,7 +150,7 @@
         <div class="modal-content">
             <div class="modal-header"><h5 class="modal-title">Selecionar Fornecedor</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
             <div class="modal-body">
-                <input type="text" id="filtroFornecedor" class="form-control mb-3" placeholder="Digite para buscar..." onkeyup="filtrarTabela('filtroFornecedor', 'tabelaFornecedores')" />
+                <input type="text" id="filtroFornecedor" class="form-control mb-3" placeholder="Digite para buscar..." onkeyup="filtrarTabelaFornecedorCompra()" />
                 <table class="table table-bordered table-hover" id="tabelaFornecedores">
                     <thead><tr><th>Nome</th><th>Ação</th></tr></thead>              
                     <tbody>
@@ -181,7 +181,7 @@
         <div class="modal-content">
             <div class="modal-header"><h5 class="modal-title">Selecionar Produto</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
             <div class="modal-body">
-                <input type="text" id="filtroProduto" class="form-control mb-3" placeholder="Digite para buscar..." onkeyup="filtrarTabela('filtroProduto', 'tabelaProdutosModal')" />
+                <input type="text" id="filtroProduto" class="form-control mb-3" placeholder="Digite para buscar..." onkeyup="filtrarTabelaProduto()" />
                 <table class="table table-bordered table-hover" id="tabelaProdutosModal">
                     <thead><tr><th>Descrição</th><th>Ação</th></tr></thead>
                     <tbody>
@@ -212,13 +212,6 @@
     </div>
 </div>
 
-<div class="modal fade" id="modalNovaCidade" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content" id="modalNovaCidadeContent">
-        </div>
-    </div>
-</div>
-
 <div class="modal fade" id="modalNovoProduto" tabindex="-1">
     <div class="modal-dialog modal-xl">
         <div class="modal-content" id="modalNovoProdutoContent">
@@ -233,10 +226,93 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
+
+
+
+         function moveFornecedorSubModalsToBody() {
+          ['#modalCidadeFornecedor',
+           '#modalCondicaoPgtoFornecedor',
+           '#modalNovaCidadeFornecedor',
+           '#modalNovaCondicaoFornecedor'
+          ].forEach(sel => {
+            const el = document.querySelector('#modalNovoFornecedorContent ' + sel);
+            if (el) document.body.appendChild(el); 
+        }
+
+        function openStackedModal(childId, parentId) {
+          const parentEl = document.getElementById(parentId);
+          const childEl  = document.getElementById(childId);
+          if (!childEl) return;
+
+          const parent = bootstrap.Modal.getOrCreateInstance(parentEl);
+          const child  = bootstrap.Modal.getOrCreateInstance(childEl);
+
+          parent.hide();
+          childEl.addEventListener('hidden.bs.modal', function onHidden() {
+            childEl.removeEventListener('hidden.bs.modal', onHidden);
+            parent.show();
+          }, { once: true });
+
+          child.show();
+        }
+
+        function wireFornecedorModal() {
+          moveFornecedorSubModalsToBody();
+
+          const root = document.getElementById('modalNovoFornecedorContent');
+
+          const btnCidade = root.querySelector('[data-bs-target="#modalCidadeFornecedor"]');
+          if (btnCidade) {
+            btnCidade.removeAttribute('data-bs-toggle');
+            btnCidade.removeAttribute('data-bs-target');
+            btnCidade.addEventListener('click', e => {
+              e.preventDefault();
+              openStackedModal('modalCidadeFornecedor', 'modalNovoFornecedor');
+            });
+          }
+
+          const btnCond = root.querySelector('[data-bs-target="#modalCondicaoPgtoFornecedor"]');
+          if (btnCond) {
+            btnCond.removeAttribute('data-bs-toggle');
+            btnCond.removeAttribute('data-bs-target');
+            btnCond.addEventListener('click', e => {
+              e.preventDefault();
+              openStackedModal('modalCondicaoPgtoFornecedor', 'modalNovoFornecedor');
+            });
+          }
+        }
+
+
+
+        function cleanupFornecedorSubModals() {
+          [
+            '#modalCidadeFornecedor',
+            '#modalCondicaoPgtoFornecedor',
+            '#modalNovaCidadeFornecedor',
+            '#modalNovaCondicaoFornecedor'
+          ].forEach(sel => {
+            document.querySelectorAll(sel).forEach(n => n.remove());
+          });
+
+          if (!document.querySelector('.modal.show')) {
+            document.querySelectorAll('.modal-backdrop').forEach(b => b.remove());
+            document.body.classList.remove('modal-open');
+          }
+        }
+
+        function dedupeFornecedorSubModals() {
+          ['modalCidadeFornecedor','modalCondicaoPgtoFornecedor','modalNovaCidadeFornecedor','modalNovaCondicaoFornecedor']
+            .forEach(id => {
+              const nodes = Array.from(document.querySelectorAll('#' + id));
+              if (nodes.length > 1) {
+                nodes.slice(0, -1).forEach(n => n.remove());
+              }
+            });
+        }
+
         
         let idCondicaoPermitida = 0;
 
-        
         function selecionarFornecedor(id, nome, idCondPgto) {
             document.getElementById('FornecedorId').value = id;
             document.getElementById('tabela-fornecedor-selecionado').innerHTML = `<tr><td>${id}</td><td>${nome}</td></tr>`;
@@ -247,7 +323,6 @@
             document.getElementById('NomeCondicaoCompra').value = '';
             document.getElementById('tabela-parcelas').innerHTML = '';
 
-            
             bootstrap.Modal.getInstance(document.getElementById('modalFornecedor')).hide();
 
            
@@ -273,6 +348,7 @@
                         if (idDaLinha == idCondicaoPermitida) {
                             linha.style.display = ''; 
                         }
+                        
                         else {
                             linha.style.display = 'none';
                         }
@@ -283,13 +359,31 @@
             
         });
 
+        
+
+
+
+                
         function abrirFormNovoFornecedor() {
-            $.get('@Url.Action("FormModal", "Fornecedor")', function (data) {
-                $('#modalNovoFornecedorContent').html(data);
-                var modal = new bootstrap.Modal(document.getElementById('modalNovoFornecedor'));
-                modal.show();
-            });
+          cleanupFornecedorSubModals(); 
+
+          $.get('@Url.Action("FormModal", "Fornecedor")', function (html) {
+            const cont = document.getElementById('modalNovoFornecedorContent');
+            cont.innerHTML = html;
+
+            dedupeFornecedorSubModals(); 
+            wireFornecedorModal();       
+
+            const el = document.getElementById('modalNovoFornecedor');
+            const m  = new bootstrap.Modal(el);
+            m.show();
+
+            el.addEventListener('hidden.bs.modal', cleanupFornecedorSubModals, { once: true });
+          });
         }
+
+
+
 
         $(document).on('submit', '#formCadastrarFornecedor', function (e) {
             e.preventDefault();
@@ -315,55 +409,75 @@
             });
         });
 
-        function filtrarTabelaFornecedor() {
-            var filtro = document.getElementById("filtroFornecedor").value.toLowerCase();
-            document.querySelectorAll("#tabelaFornecedores tbody tr").forEach(function (linha) {
-                var nome = linha.cells[0].textContent.toLowerCase();
-                linha.style.display = nome.includes(filtro) ? "" : "none";
-            });
+       
+
+       
+        function selecionarCidadeFornecedor(id, nome) {
+          $('#modalNovoFornecedorContent #IdCidade').val(id);
+          $('#modalNovoFornecedorContent #NomeCidadeSelecionada').val(nome);
+          bootstrap.Modal.getInstance(document.getElementById('modalCidadeFornecedor'))?.hide();
         }
 
-        function selecionarCidade(id, nome) {
-            $('#IdCidade').val(id);
-            $('#NomeCidadeSelecionada').val(nome);
-            bootstrap.Modal.getInstance(document.getElementById('modalCidade')).hide();
+       
+
+                
+        function abrirFormNovaCidadeFornecedor() {
+          const selEl = document.getElementById('modalCidadeFornecedor');
+          const sel   = selEl ? bootstrap.Modal.getOrCreateInstance(selEl) : null;
+          if (sel) sel.hide();
+
+          $.get('/Cidade/FormModal', function (html) {
+            $('#modalNovaCidadeContentFornecedor').html(html);
+
+            const cadEl = document.getElementById('modalNovaCidadeFornecedor');
+            const cad   = bootstrap.Modal.getOrCreateInstance(cadEl);
+
+            cadEl.addEventListener('hidden.bs.modal', function onHidden() {
+              cadEl.removeEventListener('hidden.bs.modal', onHidden);
+              if (sel) sel.show(); 
+            }, { once: true });
+
+            cad.show();
+          });
         }
 
-        function abrirFormNovaCidade() {
-            $.get('@Url.Action("FormModal", "Cidade")', function (data) {
-                $('#modalNovaCidadeContent').html(data);
-                new bootstrap.Modal(document.getElementById('modalNovaCidade')).show();
-            });
-        }
-
-        
 
         $(document).on('submit', '#formCadastrarCidade', function (e) {
-            e.preventDefault();
-            $.ajax({
-                type: 'POST',
-                url: '@Url.Action("FormModal", "Cidade")',
-                data: $(this).serialize(),
-                success: function (response) {
-                    if (response.sucesso) {
-                        $('#modalNovaCidade').modal('hide');
-                        const novaLinha = `
-                            <tr>
-                                <td>${response.cidade.nome}</td>
-                                <td>
-                                    <button class='btn btn-sm btn-primary' onclick='selecionarCidade(${response.cidade.id}, "${response.cidade.nome}")'>Selecionar</button>
-                                </td>
-                            </tr>`;
-                        $('#tabelaCidades tbody').append(novaLinha);
-                    } else {
-                        $('#modalNovaCidadeContent').html(response);
-                    }
-                }
-            });
+          e.preventDefault();
+          $.ajax({
+            type: 'POST',
+            url: '@Url.Action("FormModal", "Cidade")',
+            data: $(this).serialize(),
+            success: function (response) {
+              if (response.sucesso) {
+                bootstrap.Modal.getInstance(document.getElementById('modalNovaCidadeFornecedor')).hide();
+
+                const novaLinha = `
+                  <tr>
+                    <td>${response.cidade.nome}</td>
+                    <td>
+                      <button class='btn btn-sm btn-primary'
+                              onclick='selecionarCidadeFornecedor(${response.cidade.id}, "${response.cidade.nome}")'>
+                        Selecionar
+                      </button>
+                    </td>
+                  </tr>`;
+                $('#tabelaCidadesFornecedor tbody').append(novaLinha);
+              } else {
+                $('#modalNovaCidadeContentFornecedor').html(response);
+              }
+            }
+          });
         });
 
 
-        
+        function filtrarTabelaCidadeFornecedor() {
+          const filtro = $('#filtroCidadeFornecedor').val().toLowerCase();
+          $('#tabelaCidadesFornecedor tbody tr').each(function () {
+            const nome = $(this).find('td:first').text().toLowerCase();
+            $(this).toggle(nome.includes(filtro));
+          });
+        }
 
 
 
@@ -375,24 +489,36 @@
             });
         }
 
-
-
-        function selecionarCondicao(id, nome) {
-            $('#modalNovoFornecedorContent #IdCondPgto').val(id);
-
-            $('#modalNovoFornecedorContent #NomeCondicaoSelecionada').val(nome);
-
-            var modalInst = bootstrap.Modal.getInstance(document.querySelector('#modalNovoFornecedorContent #modalCondicaoPgto'));
-            modalInst.hide();
+        
+        function selecionarCondicaoFornecedor(id, nome) {
+          $('#modalNovoFornecedorContent #IdCondPgto').val(id);
+          $('#modalNovoFornecedorContent #NomeCondicaoSelecionada').val(nome);
+          bootstrap.Modal.getInstance(document.getElementById('modalCondicaoPgtoFornecedor'))?.hide();
         }
 
+       
 
-        function abrirFormNovaCondicao() {
-            $.get('/CondicaoPagamento/FormModal', function (data) {
-                $('#modalNovaCondicaoContent').html(data);
-                new bootstrap.Modal(document.getElementById('modalNovaCondicao')).show();
-            });
+                
+        function abrirFormNovaCondicaoFornecedor() {
+          const selEl = document.getElementById('modalCondicaoPgtoFornecedor');
+          const sel   = selEl ? bootstrap.Modal.getOrCreateInstance(selEl) : null;
+          if (sel) sel.hide();
+
+          $.get('/CondicaoPagamento/FormModal', function (html) {
+            $('#modalNovaCondicaoContentFornecedor').html(html);
+
+            const cadEl = document.getElementById('modalNovaCondicaoFornecedor');
+            const cad   = bootstrap.Modal.getOrCreateInstance(cadEl);
+
+            cadEl.addEventListener('hidden.bs.modal', function onHidden() {
+              cadEl.removeEventListener('hidden.bs.modal', onHidden);
+              if (sel) sel.show();
+            }, { once: true });
+
+            cad.show();
+          });
         }
+
 
         function filtrarTabelaCondicao() {
             const filtro = $('#filtroCondicao').val().toLowerCase();
@@ -505,45 +631,53 @@
             $('#NomeFormaSelecionada').val('');
         });
 
+        
         $(document).on('submit', '#formCadastrarCondicaoPgto', function (e) {
-            e.preventDefault();
+          e.preventDefault();
 
-            const formData = $(this).serializeArray();
-            formData.push({ name: "ParcelasJson", value: JSON.stringify(parcelas) });
+          const formData = $(this).serializeArray();
+          formData.push({ name: "ParcelasJson", value: JSON.stringify(parcelas) });
 
-            $.ajax({
-                type: 'POST',
-                url: '/CondicaoPagamento/FormModal',
-                data: $.param(formData),
-                success: function (response) {
-                    if (response.sucesso) {
-                        bootstrap.Modal.getInstance(document.getElementById('modalNovaCondicao')).hide();
+          $.ajax({
+            type: 'POST',
+            url: '/CondicaoPagamento/FormModal',
+            data: $.param(formData),
+            success: function (response) {
+              if (response.sucesso) {
+                bootstrap.Modal.getInstance(document.getElementById('modalNovaCondicaoFornecedor')).hide();
 
-                        const linha = `
-                            <tr>
-                                <td>${response.condicao.nome}</td>
-                                <td>
-                                    <button type='button' class='btn btn-sm btn-primary'
-                                        onclick='selecionarCondicao(${response.condicao.id}, "${response.condicao.nome}")'>
-                                        Selecionar
-                                    </button>
-                                </td>
-                            </tr>`;
-                        $('#tabelaCondicoes tbody').append(linha);
+                const linha = `
+                  <tr>
+                    <td>${response.condicao.nome}</td>
+                    <td>
+                      <button type='button' class='btn btn-sm btn-primary'
+                        onclick='selecionarCondicaoFornecedor(${response.condicao.id}, "${response.condicao.nome}")'>
+                        Selecionar
+                      </button>
+                    </td>
+                  </tr>`;
+                $('#tabelaCondicoesFornecedor tbody').append(linha); 
 
-                        $('#IdCondPgto').val(response.condicao.id);
-                        $('#NomeCondicaoSelecionada').val(response.condicao.nome);
-                    } else {
-                        $('#modalNovaCondicaoContent').html(response);
-                    }
-                },
-                error: function () {
-                    alert("Erro ao cadastrar condição. Verifique os campos e tente novamente.");
-                }
-            });
+                $('#IdCondPgto').val(response.condicao.id);
+                $('#NomeCondicaoSelecionada').val(response.condicao.nome);
+              } else {
+                $('#modalNovaCondicaoContentFornecedor').html(response);
+              }
+            },
+            error: function () {
+              alert("Erro ao cadastrar condição. Verifique os campos e tente novamente.");
+            }
+          });
         });
 
-
+          function filtrarTabelaCondicaoFornecedor() {
+          const filtro = $('#filtroCondicaoFornecedor').val().toLowerCase();
+          $('#tabelaCondicoesFornecedor tbody tr').each(function () {
+            const nome = $(this).find('td:first').text().toLowerCase();
+            $(this).toggle(nome.includes(filtro));
+          });
+        }
+        
         
         function selecionarProduto(id, nome, unidade) {
             document.getElementById('IdProdutoSelecionado').value = id;
@@ -570,6 +704,7 @@
                 success: function (response) {
                 if (response.sucesso) {
                     $('#modalNovoProduto').modal('hide');
+                        
                         var novaLinha = `<tr>
                             <td>${response.produto.nome}</td>
                             <td>
@@ -577,6 +712,7 @@
                             </td>
                         </tr>`;
 
+                        
                         $('#tabelaProdutosModal tbody').append(novaLinha);
                     }  else {
                         $('#modalNovoProdutoContent').html(response);
@@ -587,12 +723,13 @@
 
         function filtrarTabelaProduto() {
             var filtro = document.getElementById("filtroProduto").value.toLowerCase();
-            document.querySelectorAll("#tabelaProdutos tbody tr").forEach(function (linha) {
+            document.querySelectorAll("#tabelaProdutosModal tbody tr").forEach(function (linha) {
                 var nome = linha.cells[0].textContent.toLowerCase();
                 linha.style.display = nome.includes(filtro) ? "" : "none";
             });
         }
 
+       
         function selecionarMarca(id, nome) {
             $('#MarcaId').val(id);
             $('#NomeMarcaSelecionada').val(nome);
@@ -609,6 +746,7 @@
             bootstrap.Modal.getInstance(document.getElementById('modalCategoriaSelecionar')).hide();
         }
 
+       
         $(document).on('change', '.chk-fornecedor', function () {
             const fornecedoresSelecionados = [];
             const nomesSelecionados = [];
@@ -635,6 +773,7 @@
             document.getElementById('NomeFornecedorSelecionado').value = nomes.join(', ');
         }
 
+        
         function filtrarTabelaMarca() {
             const filtro = $('#filtroMarca').val().toLowerCase();
             $('#tabelaMarcas tbody tr').each(function () {
@@ -642,10 +781,10 @@
                 $(this).toggle(nome.includes(filtro));
             });
         }
-        function filtrarTabelaFornecedor() {
+        function filtrarTabelaFornecedorCompra() {
             const filtro = $('#filtroFornecedor').val().toLowerCase();
             $('#tabelaFornecedores tbody tr').each(function () {
-                const nome = $(this).find('td:nth-child(2)').text().toLowerCase();
+                const nome = $(this).find('td:first').text().toLowerCase();    
                 $(this).toggle(nome.includes(filtro));
             });
         }
@@ -664,6 +803,7 @@
             });
         }
 
+        
         
         
         
@@ -692,6 +832,7 @@
             });
         }
 
+        
         $(document).on('submit', '#formCadastrarMarca', function (e) {
             e.preventDefault();
             $.ajax({
@@ -773,36 +914,47 @@
             });
         });
 
+        
+
+
        
         async function selecionarCondicaoCompra(id, descricao) {
+            
             document.getElementById('CondicaoPagamentoCompraId').value = id;
             document.getElementById('NomeCondicaoCompra').value = descricao;
 
+           
             var modalEl = document.getElementById('modalCondicaoCompra');
             var modal = bootstrap.Modal.getInstance(modalEl);
             if (modal && modalEl.classList.contains('show')) {
                 modal.hide();
             }
 
+           
             await gerarParcelas();
         }
        
+
+        
         async function gerarParcelas() {
             const idCondicao = parseInt(document.getElementById('CondicaoPagamentoCompraId').value);
             const totalNotaStr = document.getElementById('total-nota').value;
             const totalNotaNum = parseMoeda(totalNotaStr);
             const dataEmissaoInput = document.getElementById('DataEmissao');
 
+            
             if (!idCondicao || totalNotaNum <= 0) {
                 document.getElementById('tabela-parcelas').innerHTML = '';
                 return;
             }
 
             if (!dataEmissaoInput.value) {
+                
                 alert("Por favor, preencha a Data de Emissão para calcular os vencimentos.");
                 return;
             }
 
+           
             try {
                 const [ano, mes, dia] = dataEmissaoInput.value.split('-');
                 const dataBase = new Date(ano, mes - 1, dia);
@@ -839,14 +991,15 @@
         }
 
 
-        function abrirFormNovaCondicao() {
-            $.get('@Url.Action("FormModal", "CondicaoPagamento")', function (data) {
-                $('#modalNovaCondicaoContent').html(data);
-                var modal = new bootstrap.Modal(document.getElementById('modalNovaCondicao'));
-                modal.show();
-            });
+                
+        function abrirFormNovaCondicaoCompra() {
+          $.get('@Url.Action("FormModal", "CondicaoPagamento")', function (data) {
+            $('#modalNovaCondicaoContentCompra').html(data);
+            new bootstrap.Modal(document.getElementById('modalNovaCondicaoCompra')).show();
+          });
         }
 
+        
         $(document).on('submit', '#formCadastrarCondicao', function (e) {
             e.preventDefault();
             $.ajax({
@@ -855,8 +1008,8 @@
                 data: $(this).serialize(),
                 success: function (response) {
                     if (response.sucesso) {
-                        $('#modalNovaCondicao').modal('hide');
-
+                        
+                        $('#modalNovaCondicaoCompra').modal('hide');
                         var novaLinha = `<tr>
                             <td>${response.condicao.descricao}</td>
                             <td>
@@ -879,6 +1032,7 @@
             });
         }
 
+        
         function limparSelecaoProduto() {
             const idInput = document.getElementById('IdProdutoSelecionado');
             const nomeInput = document.getElementById('NomeProdutoSelecionado');
@@ -889,6 +1043,7 @@
             }
         }
 
+         
         function parseMoeda(valorString) {
             if (!valorString) return 0;
             let valorNumerico = valorString.replace('R$', '').trim().replace(/\./g, '').replace(',', '.');
@@ -925,11 +1080,13 @@
 
             document.getElementById('total-produtos').value = formatarMoeda(totalProdutos);
             document.getElementById('total-nota').value = formatarMoeda(totalNota);
+            
             gerarParcelas(); 
         }
 
 
 
+       
         document.addEventListener('DOMContentLoaded', function () {
             const btnAdicionarProduto = document.getElementById('btn-adicionar-produto');
             const tabelaProdutosBody  = document.getElementById('tabela-produtos');
@@ -976,6 +1133,7 @@
                     `;
                     tabelaProdutosBody.appendChild(linha);
 
+                    
                     if (produtoIdInput) produtoIdInput.value = '';
                     if (unidadeInput) unidadeInput.value = ''; 
                     if (produtoNomeInput) {
@@ -988,6 +1146,7 @@
                     atualizarTotais();
                 });
 
+                
                 tabelaProdutosBody.addEventListener('click', function (e) {
                     const btn = e.target.closest('.btn-remover');
                     if (!btn) return;
@@ -996,12 +1155,13 @@
                 });
             }
 
-            
+           
             ['Frete', 'Seguro', 'Despesas'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.addEventListener('input', atualizarTotais);
             });
 
+            
             const form = document.getElementById('form-compra');
             if (form) {
                 form.addEventListener('submit', function (e) {

@@ -32,7 +32,7 @@ namespace Pagamento.DAO
                         ValorCompra = reader.GetDecimal("ValorCompra"),
                         ValorVenda = reader.GetDecimal("ValorVenda"),
                         Quantidade = reader.GetInt32("Quantidade"),
-                        PrecoMedioCusto = reader.GetDecimal("PrecoMedioCusto"),
+                        PrecoMedioCusto = reader.GetDecimal("PrecoMedioCusto"), 
                         QuantidadeMinima = reader.GetInt32("QuantidadeMinima"),
                         PercentualLucro = reader.GetDecimal("PercentualLucro"),
                         Observacoes = reader.IsDBNull(reader.GetOrdinal("Observacoes")) ? null : reader.GetString("Observacoes"),
@@ -95,7 +95,7 @@ namespace Pagamento.DAO
                 cmd.Parameters.AddWithValue("@ValorCompra", 0.00);
                 cmd.Parameters.AddWithValue("@ValorVenda", produto.ValorVenda);
                 cmd.Parameters.AddWithValue("@Quantidade", 0);
-                cmd.Parameters.AddWithValue("@PrecoMedioCusto", 0.00); 
+                cmd.Parameters.AddWithValue("@PrecoMedioCusto", 0.00);
                 cmd.Parameters.AddWithValue("@QuantidadeMinima", produto.QuantidadeMinima);
                 cmd.Parameters.AddWithValue("@PercentualLucro", produto.PercentualLucro);
                 cmd.Parameters.AddWithValue("@Observacoes", string.IsNullOrEmpty(produto.Observacoes) ? DBNull.Value : produto.Observacoes.ToUpper());

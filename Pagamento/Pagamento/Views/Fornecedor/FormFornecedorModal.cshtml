@@ -64,7 +64,7 @@
                 <div class="input-group">
                     <input type="text" id="NomeCidadeSelecionada" class="form-control" readonly placeholder="Nenhuma cidade selecionada" />
                     <input type="hidden" asp-for="IdCidade" id="IdCidade" />
-                    <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#modalCidade">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#modalCidadeFornecedor">
                         Selecionar Cidade
                     </button>
                 </div>
@@ -107,7 +107,7 @@
                 <div class="input-group">
                     <input type="text" id="NomeCondicaoSelecionada" class="form-control" readonly placeholder="Nenhuma condição selecionada" />
                     <input type="hidden" asp-for="IdCondPgto" id="IdCondPgto" />
-                    <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#modalCondicaoPgto">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#modalCondicaoPgtoFornecedor">
                         Selecionar Condição
                     </button>
                 </div>
@@ -126,19 +126,19 @@
     </div>
 </form>
 
-<div class="modal fade" id="modalCidade" tabindex="-1" aria-labelledby="modalCidadeLabel" aria-hidden="true">
+<div class="modal fade" id="modalCidadeFornecedor" tabindex="-1" aria-labelledby="modalCidadeFornecedorLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Selecionar Cidade</h5>
+                <h5 class="modal-title" id="modalCidadeFornecedorLabel">Selecionar Cidade</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
             </div>
             <div class="modal-body">
                 <div class="mb-3">
-                    <input type="text" id="filtroCidade" class="form-control" placeholder="Digite para buscar..." onkeyup="filtrarTabelaCidade()" />
+                    <input type="text" id="filtroCidadeFornecedor" class="form-control" placeholder="Digite para buscar..." onkeyup="filtrarTabelaCidadeFornecedor()" />
                 </div>
 
-                <table class="table table-bordered" id="tabelaCidades">
+                <table class="table table-bordered" id="tabelaCidadesFornecedor">
                     <thead>
                         <tr>
                             <th>Nome</th>
@@ -152,7 +152,7 @@
                                 <td>@cidade.Text</td>
                                 <td>
                                     <button type="button" class="btn btn-sm btn-primary"
-                                            onclick="selecionarCidade(@cidade.Value, '@cidade.Text')">
+                                            onclick="selecionarCidadeFornecedor(@cidade.Value, '@cidade.Text')">
                                         Selecionar
                                     </button>
                                 </td>
@@ -162,23 +162,23 @@
                 </table>
 
                 <hr />
-                <button class="btn btn-success" type="button" onclick="abrirFormNovaCidade()">+ Cadastrar nova Cidade</button>
+                <button class="btn btn-success" type="button" onclick="abrirFormNovaCidadeFornecedor()">+ Cadastrar nova Cidade</button>
                 <div id="formNovaCidadeContainer"></div>
             </div>
         </div>
     </div>
 </div>
 
-<div class="modal fade" id="modalCondicaoPgto" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="modalCondicaoPgtoFornecedor" tabindex="-1" aria-labelledby="modalCondicaoPgtoFornecedorLabel"  aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Selecionar Condição de Pagamento</h5>
+                <h5 class="modal-title" id="modalCondicaoPgtoFornecedorLabel">Selecionar Condição de Pagamento</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
             </div>
             <div class="modal-body">
-                <input type="text" id="filtroCondicao" class="form-control mb-2" placeholder="Buscar..." onkeyup="filtrarTabelaCondicao()" />
-                <table class="table table-bordered" id="tabelaCondicoes">
+                <input type="text" id="filtroCondicaoFornecedor" class="form-control mb-2" placeholder="Buscar..." onkeyup="filtrarTabelaCondicaoFornecedor()" />
+                <table class="table table-bordered" id="tabelaCondicoesFornecedor">
                     <thead>
                         <tr>
                             <th>Descrição</th>
@@ -192,7 +192,7 @@
                                 <td>@condicao.Text</td>
                                 <td>
                                     <button type="button" class="btn btn-sm btn-primary"
-                                            onclick="selecionarCondicao(@condicao.Value, '@condicao.Text')">
+                                            onclick="selecionarCondicaoFornecedor(@condicao.Value, '@condicao.Text')">
                                         Selecionar
                                     </button>
                                 </td>
@@ -202,23 +202,33 @@
                 </table>
 
                 <hr />
-                <button class="btn btn-success" type="button" onclick="abrirFormNovaCondicao()">+ Cadastrar nova Condição</button>
+                <button class="btn btn-success" type="button" onclick="abrirFormNovaCondicaoFornecedor()">+ Cadastrar nova Condição</button>
                 <div id="formNovaCondicaoContainer"></div>
             </div>
         </div>
     </div>
 </div>
 
-<div class="modal fade" id="modalNovaCidade" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="modalNovaCidadeFornecedor" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content" id="modalNovaCidadeContent">
+        <div class="modal-content" id="modalNovaCidadeContentFornecedor">
         </div>
     </div>
 </div>
 
-<div class="modal fade" id="modalNovaCondicao" tabindex="-1" aria-hidden="true">
-    <div id="modalNovaCondicaoContent"></div>
+
+<div class="modal fade" id="modalNovaCondicaoFornecedor" tabindex="-1" aria-labelledby="modalNovaCondicaoFornecedorLabel">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content" id="modalNovaCondicaoContentFornecedor">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalNovaCondicaoFornecedorLabel">Cadastrar Condição</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+        </div>
+    </div>
 </div>
+
+
 
 @{
     Html.RenderPartialAsync("_ValidationScriptsPartial");

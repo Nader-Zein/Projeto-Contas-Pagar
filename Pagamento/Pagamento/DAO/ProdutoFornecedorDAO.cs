@@ -76,7 +76,6 @@ namespace Pagamento.DAO
         }
 
 
-       
         public void GarantirAssociacao(int produtoId, int fornecedorId)
         {
             using (var conexao = new MySqlConnection(connectionString))
@@ -84,7 +83,7 @@ namespace Pagamento.DAO
                 try
                 {
                     conexao.Open();
-                    
+                   
                     string sql = @"INSERT IGNORE INTO ProdutoFornecedor 
                                    (IdProduto, IdFornecedor) 
                                    VALUES 

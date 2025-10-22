@@ -196,17 +196,14 @@ namespace Pagamento.Controllers
         {
             try
             {
-                
                 var condicao = condicaodao.BuscarPorId(id);
                 if (condicao == null)
                 {
                     return NotFound(); 
                 }
 
-                
                 condicao.Parcelas = parcelaDAO.ListarPorCondicaoPagamento(id);
 
-               
                 return Json(condicao);
             }
             catch (Exception ex)
