@@ -16,22 +16,22 @@
             </div>
         </div>
 
-        <div class="col-md-6 mb-3">
+        <div class="col-md-4 mb-3">
             <label asp-for="Descricao" class="form-label">Descrição</label>
             <input asp-for="Descricao" class="form-control" />
         </div>
 
-        <div class="col-md-6 mb-3">
+        <div class="col-md-4 mb-3">
             <label asp-for="Codigo_Barras" class="form-label">Código de Barras</label>
             <input asp-for="Codigo_Barras" class="form-control" />
         </div>
 
-        <div class="col-md-6 mb-3">
+        <div class="col-md-4 mb-3">
             <label asp-for="Referencia" class="form-label">Referência</label>
             <input asp-for="Referencia" class="form-control" />
         </div>
 
-        <div class="col-md-6 mb-3">
+        <div class="col-md-4 mb-3">
             <label class="form-label">Marca</label>
             <div class="input-group">
                 <input type="text" id="NomeMarcaSelecionada" class="form-control" placeholder="Nenhuma marca selecionada"
@@ -43,7 +43,7 @@
             </div>
         </div>
 
-        <div class="col-md-6 mb-3">
+        <div class="col-md-4 mb-3">
             <label class="form-label">Unidade de Medida</label>
             <div class="input-group">
                 <input type="text" id="NomeUnidadeSelecionada" class="form-control" placeholder="Nenhuma unidade selecionada"
@@ -55,7 +55,7 @@
             </div>
         </div>
 
-        <div class="col-md-6 mb-3">
+        <div class="col-md-4 mb-3">
             <label class="form-label">Categoria</label>
             <div class="input-group">
                 <input type="text" id="CategoriaSelecionada" class="form-control" placeholder="Nenhuma categoria selecionada"
@@ -67,7 +67,7 @@
             </div>
         </div>
 
-        <div class="col-md-6 mb-3">
+        <div class="col-md-4 mb-3">
             <label class="form-label">Fornecedores</label>
             <div class="input-group">
                 <input type="text" id="NomeFornecedorSelecionado" class="form-control" placeholder="Nenhum fornecedor selecionado" readonly />
@@ -80,42 +80,42 @@
             @Html.ValidationMessage("FornecedoresSelecionados", new { @class = "text-danger mb-1", id = "erro-fornecedor" })
             <input type="hidden" id="fornecedoresSelecionados" name="FornecedoresSelecionados" />
         </div>
-        <div class="col-md-6 mb-3">
+        <div class="col-md-4 mb-3">
             <label asp-for="ValorCompra" class="form-label">Valor de Compra</label>
             <input asp-for="ValorCompra" class="form-control" type="text" disabled />
         </div>
 
-        <div class="col-md-6 mb-3">
+        <div class="col-md-4 mb-3">
             <label asp-for="PercentualLucro" class="form-label">% Lucro</label>
             <input asp-for="PercentualLucro" class="form-control" type="text" data-val="false" />
         </div>
 
-        <div class="col-md-6 mb-3">
+        <div class="col-md-4 mb-3">
             <label asp-for="ValorVenda" class="form-label">Valor de Venda</label>
             <input asp-for="ValorVenda" class="form-control" type="text" data-val="false" />
         </div>
 
-        <div class="col-md-6 mb-3">
+        <div class="col-md-4 mb-3">
             <label asp-for="Quantidade" class="form-label">Quantidade</label>
             <input asp-for="Quantidade" class="form-control" disabled />
         </div>
 
-        <div class="col-md-6 mb-3">
+        <div class="col-md-4 mb-3">
             <label asp-for="QuantidadeMinima" class="form-label">Quantidade Mínima</label>
             <input asp-for="QuantidadeMinima" class="form-control" />
         </div>
 
-        <div class="col-md-6 mb-3">
+        <div class="col-md-4 mb-3">
             <label asp-for="Observacoes" class="form-label">Observações</label>
             <textarea asp-for="Observacoes" class="form-control"></textarea>
         </div>
 
-        <div class="col-md-6 mb-3">
+        <div class="col-md-4 mb-3">
             <label class="form-label">Data de Criação</label>
             <input type="text" class="form-control" value="@Model.DataCriacao.ToString("dd/MM/yyyy HH:mm")" readonly />
         </div>
 
-        <div class="col-md-6 mb-3">
+        <div class="col-md-4 mb-3">
             <label class="form-label">Última Edição</label>
             <input type="text" class="form-control" value="@(Model.DataEdicao?.ToString("dd/MM/yyyy HH:mm") ?? "Nunca editado")" readonly />
         </div>
@@ -291,6 +291,89 @@
     </div>
 </div>
 
+<div class="modal fade" id="modalCidadeFornecedor" tabindex="-1" aria-labelledby="modalCidadeFornecedorLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalCidadeFornecedorLabel">Selecionar Cidade</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <input type="text" id="filtroCidadeFornecedor" class="form-control" placeholder="Digite para buscar..." onkeyup="filtrarTabelaCidadeFornecedor()" />
+                </div>
+
+                <table class="table table-bordered" id="tabelaCidadesFornecedor">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var cidade in ViewBag.Cidades as List<SelectListItem>)
+                        {
+                            <tr>
+                                <td>@cidade.Text</td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-primary"
+                                            onclick="selecionarCidadeFornecedor('@cidade.Value', '@Html.Raw(System.Web.HttpUtility.JavaScriptStringEncode(cidade.Text))')">
+                                        Selecionar
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                <hr />
+                <button class="btn btn-success" type="button" onclick="abrirFormNovaCidadeFornecedor()">+ Cadastrar nova Cidade</button>
+                <div id="formNovaCidadeContainer"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalCondicaoPgtoFornecedor" tabindex="-1" aria-labelledby="modalCondicaoPgtoFornecedorLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalCondicaoPgtoFornecedorLabel">Selecionar Condição de Pagamento</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="filtroCondicaoFornecedor" class="form-control mb-2" placeholder="Buscar..." onkeyup="filtrarTabelaCondicaoFornecedor()" />
+                <table class="table table-bordered" id="tabelaCondicoesFornecedor">
+                    <thead>
+                        <tr>
+                            <th>Descrição</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var condicao in ViewBag.CondicoesPagamento as List<SelectListItem>)
+                        {
+                            <tr>
+                                <td>@condicao.Text</td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-primary"
+                                            onclick="selecionarCondicaoFornecedor(@condicao.Value, '@condicao.Text')">
+                                        Selecionar
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                <hr />
+                <button class="btn btn-success" type="button" onclick="abrirFormNovaCondicaoFornecedor()">+ Cadastrar nova Condição</button>
+                <div id="formNovaCondicaoContainer"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 
 <div class="modal fade" id="modalMarca" tabindex="-1" aria-hidden="true">
@@ -318,9 +401,113 @@
     </div>
 </div>
 
+<div class="modal fade" id="modalNovaCidadeFornecedor" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" id="modalNovaCidadeContentFornecedor">
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalNovaCondicaoFornecedor" tabindex="-1" aria-labelledby="modalNovaCondicaoFornecedorLabel">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content" id="modalNovaCondicaoContentFornecedor">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalNovaCondicaoFornecedorLabel">Cadastrar Condição</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
+
+
+
+            document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.chk-fornecedor').forEach(function (chk) {
+                chk.addEventListener('change', atualizarListaFornecedores);
+            });
+
+            atualizarListaFornecedores();
+            });
+
+
+
+        let ultimoModalPaiFechado = null;
+
+        function fecharModalPaiAtual() {
+          const pai = document.querySelector('#modalFornecedor.show, #modalNovoFornecedor.show, #modalFornecedorProduto.show');
+          if (pai) {
+            ultimoModalPaiFechado = pai.id;
+            bootstrap.Modal.getInstance(pai)?.hide();
+          } else {
+            ultimoModalPaiFechado = null;
+          }
+        }
+
+        function reabrirModalPai() {
+          if (!ultimoModalPaiFechado) return;
+          const el = document.getElementById(ultimoModalPaiFechado);
+          bootstrap.Modal.getOrCreateInstance(el).show();
+          ultimoModalPaiFechado = null;
+        }
+
+        
+
+
+
+        function abrirSelecaoCidadeDesdeFornecedor() {
+          const filho = document.getElementById('modalCidadeFornecedor');
+          const pai = document.querySelector('#modalFornecedor.show, #modalNovoFornecedor.show, #modalFornecedorProduto.show');
+          if (pai) {
+            filho.dataset.parentModalId = pai.id;
+            bootstrap.Modal.getInstance(pai)?.hide();
+          } else {
+            filho.dataset.parentModalId = '';
+          }
+          bootstrap.Modal.getOrCreateInstance(filho).show();
+        }
+        
+
+
+        function abrirSelecaoCondicaoDesdeFornecedor() {
+          const filho = document.getElementById('modalCondicaoPgtoFornecedor');
+          const pai = document.querySelector('#modalFornecedor.show, #modalNovoFornecedor.show, #modalFornecedorProduto.show');
+          if (pai) {
+            filho.dataset.parentModalId = pai.id;
+            bootstrap.Modal.getInstance(pai)?.hide();
+          } else {
+            filho.dataset.parentModalId = '';
+          }
+          bootstrap.Modal.getOrCreateInstance(filho).show();
+        }
+
+        ['modalCidadeFornecedor', 'modalCondicaoPgtoFornecedor'].forEach(id => {
+          const el = document.getElementById(id);
+          if (!el) return;
+          el.addEventListener('hidden.bs.modal', function () {
+            const parentId = el.dataset.parentModalId;
+            if (!parentId) return; 
+            const pai = document.getElementById(parentId);
+            if (pai) bootstrap.Modal.getOrCreateInstance(pai).show();
+            el.dataset.parentModalId = ''; 
+          });
+        });
+
+
+        document.addEventListener('click', function(e){
+          const t = e.target.closest('[data-bs-target="#modalCidadeFornecedor"]');
+          if (t) { e.preventDefault(); abrirSelecaoCidadeDesdeFornecedor(); }
+        }, true);
+
+        document.addEventListener('click', function(e){
+          const t = e.target.closest('[data-bs-target="#modalCondicaoPgtoFornecedor"]');
+          if (t) { e.preventDefault(); abrirSelecaoCondicaoDesdeFornecedor(); }
+        }, true);
 
             function selecionarMarca(id, nome) {
             $('#MarcaId').val(id);
@@ -336,9 +523,24 @@
 
             function selecionarCategoria(id, nome) {
             $('#CategoriaId').val(id);
-            $('#CategoriaSelecionada').val(nome);
+            $('#NomeCategoriaSelecionada').val(nome);
             bootstrap.Modal.getInstance(document.getElementById('modalCategoriaSelecionar')).hide();
             }
+
+
+
+            $(document).on('change', '.chk-fornecedor', function () {
+            const fornecedoresSelecionados = [];
+            const nomesSelecionados = [];
+
+            $('.chk-fornecedor:checked').each(function () {
+                fornecedoresSelecionados.push($(this).val());
+                nomesSelecionados.push($(this).data('nome'));
+            });
+
+            $('#fornecedoresSelecionados').val(fornecedoresSelecionados.join(','));
+            $('#NomeFornecedorSelecionado').val(nomesSelecionados.join(', '));
+        });
 
             function atualizarListaFornecedores() {
             const selecionados = [];
@@ -350,31 +552,22 @@
             });
 
             document.getElementById('fornecedoresSelecionados').value = selecionados.join(',');
-            document.getElementById('NomeFornecedorSelecionado').value = nomes.join(', ');
 
-            const ul = document.getElementById('listaFornecedoresSelecionados');
-            ul.innerHTML = '';
-            nomes.forEach(nome => {
-                const li = document.createElement('li');
-                li.textContent = nome;
-                ul.appendChild(li);
-            });
+            document.getElementById('NomeFornecedorSelecionado').value = nomes.join(', ');
             }
 
-            document.addEventListener('DOMContentLoaded', function () {
-            document.querySelectorAll('.chk-fornecedor').forEach(function (chk) {
-                chk.addEventListener('change', atualizarListaFornecedores);
+            function filtrarTabelaMarca() {
+            const filtro = $('#filtroMarca').val().toLowerCase();
+            $('#tabelaMarcas tbody tr').each(function () {
+                const nome = $(this).find('td:first').text().toLowerCase();
+                $(this).toggle(nome.includes(filtro));
             });
-
-            atualizarListaFornecedores();
-            });
-
-
+            }
 
             function filtrarTabelaFornecedor() {
             const filtro = $('#filtroFornecedor').val().toLowerCase();
             $('#tabelaFornecedores tbody tr').each(function () {
-                const nome = $(this).find('td:first').text().toLowerCase();
+                const nome = $(this).find('td:nth-child(2)').text().toLowerCase();
                 $(this).toggle(nome.includes(filtro));
             });
             }
@@ -486,7 +679,6 @@
 
             });
         });
-
         $(document).on('submit', '#formCadastrarCategoria', function (e) {
             e.preventDefault();
             $.ajax({
@@ -513,12 +705,12 @@
             } else {
                 $('#modalCategoriaContent').html(res);
             }
-        }
+            }
 
             });
-        });
+            });
 
-                $(document).on('submit', '#formCadastrarFornecedor', function (e) {
+            $(document).on('submit', '#formCadastrarFornecedor', function (e) {
             e.preventDefault();
             $.ajax({
                 type: 'POST',
@@ -528,9 +720,13 @@
                     if (res.sucesso) {
                         const novaLinha = `
                             <tr>
-                                <td><input type="checkbox" class="chk-fornecedor" value="${res.fornecedor.id}" data-nome="${res.fornecedor.nome}" checked /></td>
+                                <td>
+                                    <input type="checkbox" class="chk-fornecedor" value="${res.fornecedor.id}" data-nome="${res.fornecedor.nome}" checked />
+                                </td>
                                 <td>${res.fornecedor.nome}</td>
-                            </tr>`;
+                            </tr>
+                        `;
+
                         $('#tabelaFornecedores tbody').append(novaLinha);
                         $('.chk-fornecedor').off('change').on('change', atualizarListaFornecedores);
                         atualizarListaFornecedores();
@@ -540,20 +736,27 @@
                     }
                 }
             });
-        });
+            });
 
 
 
-        function selecionarCidade(id, nome) {
-            $('#IdCidade').val(id);
-            $('#NomeCidadeSelecionada').val(nome);
-            bootstrap.Modal.getInstance(document.getElementById('modalCidade')).hide();
+       
+
+        function selecionarCidadeFornecedor(id, nome) { 
+            var $formFornecedor = $('#modalFornecedorContent');
+
+            $formFornecedor.find('#IdCidade').val(id);
+            $formFornecedor.find('#NomeCidadeSelecionada').val(nome);
+
+            bootstrap.Modal.getInstance(document.getElementById('modalCidadeFornecedor'))?.hide();
+            reabrirModalPai();
         }
 
-        function abrirFormNovaCidade() {
+
+        function abrirFormNovaCidadeFornecedor() {
             $.get('@Url.Action("FormModal", "Cidade")', function (data) {
-                $('#modalNovaCidadeContent').html(data);
-                new bootstrap.Modal(document.getElementById('modalNovaCidade')).show();
+                $('#modalNovaCidadeContentFornecedor').html(data);
+                new bootstrap.Modal(document.getElementById('modalNovaCidadeFornecedor')).show();
             });
         }
 
@@ -565,17 +768,17 @@
                 data: $(this).serialize(),
                 success: function (response) {
                     if (response.sucesso) {
-                        $('#modalNovaCidade').modal('hide');
+                        $('#modalNovaCidadeFornecedor').modal('hide');
                         const novaLinha = `
                             <tr>
                                 <td>${response.cidade.nome}</td>
                                 <td>
-                                    <button class='btn btn-sm btn-primary' onclick='selecionarCidade(${response.cidade.id}, "${response.cidade.nome}")'>Selecionar</button>
+                                    <button class='btn btn-sm btn-primary' onclick='selecionarCidadeFornecedor(${response.cidade.id}, "${response.cidade.nome}")'>Selecionar</button>
                                 </td>
                             </tr>`;
-                        $('#tabelaCidades tbody').append(novaLinha);
+                        $('#tabelaCidadesFornecedor tbody').append(novaLinha);
                     } else {
-                        $('#modalNovaCidadeContent').html(response);
+                        $('#modalNovaCidadeContentFornecedor').html(response);
                     }
                 }
             });
@@ -583,28 +786,34 @@
 
         function filtrarTabelaCidade() {
             const filtro = $('#filtroCidade').val().toLowerCase();
-            $('#tabelaCidades tbody tr').each(function () {
+            $('#tabelaCidadesFornecedor tbody tr').each(function () {
                 const nome = $(this).find('td:first').text().toLowerCase();
                 $(this).toggle(nome.includes(filtro));
             });
         }
 
-        function selecionarCondicao(id, nome) {
-            $('#IdCondPgto').val(id);
-            $('#NomeCondicaoSelecionada').val(nome);
-            bootstrap.Modal.getInstance(document.getElementById('modalCondicaoPgto')).hide();
+        
+
+        function selecionarCondicaoFornecedor(id, nome) { 
+            var $formFornecedor = $('#modalFornecedorContent');
+
+            $formFornecedor.find('#IdCondPgto').val(id);
+            $formFornecedor.find('#NomeCondicaoSelecionada').val(nome);
+
+            bootstrap.Modal.getInstance(document.getElementById('modalCondicaoPgtoFornecedor'))?.hide();
+            reabrirModalPai();
         }
 
-        function abrirFormNovaCondicao() {
+        function abrirFormNovaCondicaoFornecedor() {
             $.get('/CondicaoPagamento/FormModal', function (data) {
-                $('#modalNovaCondicaoContent').html(data);
-                new bootstrap.Modal(document.getElementById('modalNovaCondicao')).show();
+                $('#modalNovaCondicaoContentFornecedor').html(data);
+                new bootstrap.Modal(document.getElementById('modalNovaCondicaoFornecedor')).show();
             });
         }
 
         function filtrarTabelaCondicao() {
             const filtro = $('#filtroCondicao').val().toLowerCase();
-            $('#tabelaCondicoes tbody tr').each(function () {
+            $('#tabelaCondicoesFornecedor tbody tr').each(function () {
                 const nome = $(this).find('td:first').text().toLowerCase();
                 $(this).toggle(nome.includes(filtro));
             });
@@ -725,24 +934,24 @@
                 data: $.param(formData),
                 success: function (response) {
                     if (response.sucesso) {
-                        bootstrap.Modal.getInstance(document.getElementById('modalNovaCondicao')).hide();
+                        bootstrap.Modal.getInstance(document.getElementById('modalNovaCondicaoFornecedor')).hide();
 
                         const linha = `
                             <tr>
                                 <td>${response.condicao.nome}</td>
                                 <td>
                                     <button type='button' class='btn btn-sm btn-primary'
-                                        onclick='selecionarCondicao(${response.condicao.id}, "${response.condicao.nome}")'>
+                                        onclick='selecionarCondicaoFornecedor(${response.condicao.id}, "${response.condicao.nome}")'>
                                         Selecionar
                                     </button>
                                 </td>
                             </tr>`;
-                        $('#tabelaCondicoes tbody').append(linha);
+                        $('#tabelaCondicoesFornecedor tbody').append(linha);
 
                         $('#IdCondPgto').val(response.condicao.id);
                         $('#NomeCondicaoSelecionada').val(response.condicao.nome);
                     } else {
-                        $('#modalNovaCondicaoContent').html(response);
+                        $('#modalNovaCondicaoContentFornecedor').html(response);
                     }
                 },
                 error: function () {

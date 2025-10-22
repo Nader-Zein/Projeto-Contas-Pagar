@@ -3,7 +3,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Pagamento.DAO;
 using Pagamento.Models;
 using System.Linq;
-
+using System; 
+using System.Collections.Generic; 
 namespace Pagamento.Controllers
 {
     public class ProdutoController : Controller
@@ -13,8 +14,14 @@ namespace Pagamento.Controllers
         private readonly MarcaDAO _marcaDAO = new MarcaDAO();
         private readonly UnidadeMedidaDAO _unidadeMedidaDAO = new UnidadeMedidaDAO();
         private readonly FornecedorDAO _fornecedorDAO = new FornecedorDAO(); 
-        private readonly CategoriaDAO _categoriaDAO = new CategoriaDAO(); 
+        private readonly CategoriaDAO _categoriaDAO = new CategoriaDAO();
 
+
+        private readonly CidadeDAO _cidadeDAO = new CidadeDAO();
+        private readonly CondicaoPagamentoDAO _condicaoPagamentoDAO = new CondicaoPagamentoDAO();
+        private readonly EstadoDAO _estadoDAO = new EstadoDAO(); 
+        private readonly PaisDAO _paisDAO = new PaisDAO();       
+        private readonly FormaPagamentoDAO _formaPagamentoDAO = new FormaPagamentoDAO(); 
         public IActionResult Index()
         {
             var lista = _produtoDAO.Listar();
@@ -94,6 +101,11 @@ namespace Pagamento.Controllers
             ViewBag.NomeUnidade = _unidadeMedidaDAO.BuscarPorId(produto.UnidadeMedidaId)?.Descricao ?? "Não encontrado";
             ViewBag.NomeCategoria = _categoriaDAO.BuscarPorId(produto.CategoriaId)?.Descricao ?? "Não encontrado";
 
+
+            var fornecedoresSelecionados = _fornecedorDAO.Listar()
+                                        .Where(f => ViewBag.FornecedoresSelecionadosIds.Contains(f.IdPessoa))
+                                        .Select(f => f.Nome_RazaoSocial);
+            ViewBag.NomesFornecedoresSelecionados = string.Join(", ", fornecedoresSelecionados);
             return View(produto);
         }
 
@@ -131,6 +143,12 @@ namespace Pagamento.Controllers
             ViewBag.NomeUnidade = _unidadeMedidaDAO.BuscarPorId(produto.UnidadeMedidaId)?.Descricao ?? "Não encontrado";
             ViewBag.NomeCategoria = _categoriaDAO.BuscarPorId(produto.CategoriaId)?.Descricao ?? "Não encontrado";
 
+            var fornecedoresSelecionados = _fornecedorDAO.Listar()
+                                        .Where(f => (FornecedoresSelecionados ?? "").Split(',').Select(s => int.TryParse(s, out int i) ? i : 0).Contains(f.IdPessoa))
+                                        .Select(f => f.Nome_RazaoSocial);
+            ViewBag.NomesFornecedoresSelecionados = string.Join(", ", fornecedoresSelecionados);
+
+
             return View(produto);
         }
 
@@ -159,32 +177,31 @@ namespace Pagamento.Controllers
 
         private void CarregarSelectLists()
         {
-            ViewBag.Marcas = _marcaDAO.Listar().Select(m => new SelectListItem
-            {
-                Value = m.IdMarca.ToString(),
-                Text = m.Descricao
-            }).ToList();
+            var marcas = _marcaDAO.Listar() ?? new List<Marca>();
+            var unidades = _unidadeMedidaDAO.Listar() ?? new List<UnidadeMedida>();
+            var fornecedores = _fornecedorDAO.Listar() ?? new List<Fornecedor>();
+            var categorias = _categoriaDAO.Listar() ?? new List<Categoria>();
 
-            ViewBag.Unidades = _unidadeMedidaDAO.Listar().Select(u => new SelectListItem
-            {
-                Value = u.IdUnidadeMedida.ToString(),
-                Text = u.Descricao
-            }).ToList();
+            ViewBag.Marcas = marcas.Select(m => new SelectListItem(m.Descricao, m.IdMarca.ToString())).ToList();
+            ViewBag.Unidades = unidades.Select(u => new SelectListItem(u.Descricao, u.IdUnidadeMedida.ToString())).ToList();
+            ViewBag.Fornecedores = fornecedores.Select(f => new SelectListItem(f.Nome_RazaoSocial, f.IdPessoa.ToString())).ToList();
+            ViewBag.Categorias = categorias.Select(c => new SelectListItem(c.Descricao, c.IdCategoria.ToString())).ToList();
 
-            ViewBag.Fornecedores = _fornecedorDAO.Listar().Select(t => new SelectListItem
-            {
-                Value = t.IdPessoa.ToString(),
-                Text = t.Nome_RazaoSocial
-            }).ToList();
+            var cidades = _cidadeDAO.Listar() ?? new List<Cidade>();
+            var condicoes = _condicaoPagamentoDAO.Listar() ?? new List<CondicaoPagamento>();
+            var estados = _estadoDAO.Listar() ?? new List<Estado>(); 
+            var paises = _paisDAO.Listar() ?? new List<Pais>();       
+            var formasPgto = _formaPagamentoDAO.Listar() ?? new List<FormaPagamento>(); 
 
-            ViewBag.Categorias = _categoriaDAO.Listar().Select(t => new SelectListItem
-            {
-                Value = t.IdCategoria.ToString(),
-                Text = t.Descricao
-            }).ToList();
+            ViewBag.Cidades = cidades.Select(c => new SelectListItem(c.NomeCidade, c.IdCidade.ToString())).ToList();
+            ViewBag.CondicoesPagamento = condicoes.Select(c => new SelectListItem(c.Descricao, c.IdCondPgto.ToString())).ToList();
+            ViewBag.EstadosItens = estados.Select(e => new SelectListItem(e.NomeEstado, e.IdEstado.ToString())).ToList();
+            ViewBag.PaisesItens = paises.Select(p => new SelectListItem(p.NomePais, p.IdPais.ToString())).ToList();
+            ViewBag.FormasPagamentoItens = formasPgto.Select(f => new SelectListItem(f.Descricao, f.IdFormaPgto.ToString())).ToList();
         }
 
 
+        
         public IActionResult FormModal()
         {
             CarregarSelectLists();
@@ -207,6 +224,7 @@ namespace Pagamento.Controllers
 
             if (ModelState.IsValid)
             {
+                
                 _produtoDAO.Inserir(produto);
 
                 if (!string.IsNullOrEmpty(fornecedoresSelecionados))
@@ -234,5 +252,23 @@ namespace Pagamento.Controllers
             return PartialView("FormProdutoModal", produto);
         }
 
+
+        [HttpGet]
+        public IActionResult BuscarPorIdJSON(int id)
+        {
+            var produto = _produtoDAO.BuscarPorIdComNomes(id); 
+
+            if (produto == null)
+            {
+                return NotFound(new { mensagem = "Produto não encontrado com o ID informado." });
+            }
+
+            return Json(new
+            {
+                idProduto = produto.IdProduto,
+                descricao = produto.Descricao,
+                nomeUnidade = produto.NomeUnidade 
+            });
+        }
     }
 }

@@ -174,8 +174,8 @@ CREATE TABLE Produto (
     CategoriaId INT NOT NULL,
     ValorCompra DECIMAL(10,2) NOT NULL,
     ValorVenda DECIMAL(10,2) NOT NULL,
-    PrecoMedioCusto DECIMAL(10,2) NULL, = valor de compra na tela = valor unitario mais rateio, este valor soma e devide por 2 com o anterior
-    PrecoUltimaCompra DECIMAL(10,2) NULL, 
+   media ponderada PrecoMedioCusto DECIMAL(10,2) NULL, = valor de compra na tela = valor unitario mais rateio, este valor soma e devide por 2 com o anterior
+   rateio PrecoUltimaCompra DECIMAL(10,2) NULL, 
     Quantidade INT NOT NULL,
     QuantidadeMinima INT NOT NULL,
     PercentualLucro DECIMAL(10,2) NOT NULL,
@@ -191,7 +191,7 @@ CREATE TABLE Produto (
 CREATE TABLE ProdutoFornecedor (
     IdProduto INT NOT NULL,
     IdFornecedor INT NOT NULL,
-    PrecoUltimaCompra DECIMAL(10,2) NULL,
+    PrecoUltimaCompra DECIMAL(10,2) NULL, rateio
     DataUltimaCompra DATETIME NULL,
     Observacao VARCHAR(40) NULL,
     PRIMARY KEY (IdProduto, IdFornecedor),

@@ -16,25 +16,25 @@
                 </div>
             </div>
 
-            <div class="col-md-6 mb-3">
+            <div class="col-md-4 mb-3">
                 <label asp-for="Descricao" class="form-label">Descrição</label>
                 <input asp-for="Descricao" class="form-control" />
                 <span asp-validation-for="Descricao" class="text-danger"></span>
             </div>
 
-            <div class="col-md-6 mb-3">
+            <div class="col-md-4 mb-3">
                 <label asp-for="Codigo_Barras" class="form-label">Código de Barras</label>
                 <input asp-for="Codigo_Barras" class="form-control" />
                 <span asp-validation-for="Codigo_Barras" class="text-danger"></span>
             </div>
 
-            <div class="col-md-6 mb-3">
+            <div class="col-md-4 mb-3">
                 <label asp-for="Referencia" class="form-label">Referência</label>
                 <input asp-for="Referencia" class="form-control" />
                 <span asp-validation-for="Referencia" class="text-danger"></span>
             </div>
 
-            <div class="col-md-6 mb-3">
+            <div class="col-md-4 mb-3">
                 <label class="form-label">Marca</label>
                 <div class="input-group">
                     <input type="text" id="NomeMarcaSelecionada" class="form-control" placeholder="Nenhuma marca selecionada" readonly />
@@ -46,7 +46,7 @@
                 <span asp-validation-for="MarcaId" class="text-danger"></span>
             </div>
 
-            <div class="col-md-6 mb-3">
+            <div class="col-md-4 mb-3">
                 <label class="form-label">Unidade de Medida</label>
                 <div class="input-group">
                     <input type="text" id="NomeUnidadeSelecionada" class="form-control" placeholder="Nenhuma unidade selecionada" readonly />
@@ -58,7 +58,7 @@
                 <span asp-validation-for="UnidadeMedidaId" class="text-danger"></span>
             </div>
 
-            <div class="col-md-6 mb-3">
+            <div class="col-md-4 mb-3">
                 <label class="form-label">Fornecedores</label>
                 <div class="input-group">
                     <input type="text" id="NomeFornecedorSelecionado" class="form-control" placeholder="Nenhum fornecedor selecionado" readonly />
@@ -73,7 +73,7 @@
             </div>
             <input type="hidden" id="fornecedoresSelecionados" name="FornecedoresSelecionados" />
 
-            <div class="col-md-6 mb-3">
+            <div class="col-md-4 mb-3">
                 <label class="form-label">Categoria</label>
                 <div class="input-group">
                     <input type="text" id="NomeCategoriaSelecionada" class="form-control" placeholder="Nenhuma categoria selecionada" readonly />
@@ -85,44 +85,44 @@
                 <span asp-validation-for="CategoriaId" class="text-danger"></span>
             </div>
 
-            <div class="col-md-6 mb-3">
+            <div class="col-md-4 mb-3">
                 <label asp-for="ValorCompra" class="form-label">Valor de Compra</label>
                 <input asp-for="ValorCompra" class="form-control" type="text" disabled />
             </div>
 
-            <div class="col-md-6 mb-3">
+            <div class="col-md-4 mb-3">
                 <label asp-for="PercentualLucro" class="form-label">% Lucro</label>
                 <input asp-for="PercentualLucro" class="form-control" type="text" />
                 <span asp-validation-for="PercentualLucro" class="text-danger"></span>
             </div>
 
-            <div class="col-md-6 mb-3">
+            <div class="col-md-4 mb-3">
                 <label asp-for="ValorVenda" class="form-label">Valor de Venda</label>
                 <input asp-for="ValorVenda" class="form-control" type="text" />
                 <span asp-validation-for="ValorVenda" class="text-danger"></span>
             </div>
 
-            <div class="col-md-6 mb-3">
+            <div class="col-md-4 mb-3">
                 <label asp-for="Quantidade" class="form-label">Quantidade</label>
                 <input asp-for="Quantidade" class="form-control" disabled />
             </div>
 
-            <div class="col-md-6 mb-3">
+            <div class="col-md-4 mb-3">
                 <label asp-for="QuantidadeMinima" class="form-label">Quantidade Mínima</label>
                 <input asp-for="QuantidadeMinima" class="form-control" />
                 <span asp-validation-for="QuantidadeMinima" class="text-danger"></span>
             </div>
 
-            <div class="col-md-6 mb-3">
+            <div class="col-md-4 mb-3">
                 <label asp-for="Observacoes" class="form-label">Observações</label>
                 <textarea asp-for="Observacoes" class="form-control"></textarea>
             </div>
 
-            <div class="col-md-6 mb-3">
+            <div class="col-md-4 mb-3">
                 <label class="form-label">Data de Criação</label>
                 <input type="text" class="form-control" value="@Model.DataCriacao.ToString("dd/MM/yyyy HH:mm")" readonly />
             </div>
-            <div class="col-md-6 mb-3">
+            <div class="col-md-4 mb-3">
                 <label class="form-label">Última Edição</label>
                 <input type="text" class="form-control" value="@(Model.DataEdicao?.ToString("dd/MM/yyyy HH:mm") ?? "Nunca editado")" readonly />
             </div>
@@ -135,199 +135,26 @@
         </div>
     </form>
 
-    <div class="modal fade" id="modalMarcaSelecionar" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Selecionar Marca</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-                </div>
-                <div class="modal-body">
-                    <input type="text" id="filtroMarca" class="form-control mb-2" placeholder="Buscar..." onkeyup="filtrarTabelaMarca()" />
-                    <table class="table table-bordered" id="tabelaMarcas">
-                        <thead>
-                            <tr>
-                                <th>Nome</th>
-                                <th>Ação</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var marca in ViewBag.Marcas as List<SelectListItem>)
-                            {
-                                <tr>
-                                    <td>@marca.Text</td>
-                                    <td>
-                                        <button type="button" class="btn btn-sm btn-primary"
-                                                onclick="selecionarMarca(@marca.Value, '@marca.Text')">
-                                            Selecionar
-                                        </button>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                    <hr />
-                    <button class="btn btn-success" type="button" onclick="abrirFormMarca()">+ Cadastrar nova Marca</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="modalUnidadeSelecionar" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Selecionar Unidade de Medida</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-                </div>
-                <div class="modal-body">
-                    <input type="text" id="filtroUnidade" class="form-control mb-2" placeholder="Buscar..." onkeyup="filtrarTabelaUnidade()" />
-                    <table class="table table-bordered" id="tabelaUnidades">
-                        <thead>
-                            <tr>
-                                <th>Nome</th>
-                                <th>Ação</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var unidade in ViewBag.Unidades as List<SelectListItem>)
-                            {
-                                <tr>
-                                    <td>@unidade.Text</td>
-                                    <td>
-                                        <button type="button" class="btn btn-sm btn-primary"
-                                                onclick="selecionarUnidade(@unidade.Value, '@unidade.Text')">
-                                            Selecionar
-                                        </button>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                    <hr />
-                    <button class="btn btn-success" type="button" onclick="abrirFormUnidade()">+ Cadastrar nova Unidade</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="modalCategoriaSelecionar" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Selecionar Categoria</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-                </div>
-                <div class="modal-body">
-                    <input type="text" id="filtroCategoria" class="form-control mb-2" placeholder="Buscar..." onkeyup="filtrarTabelaCategoria()" />
-                    <table class="table table-bordered" id="tabelaCategorias">
-                        <thead>
-                            <tr>
-                                <th>Nome</th>
-                                <th>Ação</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var categoria in ViewBag.Categorias as List<SelectListItem>)
-                            {
-                                <tr>
-                                    <td>@categoria.Text</td>
-                                    <td>
-                                        <button type="button" class="btn btn-sm btn-primary"
-                                                onclick="selecionarCategoria(@categoria.Value, '@categoria.Text')">
-                                            Selecionar
-                                        </button>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                    <hr />
-                    <button class="btn btn-success" type="button" onclick="abrirFormCategoria()">+ Cadastrar nova Categoria</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="modalFornecedorSelecionarProduto" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-
-                <div class="modal-header">
-                    <h5 class="modal-title">Selecionar Fornecedores</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-                </div>
-
-                <div class="modal-body">
-                    <input type="text" id="filtroFornecedorProduto" class="form-control mb-2" placeholder="Buscar..." onkeyup="filtrarTabelaFornecedor()" />
-
-                    <table class="table table-bordered" id="tabelaFornecedoresProduto">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th>Nome</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var t in ViewBag.Fornecedores as List<SelectListItem>)
-                            {
-                                <tr>
-                                    <td>
-                                        <input type="checkbox" class="chk-fornecedor" value="@t.Value" data-nome="@t.Text" />
-                                    </td>
-                                    <td>@t.Text</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-
-                    <h6 class="mt-3">Fornecedores Selecionados:</h6>
-                    <ul id="listaFornecedoresSelecionados"></ul>
-
-                    <hr />
-                    <button class="btn btn-success" type="button" onclick="abrirFormNovoFornecedorProduto()">+ Cadastrar novo Fornecedor</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="modalMarca" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog"><div class="modal-content" id="modalMarcaContent"></div></div>
-    </div>
-    <div class="modal fade" id="modalUnidade" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog"><div class="modal-content" id="modalUnidadeContent"></div></div>
-    </div>
-    <div class="modal fade" id="modalCategoria" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog"><div class="modal-content" id="modalCategoriaContent"></div></div>
-    </div>
-    <div class="modal fade" id="modalFornecedorProduto" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-xl"><div class="modal-content" id="modalFornecedorProdutoContent"></div></div>
-    </div>
+    
 </div>
 
 <script>
     
+    function abrirFormNovoFornecedorProduto() {
+        var selectionModal = bootstrap.Modal.getInstance(document.getElementById('modalFornecedorSelecionarProduto'));
+        if (selectionModal) {
+            selectionModal.hide();
+        }
 
-
-        function abrirFormNovoFornecedorProduto() {
-      const selection = bootstrap.Modal.getInstance(document.getElementById('modalFornecedorSelecionarProduto'));
-      if (selection) selection.hide();
-
-      cleanupFornecedorSubModals();
-
-      $.get('@Url.Action("FormModal", "Fornecedor")', function (html) {
-        document.getElementById('modalFornecedorProdutoContent').innerHTML = html;
-
-        dedupeFornecedorSubModals();
-
-        const el = document.getElementById('modalFornecedorProduto');
-        const m = new bootstrap.Modal(el);
-        m.show();
-
-        el.addEventListener('hidden.bs.modal', cleanupFornecedorSubModals, { once: true });
-      });
+        $.get('@Url.Action("FormModal", "Fornecedor")', function (data) {
+            $('#modalFornecedorProdutoContent').html(data);
+            var modal = new bootstrap.Modal(document.getElementById('modalFornecedorProduto'));
+            modal.show();
+        });
     }
 
+
+        
 
     
 

@@ -21,25 +21,25 @@
 
     </div>
 
-    <div class="mb-3">
+    <div class="col-md-2">
         <label class="form-label">Nome</label>
         <input class="form-control" value="@Model.NomeEstado" disabled />
     </div>
-    <div class="mb-3">
+    <div class="col-md-1">
         <label class="form-label">UF</label>
         <input class="form-control" value="@Model.Uf" disabled />
     </div>
-    <div class="mb-3">
+    <div class="col-md-2">
         <label class="form-label">País</label>
         <input class="form-control" value="@ViewBag.NomePais" disabled />
     </div>
 
-    <div class="mb-3">
+    <div class="col-md-2">
         <label class="form-label">Data de Criação</label>
         <input type="text" class="form-control" value="@Model.DataCriacao.ToString("dd/MM/yyyy HH:mm")" disabled />
     </div>
 
-    <div class="mb-3">
+    <div class="col-md-2">
         <label class="form-label">Última Edição</label>
         <input type="text" class="form-control" value="@(Model.DataEdicao?.ToString("dd/MM/yyyy HH:mm") ?? "Nunca editado")" disabled />
     </div>

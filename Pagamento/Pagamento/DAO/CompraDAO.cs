@@ -50,6 +50,7 @@ namespace Pagamento.DAO
                         listaDeCompras.Add(compra);
                     }
                     readerPrincipal.Close(); 
+
                     foreach (var compra in listaDeCompras)
                     {
                         string sqlItens = @"SELECT 
@@ -150,7 +151,7 @@ namespace Pagamento.DAO
 
 
 
-                           
+                            
                             produtoFornecedorDAO.GarantirAssociacao(item.ProdutoId, compra.FornecedorId);
 
 

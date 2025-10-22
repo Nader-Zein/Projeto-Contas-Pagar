@@ -95,7 +95,7 @@ namespace Pagamento.DAO
                 cmd.Parameters.AddWithValue("@ValorCompra", 0.00);
                 cmd.Parameters.AddWithValue("@ValorVenda", produto.ValorVenda);
                 cmd.Parameters.AddWithValue("@Quantidade", 0);
-                cmd.Parameters.AddWithValue("@PrecoMedioCusto", 0.00);
+                cmd.Parameters.AddWithValue("@PrecoMedioCusto", 0.00); 
                 cmd.Parameters.AddWithValue("@QuantidadeMinima", produto.QuantidadeMinima);
                 cmd.Parameters.AddWithValue("@PercentualLucro", produto.PercentualLucro);
                 cmd.Parameters.AddWithValue("@Observacoes", string.IsNullOrEmpty(produto.Observacoes) ? DBNull.Value : produto.Observacoes.ToUpper());
@@ -146,6 +146,37 @@ namespace Pagamento.DAO
             return null;
         }
 
+
+
+        public Produto BuscarPorIdComNomes(int id) 
+        {
+            using (var conexao = new MySqlConnection(connectionString))
+            {
+                conexao.Open();
+                string sql = @"
+                                SELECT
+                                    p.IdProduto,
+                                    p.Descricao,
+                                    v.NomeUnidade
+                                FROM Produto p
+                                JOIN vw_produto_marca_unidade v ON p.IdProduto = v.IdProduto
+                                WHERE p.IdProduto = @Id";
+                var cmd = new MySqlCommand(sql, conexao);
+                cmd.Parameters.AddWithValue("@Id", id);
+                var reader = cmd.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    return new Produto
+                    {
+                        IdProduto = reader.GetInt32("IdProduto"),
+                        Descricao = reader.GetString("Descricao"),
+                        NomeUnidade = reader.GetString("NomeUnidade"),
+                    };
+                }
+            }
+            return null;
+        }
         public void Atualizar(Produto produto)
         {
             using (var conexao = new MySqlConnection(connectionString))

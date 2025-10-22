@@ -13,13 +13,13 @@
             <label class="form-check-label" asp-for="Status">Ativo</label>
         </div>
     </div>
-    <div class="mb-3">
+    <div class="col-md-3">
         <label asp-for="NomeCidade" class="form-label">Nome da Cidade</label>
         <input asp-for="NomeCidade" class="form-control" required maxlength="40" />
         <span asp-validation-for="NomeCidade" class="text-danger"></span>
     </div>
     
-    <div class="mb-3">
+    <div class="col-md-4">
         <label class="form-label">Estado</label>
         <div class="input-group">
             <input type="text" id="NomeEstadoSelecionado" class="form-control" placeholder="Nenhum estado selecionado" readonly />
@@ -33,12 +33,12 @@
 
     @if (Model != null)
     {
-        <div class="form-group mt-3">
+        <div class="col-md-4">
             <label>Data de Criação</label>
             <input type="text" class="form-control" value="@Model.DataCriacao.ToString("dd/MM/yyyy HH:mm")" readonly />
         </div>
 
-        <div class="form-group mt-2">
+        <div class="col-md-4">
             <label>Última Edição</label>
             <input type="text" class="form-control" value="@(Model.DataEdicao?.ToString("dd/MM/yyyy HH:mm") ?? "Nunca editado")" readonly />
         </div>

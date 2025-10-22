@@ -21,7 +21,7 @@ namespace Pagamento.Models
         [Required(ErrorMessage = "Insira o desconto.")]
         public decimal Desconto { get; set; }
 
-        public bool Status { get; set; }
+        public bool Status { get; set; } = true;
 
         public DateTime DataCriacao { get; set; }
 

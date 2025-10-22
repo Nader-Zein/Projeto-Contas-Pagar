@@ -19,18 +19,18 @@
 
     </div>
 
-    <div class="mb-3">
+    <div class="col-md-3">
         <label asp-for="Descricao" class="form-label">Descrição</label>
         <input asp-for="Descricao" class="form-control" readonly />
     </div>
 
-    <div class="mb-3">
+    <div class="col-md-3">
         <label class="form-label">Data de Criação</label>
         <input type="text" class="form-control"
                value="@Model.DataCriacao.ToString("dd/MM/yyyy HH:mm")" readonly />
     </div>
 
-    <div class="mb-3">
+    <div class="col-md-3">
         <label class="form-label">Última Edição</label>
         <input type="text" class="form-control"
                value="@(Model.DataEdicao?.ToString("dd/MM/yyyy HH:mm") ?? "Nunca editado")" readonly />

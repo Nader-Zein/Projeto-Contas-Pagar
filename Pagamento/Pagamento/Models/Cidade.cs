@@ -8,7 +8,7 @@ namespace Pagamento.Models
 
         [Required(ErrorMessage = "Insira o nome da cidade.")]
         public string NomeCidade { get; set; }
-        public bool Status { get; set; }
+        public bool Status { get; set; } = true;
 
         public int IdEstado { get; set; }
         public string? NomeEstado { get; set; }

@@ -10,9 +10,9 @@
             </div>
 
             <div class="modal-body">
-                <input type="text" id="filtroCondicao" class="form-control mb-3" placeholder="Digite para buscar..." onkeyup="filtrarTabelaCondicao()" />
+                <input type="text" id="filtroCondicao" class="form-control mb-3" placeholder="Digite para buscar..." onkeyup="filtrarTabelaCondicaoCompra()" />
 
-                <table class="table table-bordered table-hover" id="tabelaCondicoes">
+                <table class="table table-bordered table-hover" id="tabelaCondicoesCompra">
                     <thead>
                         <tr>
                             <th>Descrição</th>
@@ -28,7 +28,7 @@
                                     <td>@condicao.Descricao</td>
                                     <td>
                                         <button type="button" class="btn btn-sm btn-primary"
-                                                onclick="selecionarCondicaoCompra(@condicao.IdCondPgto, '@condicao.Descricao')">
+                                                onclick="selecionarCondicaoCompra(@condicao.IdCondPgto, '@Html.Raw(System.Web.HttpUtility.JavaScriptStringEncode(condicao.Descricao))')">
                                             Selecionar
                                         </button>
                                     </td>
@@ -46,9 +46,3 @@
     </div>
 </div>
 
-<div class="modal fade" id="modalNovaCondicaoCompra" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content" id="modalNovaCondicaoContentCompra">
-        </div>
-    </div>
-</div>

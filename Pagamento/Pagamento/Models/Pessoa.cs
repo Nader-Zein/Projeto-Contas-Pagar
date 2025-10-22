@@ -45,7 +45,7 @@ namespace Pagamento.Models
         public string Cep { get; set; }
 
         [Required(ErrorMessage = "O status é obrigatório.")]
-        public bool Status { get; set; }
+        public bool Status { get; set; } = true;
 
         public string? Complemento { get; set; }
 

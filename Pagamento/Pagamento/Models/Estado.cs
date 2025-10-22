@@ -7,7 +7,7 @@ namespace Pagamento.Models
         public int IdEstado{ get; set; }
         [Required(ErrorMessage = "Insira o nome do estado.")]
         public string NomeEstado { get; set; }
-        public bool Status { get; set; }
+        public bool Status { get; set; } = true;
         [Required(ErrorMessage = "Insira a unidade federativa.")]
         public string Uf {  get; set; }
         public int IdPais { get; set; }

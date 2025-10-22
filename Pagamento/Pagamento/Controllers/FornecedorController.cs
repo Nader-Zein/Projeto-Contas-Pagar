@@ -208,7 +208,8 @@ namespace Pagamento.Controllers
                     fornecedor = new
                     {
                         id = fornecedor.IdPessoa,
-                        nome = fornecedor.Nome_RazaoSocial
+                        nome = fornecedor.Nome_RazaoSocial,
+                        idCondPgto = fornecedor.IdCondPgto
                     }
                 });
             }
@@ -226,6 +227,24 @@ namespace Pagamento.Controllers
             }).ToList();
 
             return PartialView("FormFornecedorModal", fornecedor);
+        }
+
+        [HttpGet]
+        public IActionResult BuscarPorIdJSON(int id)
+        {
+            var fornecedor = _fornecedorDAO.BuscarPorId(id);
+
+            if (fornecedor == null)
+            {
+                return NotFound(new { mensagem = "Fornecedor não encontrado com o ID informado." });
+            }
+
+            return Json(new
+            {
+                idPessoa = fornecedor.IdPessoa,
+                nome = fornecedor.Nome_RazaoSocial,
+                idCondPgto = fornecedor.IdCondPgto
+            });
         }
     }
 }

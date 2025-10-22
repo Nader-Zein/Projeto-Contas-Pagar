@@ -16,7 +16,7 @@
             </div>
         </div>
 
-        <div class="col-md-6 mb-3">
+        <div class="col-md-4 mb-3">
             <label asp-for="TipoPessoa" class="form-label">Tipo de Pessoa</label>
             <select asp-for="TipoPessoa" class="form-control">
                 <option value="Física">Física</option>
@@ -24,49 +24,49 @@
             </select>
         </div>
 
-        <div class="col-md-6 mb-3">
+        <div class="col-md-4 mb-3">
             <label id="labelNomeRazao" asp-for="Nome_RazaoSocial" class="form-label">Nome / Razão Social</label>
             <input asp-for="Nome_RazaoSocial" class="form-control" maxlength="40"/>
             <span asp-validation-for="Nome_RazaoSocial" class="text-danger"></span>
         </div>
 
-        <div class="col-md-6 mb-3">
+        <div class="col-md-4 mb-3">
             <label id="labelApelidoFantasia" asp-for="Apelido_NomeFantasia" class="form-label">Apelido / Nome Fantasia</label>
             <input asp-for="Apelido_NomeFantasia" class="form-control" />
         </div>
 
-        <div class="col-md-6 mb-3">
+        <div class="col-md-4 mb-3">
             <label asp-for="Endereco" class="form-label">Endereço</label>
             <input asp-for="Endereco" class="form-control" maxlength="40"/>
             <span asp-validation-for="Endereco" class="text-danger"></span>
 
         </div>
 
-        <div class="col-md-6 mb-3">
+        <div class="col-md-4 mb-3">
             <label asp-for="Numero" class="form-label">Número</label>
             <input asp-for="Numero" class="form-control" />
             <span asp-validation-for="Numero" class="text-danger"></span>
         </div>
 
-        <div class="col-md-6 mb-3">
+        <div class="col-md-4 mb-3">
             <label asp-for="Complemento" class="form-label">Complemento</label>
             <input asp-for="Complemento" class="form-control" maxlength="40" />
         </div>
 
-        <div class="col-md-6 mb-3">
+        <div class="col-md-4 mb-3">
             <label asp-for="Bairro" class="form-label">Bairro</label>
             <input asp-for="Bairro" class="form-control" maxlength="40"  />
             <span asp-validation-for="Bairro" class="text-danger"></span>
 
         </div>
 
-        <div class="col-md-6 mb-3">
+        <div class="col-md-4 mb-3">
             <label asp-for="Cep" class="form-label">CEP</label>
             <input asp-for="Cep" class="form-control" />
             <span asp-validation-for="Cep" class="text-danger"></span>
         </div>
 
-        <div class="col-md-6 mb-3">
+        <div class="col-md-4 mb-3">
             <label class="form-label">Cidade</label>
             <div class="input-group">
                 <input type="text" id="NomeCidadeSelecionada" class="form-control" placeholder="Nenhuma cidade selecionada" readonly />
@@ -79,39 +79,39 @@
 
         </div>
 
-        <div class="col-md-6 mb-3">
+        <div class="col-md-4 mb-3">
             <label id="labelNascimentoFundacao" asp-for="DataNascimento_Fundacao" class="form-label">Data de Nascimento / Fundação</label>
             <input asp-for="DataNascimento_Fundacao" type="date" class="form-control" />
             <span asp-validation-for="DataNascimento_Fundacao" class="text-danger"></span>
 
         </div>
 
-        <div class="col-md-6 mb-3">
+        <div class="col-md-4 mb-3">
             <label id="labelCpfCnpj" asp-for="CPF_CNPJ" class="form-label">CPF / CNPJ</label>
             <input asp-for="CPF_CNPJ" class="form-control" />
             <span asp-validation-for="CPF_CNPJ" class="text-danger"></span>
         </div>
 
-        <div class="col-md-6 mb-3">
+        <div class="col-md-4 mb-3">
             <label id="labelRgIe" asp-for="RG_InsEstadual" class="form-label">RG / Inscrição Estadual</label>
             <input asp-for="RG_InsEstadual" class="form-control" />
             <span asp-validation-for="RG_InsEstadual" class="text-danger"></span>
         </div>
 
-        <div class="col-md-6 mb-3">
+        <div class="col-md-4 mb-3">
             <label asp-for="Email" class="form-label">Email</label>
             <input asp-for="Email" class="form-control" />
             <span asp-validation-for="Email" class="text-danger"></span>
         </div>
 
-        <div class="col-md-6 mb-3">
+        <div class="col-md-4 mb-3">
             <label asp-for="Telefone" class="form-label">Telefone</label>
             <input asp-for="Telefone" class="form-control" />
             <span asp-validation-for="Telefone" class="text-danger"></span>
 
         </div>
 
-        <div class="col-md-6 mb-3">
+        <div class="col-md-4 mb-3">
             <label class="form-label">Condição de Pagamento</label>
             <div class="input-group">
                 <input type="hidden" id="IdCondPgto" name="IdCondPgto" value="@Model.IdCondPgto" />
@@ -124,18 +124,18 @@
 
         </div>
 
-        <div class="col-md-6 mb-3">
+        <div class="col-md-4 mb-3">
             <label asp-for="LimiteCredito" class="form-label">Limite de Crédito </label>
             <input asp-for="LimiteCredito" class="form-control" type="text" data-val="false" />
         </div>
 
 
-        <div class="col-md-6 mb-3">
+        <div class="col-md-4 mb-3">
             <label class="form-label">Data de Criação</label>
             <input type="text" class="form-control" value="@Model.DataCriacao.ToString("dd/MM/yyyy HH:mm")" readonly />
         </div>
 
-        <div class="col-md-6 mb-3">
+        <div class="col-md-4 mb-3">
             <label class="form-label">Última Edição</label>
             <input type="text" class="form-control" value="@(Model.DataEdicao?.ToString("dd/MM/yyyy HH:mm") ?? "Nunca editado")" readonly />
         </div>
@@ -278,9 +278,9 @@
             });
         });
 
+
         $(document).ready(function () {
             var cepInput = $('#Cep');
-
 
             cepInput.on('keypress', function (event) {
                 if (event.which < 48 || event.which > 57) {
@@ -288,12 +288,10 @@
                 }
             });
 
-
             cepInput.on('input', function () {
                 this.value = this.value.replace(/[^0-9]/g, '');
             });
         });
-
         function atualizarLabels(tipo) {
             if (tipo === "Física") {
                 $('#labelNomeRazao').text("Nome");

@@ -35,10 +35,14 @@
                      <span asp-validation-for="NumeroNota" class="text-danger"></span>
                     </div>
                
-                <div class="col-md-6 mt-2">
+                <div class="col-md-6">
                     <label class="form-label">Fornecedor</label>
                     <div class="input-group">
-                        <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#modalFornecedor">Buscar Fornecedor</button>
+                        <input type="number" id="fornecedor-id-input" class="form-control" placeholder="Digitar ID" style="max-width: 120px;" />
+
+                        <button type="button" id="btn-buscar-por-id" class="btn btn-primary">Buscar por ID</button>
+                        
+                        <button type="button" class="btn btn-outline-secondary ms-4" data-bs-toggle="modal" data-bs-target="#modalFornecedor">Buscar Fornecedor</button>
                     </div>
                     <div class="col-md-6 mt-2">
                         <table class="table table-sm table-bordered">
@@ -54,15 +58,17 @@
                     </div>
                 </div>
 
+                
+
             </div>
             <div class="row mt-3">
-                <div class="col-md-3"><label asp-for="DataEmissao" class="form-label">
-                </label><input asp-for="DataEmissao" type="date" class="form-control" />
-                <span asp-validation-for="DataEmissao" class="text-danger"></span>
+                <div class="col-md-3">
+                    <label asp-for="DataEmissao" class="form-label"> Data de Emissao</label>
+                    <input asp-for="DataEmissao" type="date" class="form-control" id="DataEmissao" /> 
                 </div>
-                <div class="col-md-3"><label asp-for="DataChegada" class="form-label">
-                </label><input asp-for="DataChegada" type="date" class="form-control" />
-                    <span asp-validation-for="DataChegada" class="text-danger"></span>
+                <div class="col-md-3">
+                    <label asp-for="DataChegada" class="form-label">Data de Chegada</label>
+                    <input asp-for="DataChegada" type="date" class="form-control" id="DataChegada" /> 
                 </div>
             </div>
         </div>
@@ -71,19 +77,45 @@
     <div class="card mb-3">
         <div class="card-header">Lista de Produtos</div>
         <div class="card-body">
-            <div class="row align-items-end">
-                <div class="col-md-5">
+            <div class="row align-items-end gx-2">
+                <div class="col-md-auto">
                     <label class="form-label">Produto</label>
                     <div class="input-group">
-                        <input type="text" id="NomeProdutoSelecionado" class="form-control" readonly placeholder="Nenhum produto selecionado" />
-                        <input type="hidden" id="IdProdutoSelecionado" />
-                        <input type="hidden" id="UnidadeProdutoSelecionado" />
-                        <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#modalProduto" id="btn-buscar-produto">Buscar</button>
+                        <input type="number" id="produto-id-input" class="form-control" placeholder="Digitar ID..." style="max-width: 120px;" />
+                        <button type="button" id="btn-buscar-produto-por-id" class="btn btn-primary">Buscar ID</button>
+                        <button class="btn btn-outline-secondary ms-2" type="button" data-bs-toggle="modal" data-bs-target="#modalProduto" id="btn-buscar-produto-modal" title="Abrir lista de produtos">Buscar</button>
                     </div>
+                    
                 </div>
-                <div class="col-md-2"><label class="form-label">Quantidade</label><input id="produto-quantidade" type="number" class="form-control" value="1" /></div>
-                <div class="col-md-2"><label class="form-label">Valor Unitário</label><input id="produto-valor" type="text" class="form-control" /></div>
-                <div class="col-md-3"><button type="button" id="btn-adicionar-produto" class="btn btn-secondary">Adicionar Produto</button></div>
+
+                <div class="col-md-2">
+                    <label class="form-label">Produto Selecionado</label>
+                    <input type="text" id="NomeProdutoSelecionado" class="form-control" readonly placeholder="-" />
+                    <input type="hidden" id="IdProdutoSelecionado" />
+                    <input type="hidden" id="UnidadeProdutoSelecionado" />
+                </div>
+                <div class="col-md-1">
+                    <label class="form-label">UN</label>
+                    <input id="produto-unidade" type="text" class="form-control" readonly />
+                </div>
+
+                <div class="col-md-1">
+                    <label class="form-label">Quantidade</label>
+                    <input id="produto-quantidade" type="number" class="form-control" value="1" />
+                </div>
+
+                <div class="col-md-1">
+                    <label class="form-label">Valor Unitário</label>
+                    <input id="produto-valor" type="text" class="form-control" />
+                </div>
+
+                <div class="col-md-2">
+                    <label class="form-label">Total</label>
+                    <input id="produto-total" type="text" class="form-control" readonly />
+                </div>
+                <div class="col-md-auto">
+                    <button type="button" id="btn-adicionar-produto" class="btn btn-secondary w-100">Adicionar</button>
+                </div>
             </div>
             <table class="table table-hover mt-3">
                 <thead>
@@ -105,28 +137,31 @@
     <div class="card mb-3">
         <div class="card-header">Financeiro</div>
         <div class="card-body">
-            <div class="row">
-                <div class="col-md-6">
+            <div class="mb-4">
                     <h5>Valores Totais</h5><hr />
-                    <div class="mb-2 row"><label class="col-sm-4 col-form-label">Total Produtos</label><div class="col-sm-8"><input type="text" readonly class="form-control-plaintext" id="total-produtos" value="R$ 0,00"></div></div>
-                    <div class="mb-2 row"><label asp-for="Frete" class="col-sm-4 col-form-label"></label><div class="col-sm-8"><input asp-for="Frete" class="form-control" value="0" /></div></div>
-                    <div class="mb-2 row"><label asp-for="Seguro" class="col-sm-4 col-form-label"></label><div class="col-sm-8"><input asp-for="Seguro" class="form-control" value="0" /></div></div>
-                    <div class="mb-2 row"><label asp-for="Despesas" class="col-sm-4 col-form-label"></label><div class="col-sm-8"><input asp-for="Despesas" class="form-control" value="0" /></div></div>
+                    <div class="mb-2 row"><label class="col-sm-4 col-form-label">Total Produtos</label><div class="col-sm-2"><input type="text" readonly class="form-control-plaintext" id="total-produtos" value="R$ 0,00"></div></div>
+                    <div class="mb-2 row"><label asp-for="Frete" class="col-sm-4 col-form-label"></label><div class="col-sm-2"><input asp-for="Frete" class="form-control" value="0" /></div></div>
+                    <div class="mb-2 row"><label asp-for="Seguro" class="col-sm-4 col-form-label"></label><div class="col-sm-2"><input asp-for="Seguro" class="form-control" value="0" /></div></div>
+                    <div class="mb-2 row"><label asp-for="Despesas" class="col-sm-4 col-form-label"></label><div class="col-sm-2"><input asp-for="Despesas" class="form-control" value="0" /></div></div>
                     <hr />
-                    <div class="mb-2 row fw-bold fs-5"><label class="col-sm-4 col-form-label">Total da Nota</label><div class="col-sm-8"><input type="text" readonly class="form-control-plaintext" id="total-nota" value="R$ 0,00"></div></div>
+                    <div class="mb-2 row fw-bold fs-5"><label class="col-sm-4 col-form-label">Total da Nota</label><div class="col-sm-2"><input type="text" readonly class="form-control-plaintext" id="total-nota" value="R$ 0,00"></div></div>
                 </div>
-                <div class="col-md-6">
-                    <h5>Pagamento</h5><hr />
-                    <label class="form-label">Condição de Pagamento</label>
-                    <div class="input-group">
-                        <input type="text" id="NomeCondicaoCompra" class="form-control" readonly placeholder="Nenhuma condição selecionada" />
-                        <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#modalCondicaoCompra">Buscar</button>
+            <div>
+                <h5>Pagamento</h5><hr />
+                <label class="form-label">Condição de Pagamento</label>
+                <div class="row">
+                    <div class="col-md-5">
+                        <div class="input-group">
+                            <input type="text" id="NomeCondicaoCompra" class="form-control" readonly placeholder="Nenhuma condição selecionada" />
+                            <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#modalCondicaoCompra">Buscar</button>
+                        </div>
                     </div>
+                </div>
+                
                     <table class="table table-sm table-bordered mt-2">
                         <thead><tr><th>Parcela</th><th>Valor</th><th>Vencimento</th><th>Forma de Pagamento</th></tr></thead>
                         <tbody id="tabela-parcelas"></tbody>
                     </table>
-                </div>
             </div>
         </div>
     </div>
@@ -145,18 +180,19 @@
     </div>
 </form>
 
-<div class="modal fade" id="modalFornecedor" tabindex="-1">
+<div class="modal fade" id="modalFornecedor" tabindex="-1" >
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header"><h5 class="modal-title">Selecionar Fornecedor</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
             <div class="modal-body">
                 <input type="text" id="filtroFornecedor" class="form-control mb-3" placeholder="Digite para buscar..." onkeyup="filtrarTabelaFornecedorCompra()" />
                 <table class="table table-bordered table-hover" id="tabelaFornecedores">
-                    <thead><tr><th>Nome</th><th>Ação</th></tr></thead>              
+                    <thead><tr><th>ID</th><th>Nome</th><th>Ação</th></tr></thead>              
                     <tbody>
                         @foreach (var fornecedor in ViewBag.Fornecedores as List<Pagamento.Models.Fornecedor>)
                         {
                             <tr>
+                                <td>@fornecedor.IdPessoa</td>
                                 <td>@fornecedor.Nome_RazaoSocial</td>
                                 <td>
                                     <button type="button" class="btn btn-sm btn-primary"
@@ -183,11 +219,12 @@
             <div class="modal-body">
                 <input type="text" id="filtroProduto" class="form-control mb-3" placeholder="Digite para buscar..." onkeyup="filtrarTabelaProduto()" />
                 <table class="table table-bordered table-hover" id="tabelaProdutosModal">
-                    <thead><tr><th>Descrição</th><th>Ação</th></tr></thead>
+                    <thead><tr><th>ID</th><th>Descrição</th><th>Ação</th></tr></thead>
                     <tbody>
                         @foreach (var produto in ViewBag.Produtos as List<Pagamento.Models.Produto>)
                         {
                             <tr>
+                                <td>@produto.IdProduto</td>
                                 <td>@produto.Descricao</td>
                                 <td>
                                     <button type="button" class="btn btn-sm btn-primary" onclick="selecionarProduto(@produto.IdProduto, '@produto.Descricao', '@produto.NomeUnidade')">Selecionar</button>
@@ -212,12 +249,300 @@
     </div>
 </div>
 
+
+
 <div class="modal fade" id="modalNovoProduto" tabindex="-1">
     <div class="modal-dialog modal-xl">
         <div class="modal-content" id="modalNovoProdutoContent">
         </div>
     </div>
 </div>
+
+
+
+<div class="modal fade" id="modalMarcaSelecionar" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Selecionar Marca</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="filtroMarca" class="form-control mb-2" placeholder="Buscar..." onkeyup="filtrarTabelaMarca()" />
+                <table class="table table-bordered" id="tabelaMarcas">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                         @foreach (var marca in ViewBag.MarcasItens as List<SelectListItem>)
+                        {
+                            <tr>
+                                <td>@marca.Text</td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-primary"
+                                            onclick="selecionarMarca(@marca.Value, '@marca.Text')">
+                                        Selecionar
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <hr />
+                <button class="btn btn-success" type="button" onclick="abrirFormMarca()">+ Cadastrar nova Marca</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalUnidadeSelecionar" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Selecionar Unidade de Medida</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="filtroUnidade" class="form-control mb-2" placeholder="Buscar..." onkeyup="filtrarTabelaUnidade()" />
+                <table class="table table-bordered" id="tabelaUnidades">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var unidade in ViewBag.UnidadesItens as List<SelectListItem>)
+                        {
+                            <tr>
+                                <td>@unidade.Text</td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-primary"
+                                            onclick="selecionarUnidade(@unidade.Value, '@unidade.Text')">
+                                        Selecionar
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <hr />
+                <button class="btn btn-success" type="button" onclick="abrirFormUnidade()">+ Cadastrar nova Unidade</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalCategoriaSelecionar" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Selecionar Categoria</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="filtroCategoria" class="form-control mb-2" placeholder="Buscar..." onkeyup="filtrarTabelaCategoria()" />
+                <table class="table table-bordered" id="tabelaCategorias">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var categoria in ViewBag.CategoriasItens as List<SelectListItem>)
+                        {
+                            <tr>
+                                <td>@categoria.Text</td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-primary"
+                                            onclick="selecionarCategoria(@categoria.Value, '@categoria.Text')">
+                                        Selecionar
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <hr />
+                <button class="btn btn-success" type="button" onclick="abrirFormCategoria()">+ Cadastrar nova Categoria</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalFornecedorSelecionarProduto" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Selecionar Fornecedores</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+
+            <div class="modal-body">
+                <input type="text" id="filtroFornecedorProduto" class="form-control mb-2" placeholder="Buscar..." onkeyup="filtrarTabelaFornecedorProduto()" />
+
+                <table class="table table-bordered" id="tabelaFornecedoresProduto">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Nome</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var t in ViewBag.FornecedoresItens as List<SelectListItem>)
+                        {
+                            <tr>
+                                <td>
+                                    <input type="checkbox" class="chk-fornecedor" value="@t.Value" data-nome="@t.Text" />
+                                </td>
+                                <td>@t.Text</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                <h6 class="mt-3">Fornecedores Selecionados:</h6>
+                <ul id="listaFornecedoresSelecionados"></ul>
+
+                <hr />
+                <button class="btn btn-success" type="button" onclick="abrirFormNovoFornecedorProduto()">+ Cadastrar novo Fornecedor</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalMarca" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog"><div class="modal-content" id="modalMarcaContent"></div></div>
+</div>
+<div class="modal fade" id="modalUnidade" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog"><div class="modal-content" id="modalUnidadeContent"></div></div>
+</div>
+<div class="modal fade" id="modalCategoria" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog"><div class="modal-content" id="modalCategoriaContent"></div></div>
+</div>
+<div class="modal fade" id="modalFornecedorProduto" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl"><div class="modal-content" id="modalFornecedorProdutoContent"></div></div>
+</div>
+
+
+
+
+
+<div class="modal fade" id="modalCidadeFornecedor" tabindex="-1" aria-labelledby="modalCidadeFornecedorLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalCidadeFornecedorLabel">Selecionar Cidade</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <input type="text" id="filtroCidadeFornecedor" class="form-control" placeholder="Digite para buscar..." onkeyup="filtrarTabelaCidadeFornecedor()" />
+                </div>
+
+                <table class="table table-bordered" id="tabelaCidadesFornecedor">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var cidade in ViewBag.CidadesItens as List<SelectListItem>)
+                        {
+                            <tr>
+                                <td>@cidade.Text</td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-primary"
+                                            onclick="selecionarCidadeFornecedor('@cidade.Value', '@Html.Raw(System.Web.HttpUtility.JavaScriptStringEncode(cidade.Text))')">
+                                        Selecionar
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                <hr />
+                <button class="btn btn-success" type="button" onclick="abrirFormNovaCidadeFornecedor()">+ Cadastrar nova Cidade</button>
+                <div id="formNovaCidadeContainer"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalCondicaoPgtoFornecedor" tabindex="-1" aria-labelledby="modalCondicaoPgtoFornecedorLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalCondicaoPgtoFornecedorLabel">Selecionar Condição de Pagamento</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="filtroCondicaoFornecedor" class="form-control mb-2" placeholder="Buscar..." onkeyup="filtrarTabelaCondicaoFornecedor()" />
+                <table class="table table-bordered" id="tabelaCondicoesFornecedor">
+                    <thead>
+                        <tr>
+                            <th>Descrição</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var condicao in ViewBag.CondicoesPagamentoItens as List<SelectListItem>)
+                        {
+                            <tr>
+                                <td>@condicao.Text</td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-primary"
+                                            onclick="selecionarCondicaoFornecedor('@condicao.Value', '@Html.Raw(System.Web.HttpUtility.JavaScriptStringEncode(condicao.Text))')">
+                                        Selecionar
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                <hr />
+                <button class="btn btn-success" type="button" onclick="abrirFormNovaCondicaoFornecedor()">+ Cadastrar nova Condição</button>
+                <div id="formNovaCondicaoContainer"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalNovaCidadeFornecedor" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" id="modalNovaCidadeContentFornecedor">
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="modalNovaCondicaoFornecedor" tabindex="-1" aria-labelledby="modalNovaCondicaoFornecedorLabel">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content" id="modalNovaCondicaoContentFornecedor">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalNovaCondicaoFornecedorLabel">Cadastrar Condição</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalNovaCondicaoCompra" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content" id="modalNovaCondicaoContentCompra">
+        </div>
+    </div>
+</div>
+
 
 
 
@@ -228,89 +553,267 @@
     <script>
 
 
+        
+        async function buscarEselecionarProdutoPorId() {
+            const idInput = document.getElementById('produto-id-input');
+            const id = parseInt(idInput.value);
 
-         function moveFornecedorSubModalsToBody() {
-          ['#modalCidadeFornecedor',
-           '#modalCondicaoPgtoFornecedor',
-           '#modalNovaCidadeFornecedor',
-           '#modalNovaCondicaoFornecedor'
-          ].forEach(sel => {
-            const el = document.querySelector('#modalNovoFornecedorContent ' + sel);
-            if (el) document.body.appendChild(el); 
-        }
+            if (!id || id <= 0) {
+                alert('Por favor, digite um ID de produto válido.');
+                return;
+            }
 
-        function openStackedModal(childId, parentId) {
-          const parentEl = document.getElementById(parentId);
-          const childEl  = document.getElementById(childId);
-          if (!childEl) return;
+            try {
+                const response = await fetch(`@Url.Action("BuscarPorIdJSON", "Produto")?id=${id}`);
 
-          const parent = bootstrap.Modal.getOrCreateInstance(parentEl);
-          const child  = bootstrap.Modal.getOrCreateInstance(childEl);
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    alert(errorData.mensagem || 'Produto não encontrado.');
+                    document.getElementById('NomeProdutoSelecionado').value = '';
+                    document.getElementById('IdProdutoSelecionado').value = '';
+                    document.getElementById('UnidadeProdutoSelecionado').value = '';
+                    document.getElementById('produto-unidade').value = '';
+                    calcularTotalItem(); 
+                    return;
+                }
 
-          parent.hide();
-          childEl.addEventListener('hidden.bs.modal', function onHidden() {
-            childEl.removeEventListener('hidden.bs.modal', onHidden);
-            parent.show();
-          }, { once: true });
+                const produto = await response.json();
 
-          child.show();
-        }
+                selecionarProduto(produto.idProduto, produto.descricao, produto.nomeUnidade);
 
-        function wireFornecedorModal() {
-          moveFornecedorSubModalsToBody();
+                idInput.value = '';
 
-          const root = document.getElementById('modalNovoFornecedorContent');
-
-          const btnCidade = root.querySelector('[data-bs-target="#modalCidadeFornecedor"]');
-          if (btnCidade) {
-            btnCidade.removeAttribute('data-bs-toggle');
-            btnCidade.removeAttribute('data-bs-target');
-            btnCidade.addEventListener('click', e => {
-              e.preventDefault();
-              openStackedModal('modalCidadeFornecedor', 'modalNovoFornecedor');
-            });
-          }
-
-          const btnCond = root.querySelector('[data-bs-target="#modalCondicaoPgtoFornecedor"]');
-          if (btnCond) {
-            btnCond.removeAttribute('data-bs-toggle');
-            btnCond.removeAttribute('data-bs-target');
-            btnCond.addEventListener('click', e => {
-              e.preventDefault();
-              openStackedModal('modalCondicaoPgtoFornecedor', 'modalNovoFornecedor');
-            });
-          }
+            } catch (error) {
+                console.error('Erro ao buscar produto por ID:', error);
+                alert('Ocorreu um erro de comunicação ao tentar buscar o produto.');
+            }
         }
 
 
+        document.addEventListener('DOMContentLoaded', function() {
 
-        function cleanupFornecedorSubModals() {
-          [
-            '#modalCidadeFornecedor',
-            '#modalCondicaoPgtoFornecedor',
-            '#modalNovaCidadeFornecedor',
-            '#modalNovaCondicaoFornecedor'
-          ].forEach(sel => {
-            document.querySelectorAll(sel).forEach(n => n.remove());
-          });
+            const btnBuscarProdutoId = document.getElementById('btn-buscar-produto-por-id');
+            if (btnBuscarProdutoId) {
+                btnBuscarProdutoId.addEventListener('click', buscarEselecionarProdutoPorId);
+            }
+        });
 
-          if (!document.querySelector('.modal.show')) {
-            document.querySelectorAll('.modal-backdrop').forEach(b => b.remove());
-            document.body.classList.remove('modal-open');
-          }
-        }
-
-        function dedupeFornecedorSubModals() {
-          ['modalCidadeFornecedor','modalCondicaoPgtoFornecedor','modalNovaCidadeFornecedor','modalNovaCondicaoFornecedor']
-            .forEach(id => {
-              const nodes = Array.from(document.querySelectorAll('#' + id));
-              if (nodes.length > 1) {
-                nodes.slice(0, -1).forEach(n => n.remove());
-              }
-            });
-        }
 
         
+        async function buscarEselecionarFornecedorPorId() {
+            const idInput = document.getElementById('fornecedor-id-input');
+            const id = parseInt(idInput.value);
+
+            if (!id || id <= 0) {
+                alert('Por favor, digite um ID de fornecedor válido.');
+                return;
+            }
+
+            try {
+                const response = await fetch(`@Url.Action("BuscarPorIdJSON", "Fornecedor")?id=${id}`);
+
+                if (!response.ok) { 
+                    const errorData = await response.json();
+                    alert(errorData.mensagem || 'Fornecedor não encontrado.');
+                    return;
+                }
+
+                const fornecedor = await response.json();
+
+                
+                selecionarFornecedor(fornecedor.idPessoa, fornecedor.nome, fornecedor.idCondPgto);
+
+                idInput.value = '';
+
+            } catch (error) {
+                console.error('Erro ao buscar fornecedor por ID:', error);
+                alert('Ocorreu um erro de comunicação ao tentar buscar o fornecedor.');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+
+            const btnBuscarId = document.getElementById('btn-buscar-por-id');
+            if (btnBuscarId) {
+                btnBuscarId.addEventListener('click', buscarEselecionarFornecedorPorId);
+            }
+        });
+
+
+        
+        document.addEventListener('DOMContentLoaded', function() {
+
+            function getFormattedDate(date) {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            }
+
+            const today = new Date();
+            today.setHours(0, 0, 0, 0); 
+            const formattedToday = getFormattedDate(today);
+
+            const dataEmissaoInput = document.getElementById('DataEmissao');
+            const dataChegadaInput = document.getElementById('DataChegada');
+
+            if (dataEmissaoInput) {
+                dataEmissaoInput.max = formattedToday;
+
+                dataEmissaoInput.addEventListener('input', function() {
+                    if (dataChegadaInput) {
+                        dataChegadaInput.min = dataEmissaoInput.value;
+
+                        
+                        if (dataChegadaInput.value < dataEmissaoInput.value) {
+                            dataChegadaInput.value = ''; 
+                        }
+                    }
+                });
+            }
+
+            if (dataChegadaInput) {
+                dataChegadaInput.max = formattedToday;
+
+                if (dataEmissaoInput && dataEmissaoInput.value) {
+                     dataChegadaInput.min = dataEmissaoInput.value;
+                } else {
+                    
+                }
+            }
+
+                
+        if (dataEmissaoInput) {
+            dataEmissaoInput.addEventListener('blur', function() {
+                
+                const parts = this.value.split('-');
+                if (parts.length === 3) {
+                     const inputDate = new Date(Date.UTC(parts[0], parts[1] - 1, parts[2]));
+
+                    if (inputDate > today) {
+                        alert('A Data de Emissão não pode ser futura. Corrigindo para hoje.');
+                        this.value = formattedToday; 
+                        this.dispatchEvent(new Event('input'));
+                    }
+                } else if (this.value !== '') {
+                     alert('Formato de data inválido para Data de Emissão.');
+                     this.value = formattedToday; 
+                     this.dispatchEvent(new Event('input'));
+                }
+            });
+        }
+
+        if (dataChegadaInput) {
+            dataChegadaInput.addEventListener('blur', function() {
+                const parts = this.value.split('-');
+                if (parts.length === 3) {
+                     const inputDate = new Date(Date.UTC(parts[0], parts[1] - 1, parts[2]));
+
+                     let dataEmissaoValue = '';
+                     let dataEmissaoDate = null;
+                     if (dataEmissaoInput && dataEmissaoInput.value) {
+                          dataEmissaoValue = dataEmissaoInput.value;
+                          const emissaoParts = dataEmissaoValue.split('-');
+                          if (emissaoParts.length === 3) {
+                              dataEmissaoDate = new Date(Date.UTC(emissaoParts[0], emissaoParts[1] - 1, emissaoParts[2]));
+                          }
+                     }
+
+                     if (inputDate > today) {
+                         alert('A Data de Chegada não pode ser futura. Corrigindo para hoje.');
+                         this.value = formattedToday;
+                     } else if (dataEmissaoDate && inputDate < dataEmissaoDate) {
+                         alert('A Data de Chegada não pode ser anterior à Data de Emissão. Corrigindo para a Data de Emissão.');
+                         this.value = dataEmissaoValue; 
+                     }
+                } else if (this.value !== '') {
+                     alert('Formato de data inválido para Data de Chegada.');
+                     this.value = ''; 
+                }
+            });
+        }
+
+            
+            if (dataEmissaoInput) {
+                dataEmissaoInput.dispatchEvent(new Event('input'));
+            }
+        });
+
+        function calcularTotalItem() {
+            const qtdInput = document.getElementById('produto-quantidade');
+            const valorInput = document.getElementById('produto-valor');
+            const totalInput = document.getElementById('produto-total');
+
+            const quantidade = parseFloat(qtdInput.value) || 0;
+
+            const valorUnitario = parseFloat((valorInput.value || '0').replace(',', '.')) || 0;
+
+            const total = quantidade * valorUnitario;
+
+            if (totalInput) {
+                totalInput.value = formatarMoeda(total);
+            }
+        }
+            
+        document.addEventListener('DOMContentLoaded', function () {
+           
+            const qtdInput = document.getElementById('produto-quantidade');
+            const valorInput = document.getElementById('produto-valor');
+
+            if (qtdInput) {
+                qtdInput.addEventListener('input', calcularTotalItem);
+            }
+            if (valorInput) {
+                
+                valorInput.addEventListener('input', calcularTotalItem);
+            }
+
+            
+        });
+
+
+
+           
+        document.addEventListener('DOMContentLoaded', function () {
+            const ajaxModalContents = [
+                '#modalNovoFornecedorContent',
+                '#modalNovoProdutoContent',
+                '#modalFornecedorProdutoContent',
+                '#modalNovaCidadeContentFornecedor',
+                '#modalNovaCondicaoContentFornecedor',
+                '#modalMarcaContent',
+                '#modalUnidadeContent',
+                '#modalCategoriaContent',
+                '#modalNovaFormaContent' 
+            ];
+
+            ajaxModalContents.forEach(function (contentId) {
+                const modalElement = document.querySelector(contentId)?.closest('.modal');
+                if (modalElement) {
+                    modalElement.addEventListener('hidden.bs.modal', function () {
+                        const contentDiv = modalElement.querySelector(contentId);
+                        if (contentDiv) {
+                            contentDiv.innerHTML = '';
+                        }
+                    });
+                }
+            });
+
+            
+        });
+
+        
+
+
+                
+        function filtrarTabelaFornecedorProduto() {
+          const filtro = $('#filtroFornecedorProduto').val().toLowerCase();
+          $('#tabelaFornecedoresProduto tbody tr').each(function () {
+            const nome = $(this).find('td:eq(1)').text().toLowerCase();
+            $(this).toggle(nome.includes(filtro));
+          });
+        }
+           
         let idCondicaoPermitida = 0;
 
         function selecionarFornecedor(id, nome, idCondPgto) {
@@ -340,15 +843,16 @@
                         return;
                     }
 
-                    const todasAsLinhas = modalCondicaoEl.querySelectorAll('#tabelaCondicoes tbody tr');
+                    const todasAsLinhas = document.querySelectorAll('#tabelaCondicoesCompra tbody tr');
 
+                    
                     todasAsLinhas.forEach(linha => {
                         const idDaLinha = linha.getAttribute('data-id');
 
+                        
                         if (idDaLinha == idCondicaoPermitida) {
                             linha.style.display = ''; 
                         }
-                        
                         else {
                             linha.style.display = 'none';
                         }
@@ -356,34 +860,19 @@
                 });
             }
 
-            
         });
 
-        
-
-
-
-                
         function abrirFormNovoFornecedor() {
-          cleanupFornecedorSubModals(); 
-
-          $.get('@Url.Action("FormModal", "Fornecedor")', function (html) {
-            const cont = document.getElementById('modalNovoFornecedorContent');
-            cont.innerHTML = html;
-
-            dedupeFornecedorSubModals(); 
-            wireFornecedorModal();       
-
-            const el = document.getElementById('modalNovoFornecedor');
-            const m  = new bootstrap.Modal(el);
-            m.show();
-
-            el.addEventListener('hidden.bs.modal', cleanupFornecedorSubModals, { once: true });
-          });
+            $.get('@Url.Action("FormModal", "Fornecedor")', function (data) {
+                $('#modalNovoFornecedorContent').html(data);
+                var modal = new bootstrap.Modal(document.getElementById('modalNovoFornecedor'));
+                modal.show();
+            });
         }
 
 
 
+              
 
         $(document).on('submit', '#formCadastrarFornecedor', function (e) {
             e.preventDefault();
@@ -394,12 +883,27 @@
                 success: function (response) {
                     if (response.sucesso) {
                         $('#modalNovoFornecedor').modal('hide');
-
+                              
+                        const condId =
+                        response.fornecedor?.idCondPgto ??  
+                        response.fornecedor?.IdCondPgto ??
+                        response.fornecedor?.condicaoPagamentoId ?? 0;
                         var novaLinha = `<tr>
-                            <td>${response.fornecedor.nome}</td>
-                            <td>
-                                <button class='btn btn-sm btn-primary' onclick='selecionarFornecedor(${response.fornecedor.id}, "${response.fornecedor.nome}")'>Selecionar</button>
-                            </td>
+                        <td>${response.fornecedor.nome}</td>       
+                        <td>
+            
+                        <button class="btn btn-sm btn-primary"
+
+                        onclick='selecionarFornecedor(${response.fornecedor.id},
+                            "${(response.fornecedor.nome||"").replace(/"/g,"&quot;")}",
+                            ${condId})'>
+              
+                        Selecionar
+            
+                        </button>
+          
+                        </td>
+        
                         </tr>`;
                         $('#tabelaFornecedores tbody').append(novaLinha);
                     } else {
@@ -411,37 +915,28 @@
 
        
 
-       
+        
+            
         function selecionarCidadeFornecedor(id, nome) {
-          $('#modalNovoFornecedorContent #IdCidade').val(id);
-          $('#modalNovoFornecedorContent #NomeCidadeSelecionada').val(nome);
-          bootstrap.Modal.getInstance(document.getElementById('modalCidadeFornecedor'))?.hide();
+            
+            var $formAtivo = $('#modalNovoFornecedorContent:not(:empty), #modalFornecedorProdutoContent:not(:empty)').first();
+
+            $formAtivo.find('#IdCidade').val(id);
+            $formAtivo.find('#NomeCidadeSelecionada').val(nome);
+
+            bootstrap.Modal.getInstance(document.getElementById('modalCidadeFornecedor'))?.hide();
         }
+      
 
-       
-
-                
         function abrirFormNovaCidadeFornecedor() {
-          const selEl = document.getElementById('modalCidadeFornecedor');
-          const sel   = selEl ? bootstrap.Modal.getOrCreateInstance(selEl) : null;
-          if (sel) sel.hide();
-
           $.get('/Cidade/FormModal', function (html) {
             $('#modalNovaCidadeContentFornecedor').html(html);
-
-            const cadEl = document.getElementById('modalNovaCidadeFornecedor');
-            const cad   = bootstrap.Modal.getOrCreateInstance(cadEl);
-
-            cadEl.addEventListener('hidden.bs.modal', function onHidden() {
-              cadEl.removeEventListener('hidden.bs.modal', onHidden);
-              if (sel) sel.show(); 
-            }, { once: true });
-
-            cad.show();
+            new bootstrap.Modal(document.getElementById('modalNovaCidadeFornecedor')).show();
           });
         }
 
 
+        
         $(document).on('submit', '#formCadastrarCidade', function (e) {
           e.preventDefault();
           $.ajax({
@@ -450,8 +945,10 @@
             data: $(this).serialize(),
             success: function (response) {
               if (response.sucesso) {
+                
                 bootstrap.Modal.getInstance(document.getElementById('modalNovaCidadeFornecedor')).hide();
 
+                
                 const novaLinha = `
                   <tr>
                     <td>${response.cidade.nome}</td>
@@ -490,36 +987,29 @@
         }
 
         
+
+             
         function selecionarCondicaoFornecedor(id, nome) {
-          $('#modalNovoFornecedorContent #IdCondPgto').val(id);
-          $('#modalNovoFornecedorContent #NomeCondicaoSelecionada').val(nome);
-          bootstrap.Modal.getInstance(document.getElementById('modalCondicaoPgtoFornecedor'))?.hide();
+            var $formAtivo = $('#modalNovoFornecedorContent:not(:empty), #modalFornecedorProdutoContent:not(:empty)').first();
+
+            $formAtivo.find('#IdCondPgto').val(id);
+            $formAtivo.find('#NomeCondicaoSelecionada').val(nome);
+
+            bootstrap.Modal.getInstance(document.getElementById('modalCondicaoPgtoFornecedor'))?.hide();
         }
 
+
+
        
-
-                
         function abrirFormNovaCondicaoFornecedor() {
-          const selEl = document.getElementById('modalCondicaoPgtoFornecedor');
-          const sel   = selEl ? bootstrap.Modal.getOrCreateInstance(selEl) : null;
-          if (sel) sel.hide();
-
           $.get('/CondicaoPagamento/FormModal', function (html) {
             $('#modalNovaCondicaoContentFornecedor').html(html);
-
-            const cadEl = document.getElementById('modalNovaCondicaoFornecedor');
-            const cad   = bootstrap.Modal.getOrCreateInstance(cadEl);
-
-            cadEl.addEventListener('hidden.bs.modal', function onHidden() {
-              cadEl.removeEventListener('hidden.bs.modal', onHidden);
-              if (sel) sel.show();
-            }, { once: true });
-
-            cad.show();
+            new bootstrap.Modal(document.getElementById('modalNovaCondicaoFornecedor')).show();
           });
         }
 
-
+                
+       
         function filtrarTabelaCondicao() {
             const filtro = $('#filtroCondicao').val().toLowerCase();
             $('#tabelaCondicoes tbody tr').each(function () {
@@ -678,13 +1168,15 @@
           });
         }
         
-        
+      
         function selecionarProduto(id, nome, unidade) {
             document.getElementById('IdProdutoSelecionado').value = id;
             document.getElementById('NomeProdutoSelecionado').value = nome;
             document.getElementById('UnidadeProdutoSelecionado').value = unidade; 
+            document.getElementById('produto-unidade').value = unidade;
             var modal = bootstrap.Modal.getInstance(document.getElementById('modalProduto'));
             modal.hide();
+            calcularTotalItem(); 
         }
 
         function abrirFormNovoProduto() {
@@ -704,7 +1196,6 @@
                 success: function (response) {
                 if (response.sucesso) {
                     $('#modalNovoProduto').modal('hide');
-                        
                         var novaLinha = `<tr>
                             <td>${response.produto.nome}</td>
                             <td>
@@ -712,7 +1203,6 @@
                             </td>
                         </tr>`;
 
-                        
                         $('#tabelaProdutosModal tbody').append(novaLinha);
                     }  else {
                         $('#modalNovoProdutoContent').html(response);
@@ -729,24 +1219,24 @@
             });
         }
 
-       
-        function selecionarMarca(id, nome) {
-            $('#MarcaId').val(id);
-            $('#NomeMarcaSelecionada').val(nome);
+        
+            function selecionarMarca(id, nome) {
+            $('#modalNovoProdutoContent').find('#MarcaId').val(id);
+            $('#modalNovoProdutoContent').find('#NomeMarcaSelecionada').val(nome);
             bootstrap.Modal.getInstance(document.getElementById('modalMarcaSelecionar')).hide();
         }
-        function selecionarUnidade(id, nome) {
-            $('#UnidadeMedidaId').val(id);
-            $('#NomeUnidadeSelecionada').val(nome);
+            function selecionarUnidade(id, nome) {
+            
+            $('#modalNovoProdutoContent').find('#UnidadeMedidaId').val(id);
+            $('#modalNovoProdutoContent').find('#NomeUnidadeSelecionada').val(nome);
             bootstrap.Modal.getInstance(document.getElementById('modalUnidadeSelecionar')).hide();
         }
-        function selecionarCategoria(id, nome) {
-            $('#CategoriaId').val(id);
-            $('#NomeCategoriaSelecionada').val(nome);
+            function selecionarCategoria(id, nome) {
+            $('#modalNovoProdutoContent').find('#CategoriaId').val(id);
+            $('#modalNovoProdutoContent').find('#NomeCategoriaSelecionada').val(nome);
             bootstrap.Modal.getInstance(document.getElementById('modalCategoriaSelecionar')).hide();
         }
 
-       
         $(document).on('change', '.chk-fornecedor', function () {
             const fornecedoresSelecionados = [];
             const nomesSelecionados = [];
@@ -773,7 +1263,6 @@
             document.getElementById('NomeFornecedorSelecionado').value = nomes.join(', ');
         }
 
-        
         function filtrarTabelaMarca() {
             const filtro = $('#filtroMarca').val().toLowerCase();
             $('#tabelaMarcas tbody tr').each(function () {
@@ -784,7 +1273,7 @@
         function filtrarTabelaFornecedorCompra() {
             const filtro = $('#filtroFornecedor').val().toLowerCase();
             $('#tabelaFornecedores tbody tr').each(function () {
-                const nome = $(this).find('td:first').text().toLowerCase();    
+                const nome = $(this).find('td:first').text().toLowerCase();   
                 $(this).toggle(nome.includes(filtro));
             });
         }
@@ -803,7 +1292,6 @@
             });
         }
 
-        
         
         
         
@@ -832,7 +1320,6 @@
             });
         }
 
-        
         $(document).on('submit', '#formCadastrarMarca', function (e) {
             e.preventDefault();
             $.ajax({
@@ -917,20 +1404,17 @@
         
 
 
-       
+        
         async function selecionarCondicaoCompra(id, descricao) {
-            
             document.getElementById('CondicaoPagamentoCompraId').value = id;
             document.getElementById('NomeCondicaoCompra').value = descricao;
 
-           
             var modalEl = document.getElementById('modalCondicaoCompra');
             var modal = bootstrap.Modal.getInstance(modalEl);
             if (modal && modalEl.classList.contains('show')) {
                 modal.hide();
             }
 
-           
             await gerarParcelas();
         }
        
@@ -942,22 +1426,19 @@
             const totalNotaNum = parseMoeda(totalNotaStr);
             const dataEmissaoInput = document.getElementById('DataEmissao');
 
-            
             if (!idCondicao || totalNotaNum <= 0) {
                 document.getElementById('tabela-parcelas').innerHTML = '';
                 return;
             }
 
             if (!dataEmissaoInput.value) {
-                
                 alert("Por favor, preencha a Data de Emissão para calcular os vencimentos.");
                 return;
             }
 
-           
             try {
                 const [ano, mes, dia] = dataEmissaoInput.value.split('-');
-                const dataBase = new Date(ano, mes - 1, dia);
+                const dataBaseUTC = new Date(Date.UTC(ano, mes - 1, dia));
 
                 const response = await fetch(`@Url.Action("ObterDetalhes", "CondicaoPagamento")?id=${idCondicao}`);
                 if (!response.ok) {
@@ -972,14 +1453,14 @@
 
                 condicao.parcelas.forEach(p => {
                     const valorParcela = totalNotaNum * (p.valorPercentual / 100);
-                    const dataVencimento = new Date(dataBase.valueOf());
-                    dataVencimento.setDate(dataVencimento.getDate() + p.diasAposVenda);
+                    const dataVencimento = new Date(dataBaseUTC.valueOf());
+                    dataVencimento.setUTCDate(dataVencimento.getUTCDate() + p.diasAposVenda);
 
                     const novaLinha = `
                         <tr>
                             <td>${p.numeroParcela}</td>
                             <td>${formatarMoeda(valorParcela)}</td>
-                            <td>${formatarData(dataVencimento)}</td>
+                            <td>${formatarDataUTC(dataVencimento)}</td>
                             <td>${p.nomeFormaPagamento}</td>
                         </tr>`;
                     tabelaParcelasBody.insertAdjacentHTML('beforeend', novaLinha);
@@ -999,7 +1480,6 @@
           });
         }
 
-        
         $(document).on('submit', '#formCadastrarCondicao', function (e) {
             e.preventDefault();
             $.ajax({
@@ -1008,9 +1488,8 @@
                 data: $(this).serialize(),
                 success: function (response) {
                     if (response.sucesso) {
-                        
                         $('#modalNovaCondicaoCompra').modal('hide');
-                        var novaLinha = `<tr>
+                        var novaLinha = `<tr data-id="${response.condicao.id}">
                             <td>${response.condicao.descricao}</td>
                             <td>
                                 <button class='btn btn-sm btn-primary' onclick='selecionarCondicaoCompra(${response.condicao.id}, "${response.condicao.descricao}")'>Selecionar</button>
@@ -1018,7 +1497,7 @@
                         </tr>`;
                         $('#tabelaCondicoes tbody').append(novaLinha);
                     } else {
-                        $('#modalNovaCondicaoContent').html(response);
+                        $('#modalNovaCondicaoContentCompra').html(response);
                     }
                 }
             });
@@ -1026,13 +1505,12 @@
 
         function filtrarTabelaCondicao() {
             var filtro = document.getElementById("filtroCondicao").value.toLowerCase();
-            document.querySelectorAll("#tabelaCondicoes tbody tr").forEach(function (linha) {
+            document.querySelectorAll("#tabelaCondicoesCompra tbody tr").forEach(function (linha) {
                 var descricao = linha.cells[0].textContent.toLowerCase();
                 linha.style.display = descricao.includes(filtro) ? "" : "none";
             });
         }
 
-        
         function limparSelecaoProduto() {
             const idInput = document.getElementById('IdProdutoSelecionado');
             const nomeInput = document.getElementById('NomeProdutoSelecionado');
@@ -1043,19 +1521,28 @@
             }
         }
 
-         
         function parseMoeda(valorString) {
             if (!valorString) return 0;
             let valorNumerico = valorString.replace('R$', '').trim().replace(/\./g, '').replace(',', '.');
             return parseFloat(valorNumerico) || 0;
         }
 
-        
-        function formatarData(data) {
-            const dia = String(data.getDate()).padStart(2, '0');
-            const mes = String(data.getMonth() + 1).padStart(2, '0'); 
-            const ano = data.getFullYear();
-            return `${dia}/${mes}/${ano}`;
+       
+            
+        function formatarDataUTC(data) {
+            if (!data || !(data instanceof Date)) {
+                 return ''; 
+            }
+            try {
+                const dia = String(data.getUTCDate()).padStart(2, '0');
+                const mes = String(data.getUTCMonth() + 1).padStart(2, '0'); 
+                const ano = data.getUTCFullYear();
+                return `${dia}/${mes}/${ano}`;
+            } catch (e) {
+                 console.error("Erro ao formatar data UTC:", e, data);
+                 return 'Data inválida'; 
+            }
+
         }
 
         function formatarMoeda(valor) {
@@ -1086,7 +1573,6 @@
 
 
 
-       
         document.addEventListener('DOMContentLoaded', function () {
             const btnAdicionarProduto = document.getElementById('btn-adicionar-produto');
             const tabelaProdutosBody  = document.getElementById('tabela-produtos');
@@ -1133,7 +1619,7 @@
                     `;
                     tabelaProdutosBody.appendChild(linha);
 
-                    
+                   
                     if (produtoIdInput) produtoIdInput.value = '';
                     if (unidadeInput) unidadeInput.value = ''; 
                     if (produtoNomeInput) {
@@ -1143,10 +1629,15 @@
                     if (quantidadeInput) quantidadeInput.value = '1';
                     if (valorInput) valorInput.value = '';
 
+                             
+                    const unidadeDisplay = document.getElementById('produto-unidade');            
+                    const totalDisplay = document.getElementById('produto-total');            
+                    if (unidadeDisplay) unidadeDisplay.value = '';            
+                    if (totalDisplay) totalDisplay.value = 'R$ 0,00'; 
+
                     atualizarTotais();
                 });
 
-                
                 tabelaProdutosBody.addEventListener('click', function (e) {
                     const btn = e.target.closest('.btn-remover');
                     if (!btn) return;
@@ -1155,13 +1646,11 @@
                 });
             }
 
-           
             ['Frete', 'Seguro', 'Despesas'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.addEventListener('input', atualizarTotais);
             });
 
-            
             const form = document.getElementById('form-compra');
             if (form) {
                 form.addEventListener('submit', function (e) {

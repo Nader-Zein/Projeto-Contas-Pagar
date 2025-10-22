@@ -47,7 +47,7 @@ namespace Pagamento.Models
         public string? Observacoes { get; set; }
 
         [Required(ErrorMessage = "O status é obrigatório.")]
-        public bool Status { get; set; }
+        public bool Status { get; set; } = true;
 
         public DateTime DataCriacao { get; set; }
 

@@ -20,17 +20,17 @@
         </div>
 
     </div>
-    <div class="form-group">
+    <div class="col-md-2">
         <label>Descrição da Marca</label>
         <input type="text" class="form-control" value="@Model.Descricao" readonly />
     </div>
 
-    <div class="form-group mt-3">
+    <div class="col-md-2">
         <label>Data de Criação</label>
         <input type="text" class="form-control" value="@Model.DataCriacao.ToString("dd/MM/yyyy HH:mm")" readonly />
     </div>
 
-    <div class="form-group mt-2">
+    <div class="col-md-2">
         <label>Última Edição</label>
         <input type="text" class="form-control" value="@(Model.DataEdicao?.ToString("dd/MM/yyyy HH:mm") ?? "Nunca editado")" readonly />
     </div>

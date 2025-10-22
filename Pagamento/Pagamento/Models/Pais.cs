@@ -8,7 +8,7 @@ namespace Pagamento.Models
 
         [Required(ErrorMessage = "Insira o nome do pais.")]
         public string NomePais { get; set; }
-        public bool Status { get; set; }
+        public bool Status { get; set; } = true;
 
         public DateTime DataCriacao { get; set; }
         public DateTime? DataEdicao { get; set; }

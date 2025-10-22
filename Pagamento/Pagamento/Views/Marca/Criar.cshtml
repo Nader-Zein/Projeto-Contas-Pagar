@@ -17,22 +17,27 @@
     </div>
     
 
-    <div class="form-group">
-        <label asp-for="Descricao" class="form-label">Descrição</label>
-        <input class="form-control" asp-for="Descricao" required />
-        <span asp-validation-for="Descricao" class="text-danger"></span>
+  
+    <div class="row">
+        <div class="col-md-3">
+            <div class="mb-3">
+                <label asp-for="Descricao" class="form-label">Descrição</label>
+                <input class="form-control" asp-for="Descricao" required />
+                <span asp-validation-for="Descricao" class="text-danger"></span>
+            </div>
+        </div>
     </div>
 
     
 
     @if (Model != null)
     {
-        <div class="form-group mt-3">
+        <div class="col-md-2">
             <label>Data de Criação</label>
             <input type="text" class="form-control" value="@Model.DataCriacao.ToString("dd/MM/yyyy HH:mm")" readonly />
         </div>
 
-        <div class="form-group mt-2">
+        <div class="col-md-2">
             <label>Última Edição</label>
             <input type="text" class="form-control" value="@(Model.DataEdicao?.ToString("dd/MM/yyyy HH:mm"))" readonly />
         </div>
