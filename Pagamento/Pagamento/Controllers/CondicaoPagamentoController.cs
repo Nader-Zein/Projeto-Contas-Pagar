@@ -190,30 +190,23 @@ namespace Pagamento.Controllers
         }
 
 
-        
-
         [HttpGet]
         public IActionResult ObterDetalhes(int id)
         {
             try
             {
-                
-                
                 var condicao = condicaodao.BuscarPorId(id);
                 if (condicao == null)
                 {
-                    return NotFound(); 
+                    return NotFound();        
                 }
-        
+
                 condicao.Parcelas = parcelaDAO.ListarPorCondicaoPagamento(id);
 
-                
-                
                 return Json(condicao);
             }
             catch (Exception ex)
             {
-                
                 return StatusCode(500, new { mensagem = "Erro interno ao buscar detalhes da condição: " + ex.Message });
             }
         }

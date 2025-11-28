@@ -1,16 +1,20 @@
 ﻿@model Pagamento.Models.Compra
 
 @{
-    ViewData["Title"] = "Cadastro de Compra";
+    string modo = ViewData["Modo"] as string ?? "Criar";
+    ViewData["Title"] = modo == "Criar" ? "Cadastro de Compra" : (modo == "Detalhes" ? "Detalhes da Compra" : "Cancelar Compra");
+    bool isReadOnly = (modo != "Criar");           
 }
 
 <h1>@ViewData["Title"]</h1>
 <hr />
 
-<form asp-action="Criar" method="post" id="form-compra">
+<form asp-action="@(modo == "Cancelar" ? "ConfirmarCancelamento" : "Criar")" method="post" id="form-compra">
     <input type="hidden" name="itensJson" id="itens-json" />
     <input asp-for="FornecedorId" type="hidden" id="FornecedorId" />
     <input asp-for="CondicaoPagamentoId" type="hidden" id="CondicaoPagamentoCompraId" />
+
+    <fieldset @(isReadOnly ? "disabled" : "")>
 
     <div class="card mb-3">
         <div class="card-header d-flex justify-content-between align-items-center">
@@ -37,6 +41,8 @@
                
                 <div class="col-md-6">
                     <label class="form-label">Fornecedor</label>
+                    @if (modo == "Criar")
+                        {
                     <div class="input-group">
                         <input type="number" id="fornecedor-id-input" class="form-control" placeholder="Digitar ID" style="max-width: 120px;" />
 
@@ -56,9 +62,13 @@
                             </tbody>
                         </table>
                     </div>
+                      }
+                        else
+                        {
+                            <input type="text" class="form-control" value="@Model.NomeFornecedor (ID: @Model.FornecedorId)" readonly />
+                        }
                 </div>
 
-                
 
             </div>
             <div class="row mt-3">
@@ -77,15 +87,17 @@
     <div class="card mb-3">
         <div class="card-header">Lista de Produtos</div>
         <div class="card-body">
-            <div class="row align-items-end gx-2">
-                <div class="col-md-auto">
+        @if (modo == "Criar")
+                {
+                    <div class="row align-items-end gx-2">
+                        <div class="col-md-auto">
                     <label class="form-label">Produto</label>
                     <div class="input-group">
                         <input type="number" id="produto-id-input" class="form-control" placeholder="Digitar ID..." style="max-width: 120px;" />
                         <button type="button" id="btn-buscar-produto-por-id" class="btn btn-primary">Buscar ID</button>
                         <button class="btn btn-outline-secondary ms-2" type="button" data-bs-toggle="modal" data-bs-target="#modalProduto" id="btn-buscar-produto-modal" title="Abrir lista de produtos">Buscar</button>
                     </div>
-                    
+                   
                 </div>
 
                 <div class="col-md-2">
@@ -117,19 +129,39 @@
                     <button type="button" id="btn-adicionar-produto" class="btn btn-secondary w-100">Adicionar</button>
                 </div>
             </div>
+            }
             <table class="table table-hover mt-3">
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Produto</th>
-                        <th>UN</th>
-                        <th>Qtd.</th>
-                        <th>Vl. Unitário</th>
-                        <th>Total</th>
-                        <th>Ação</th>
+                            <th>ID</th>
+                            <th>Produto</th>                           
+                            <th>UN.</th>
+                            <th>Qtd.</th>
+                            <th>Vl. Unitário</th>
+                            <th>Total</th>
+                            @if (modo == "Criar")
+                            {
+                                <th>Ação</th>
+                            }
                     </tr>
                 </thead>
-                <tbody id="tabela-produtos"></tbody>
+                <tbody id="tabela-produtos">
+                        @if (isReadOnly)
+                        {
+                            foreach (var item in Model.Itens)
+                            {
+                                <tr>
+                                    <td>@item.ProdutoId</td>
+                                    <td>@item.NomeProduto</td>
+                                    <td>@item.NomeUnidade</td>
+                                    <td>@item.Quantidade</td>
+                                    <td>@item.ValorUnitario.ToString("C2")</td>
+                                    <td>@item.Total.ToString("C2")</td>
+                                </tr>
+                            }
+                        }
+                </tbody>
+
             </table>
         </div>
     </div>
@@ -139,12 +171,12 @@
         <div class="card-body">
             <div class="mb-4">
                     <h5>Valores Totais</h5><hr />
-                    <div class="mb-2 row"><label class="col-sm-4 col-form-label">Total Produtos</label><div class="col-sm-2"><input type="text" readonly class="form-control-plaintext" id="total-produtos" value="R$ 0,00"></div></div>
-                    <div class="mb-2 row"><label asp-for="Frete" class="col-sm-4 col-form-label"></label><div class="col-sm-2"><input asp-for="Frete" class="form-control" value="0" /></div></div>
-                    <div class="mb-2 row"><label asp-for="Seguro" class="col-sm-4 col-form-label"></label><div class="col-sm-2"><input asp-for="Seguro" class="form-control" value="0" /></div></div>
-                    <div class="mb-2 row"><label asp-for="Despesas" class="col-sm-4 col-form-label"></label><div class="col-sm-2"><input asp-for="Despesas" class="form-control" value="0" /></div></div>
+                    <div class="mb-2 row"><label class="col-sm-4 col-form-label">Total Produtos</label><div class="col-sm-2"><input type="text" readonly class="form-control-plaintext" id="total-produtos" value="@(isReadOnly? Model.TotalProdutos.ToString("C2") : "R$ 0,00")"></div></div>
+                    <div class="mb-2 row"><label asp-for="Frete" class="col-sm-4 col-form-label"></label><div class="col-sm-2"><input asp-for="Frete" class="form-control" value="@(modo == "Criar" ? "0" : Model.Frete)"  /></div></div>
+                    <div class="mb-2 row"><label asp-for="Seguro" class="col-sm-4 col-form-label"></label><div class="col-sm-2"><input asp-for="Seguro" class="form-control" value="@(modo == "Criar" ? "0" : Model.Seguro)"  /></div></div>
+                    <div class="mb-2 row"><label asp-for="Despesas" class="col-sm-4 col-form-label"></label><div class="col-sm-2"><input asp-for="Despesas" class="form-control" value="@(modo == "Criar" ? "0" : Model.Despesas)" /></div></div>
                     <hr />
-                    <div class="mb-2 row fw-bold fs-5"><label class="col-sm-4 col-form-label">Total da Nota</label><div class="col-sm-2"><input type="text" readonly class="form-control-plaintext" id="total-nota" value="R$ 0,00"></div></div>
+                    <div class="mb-2 row fw-bold fs-5"><label class="col-sm-4 col-form-label">Total da Nota</label><div class="col-sm-2"><input type="text" readonly class="form-control-plaintext" id="total-nota" value="@(isReadOnly? Model.TotalNota.ToString("C2") : "R$ 0,00")"></div></div>
                 </div>
             <div>
                 <h5>Pagamento</h5><hr />
@@ -152,15 +184,33 @@
                 <div class="row">
                     <div class="col-md-5">
                         <div class="input-group">
-                            <input type="text" id="NomeCondicaoCompra" class="form-control" readonly placeholder="Nenhuma condição selecionada" />
+                            <input type="text" id="NomeCondicaoCompra" class="form-control" readonly
+                                       placeholder="@(isReadOnly ? "" : "Nenhuma condição selecionada")"
+                                       value="@(isReadOnly? ViewBag.NomeCondicaoPagamento: "")" />
+                            @if (modo == "Criar")
+                                {
                             <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#modalCondicaoCompra">Buscar</button>
-                        </div>
+                                }
+                            </div>
                     </div>
                 </div>
                 
                     <table class="table table-sm table-bordered mt-2">
                         <thead><tr><th>Parcela</th><th>Valor</th><th>Vencimento</th><th>Forma de Pagamento</th></tr></thead>
-                        <tbody id="tabela-parcelas"></tbody>
+                        <tbody id="tabela-parcelas">
+                            @if (isReadOnly)
+                            {
+                                foreach (var p in Model.ParcelasGeradas)
+                                {
+                                    <tr>
+                                        <td>@p.NumeroParcela</td>
+                                        <td>@p.ValorParcela.ToString("C2")</td>
+                                        <td>@p.DataVencimento.ToString("dd/MM/yyyy")</td>
+                                        <td>@p.NomeFormaPgto</td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
                     </table>
             </div>
         </div>
@@ -173,12 +223,66 @@
         </div>
     </div>
 
+   </fieldset>
 
-    <div class="mt-4 text-end">
-        <button type="submit" class="btn btn-success">Salvar Compra</button>
-        <a asp-action="Index" asp-controller="Home" class="btn btn-secondary">Cancelar</a>
+
+    @if (modo == "Cancelar")
+    {
+        <div class="modal fade" id="modalMotivoCancelamento" tabindex="-1" aria-labelledby="modalMotivoLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalMotivoLabel">Motivo do Cancelamento</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Por favor, descreva o motivo do cancelamento desta compra:</p>
+
+                        <textarea class="form-control"
+                              id="motivoCancelamentoInput"
+                              name="motivoCancelamento"
+                              rows="4"
+                              placeholder="O motivo é obrigatório..."></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Voltar</button>
+
+                        <button type="button" class="btn btn-danger" id="btn-confirmar-envio-cancelamento">Confirmar Cancelamento</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+   
+   <div class="mt-4 text-end">
+        @if (modo == "Criar")
+        {
+            <button type="submit" class="btn btn-success">Salvar Compra</button>
+            <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+        }
+ else if (modo == "Detalhes") {
+        <a asp-action="Index" class="btn btn-secondary">Voltar para Lista</a>
+        } else if (modo == "Cancelar") {
+        <input type="hidden" asp-for="Modelo" />
+        <input type="hidden" asp-for="Serie" />
+        <input type="hidden" asp-for="NumeroNota" />
+        <input type="hidden" asp-for="FornecedorId" />
+
+            <button type="button"
+                    class="btn btn-danger"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalMotivoCancelamento">
+                Confirmar Cancelamento
+            </button>
+
+        <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+        }
     </div>
 </form>
+
+@if (modo == "Criar")
+{
 
 <div class="modal fade" id="modalFornecedor" tabindex="-1" >
     <div class="modal-dialog modal-lg">
@@ -189,6 +293,7 @@
                 <table class="table table-bordered table-hover" id="tabelaFornecedores">
                     <thead><tr><th>ID</th><th>Nome</th><th>Ação</th></tr></thead>              
                     <tbody>
+                    
                         @foreach (var fornecedor in ViewBag.Fornecedores as List<Pagamento.Models.Fornecedor>)
                         {
                             <tr>
@@ -227,6 +332,7 @@
                                 <td>@produto.IdProduto</td>
                                 <td>@produto.Descricao</td>
                                 <td>
+                                    @*       *@
                                     <button type="button" class="btn btn-sm btn-primary" onclick="selecionarProduto(@produto.IdProduto, '@produto.Descricao', '@produto.NomeUnidade')">Selecionar</button>
                                 </td>
                             </tr>
@@ -251,6 +357,7 @@
 
 
 
+@*            *@
 <div class="modal fade" id="modalNovoProduto" tabindex="-1">
     <div class="modal-dialog modal-xl">
         <div class="modal-content" id="modalNovoProdutoContent">
@@ -259,7 +366,9 @@
 </div>
 
 
+@*    *@
 
+@*  *@
 <div class="modal fade" id="modalMarcaSelecionar" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -277,6 +386,7 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @*        *@
                          @foreach (var marca in ViewBag.MarcasItens as List<SelectListItem>)
                         {
                             <tr>
@@ -315,6 +425,7 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @*        *@
                         @foreach (var unidade in ViewBag.UnidadesItens as List<SelectListItem>)
                         {
                             <tr>
@@ -353,6 +464,7 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @*        *@
                         @foreach (var categoria in ViewBag.CategoriasItens as List<SelectListItem>)
                         {
                             <tr>
@@ -394,6 +506,7 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @*        *@
                         @foreach (var t in ViewBag.FornecedoresItens as List<SelectListItem>)
                         {
                             <tr>
@@ -416,6 +529,7 @@
     </div>
 </div>
 
+@*             *@
 <div class="modal fade" id="modalMarca" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog"><div class="modal-content" id="modalMarcaContent"></div></div>
 </div>
@@ -431,6 +545,9 @@
 
 
 
+@*  *@
+
+@*    *@
 
 <div class="modal fade" id="modalCidadeFornecedor" tabindex="-1" aria-labelledby="modalCidadeFornecedorLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -452,7 +569,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                      
+                        @*        *@
                         @foreach (var cidade in ViewBag.CidadesItens as List<SelectListItem>)
                         {
                             <tr>
@@ -493,7 +610,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                       
+                        @* @foreach (var condicao in ViewBag.CondicoesPagamento as List<SelectListItem>) *@
                         @foreach (var condicao in ViewBag.CondicoesPagamentoItens as List<SelectListItem>)
                         {
                             <tr>
@@ -574,7 +691,6 @@
 </div>
 
 
-
 <div class="modal fade" id="modalNovaCondicaoFornecedor" tabindex="-1" aria-labelledby="modalNovaCondicaoFornecedorLabel">
     <div class="modal-dialog modal-xl">
         <div class="modal-content" id="modalNovaCondicaoContentFornecedor">
@@ -582,7 +698,6 @@
                 <h5 class="modal-title" id="modalNovaCondicaoFornecedorLabel">Cadastrar Condição</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
             </div>
-                    
         </div>
     </div>
 </div>
@@ -590,18 +705,25 @@
 <div class="modal fade" id="modalNovaCondicaoCompra" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content" id="modalNovaCondicaoContentCompra">
-                      
+          
         </div>
     </div>
 </div>
 
+}
 
-                     
+
 <partial name="_ModalCondicaoPagamento" model="ViewBag.CondicoesPagamento" />
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    
     <script>
+
+      const modo = "@modo";
+
+      if (modo == "Criar")
+      {
         async function verificarChaveDuplicada() {
             const modeloInput = document.getElementById('Modelo');     
             const serieInput = document.getElementById('Serie');       
@@ -617,17 +739,17 @@
                 console.log('Verificando chave:', modelo, serie, numeroNota, fornecedorId);       
 
                 try {
-                                        
                     const url = `@Url.Action("VerificarChaveExistente", "Compra")?modelo=${encodeURIComponent(modelo)}&serie=${encodeURIComponent(serie)}&numeroNota=${encodeURIComponent(numeroNota)}&fornecedorId=${fornecedorId}`;
+
                     const response = await fetch(url);
+
                     if (!response.ok) {
                         console.error('Erro na resposta do servidor ao verificar chave:', response.statusText);
-                                            
-                                          
                         return;                     
                     }
 
                     const resultado = await response.json();
+
                     if (resultado.existe) {
                         console.log("Entrou no bloco if (resultado.existe)");     
 
@@ -642,20 +764,21 @@
                         document.getElementById('compra-existente-obs').textContent = compraDetalhes.observacoes || '(Nenhuma)';
 
                         console.log("Campos do modal preenchidos");     
+
+
                         const modalElement = document.getElementById('modalCompraExistente');
                         const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
                         console.log("Instância do modal obtida:", modal);     
                         modal.show();       
                         console.log("modal.show() chamado");     
-                          
-
-                                
                         if (modeloInput) modeloInput.value = '';
                         if (serieInput) serieInput.value = '';
                         if (numeroNotaInput) numeroNotaInput.value = '';
                         if (fornecedorIdInput) fornecedorIdInput.value = '';
+
                         const tabelaFornecedor = document.getElementById('tabela-fornecedor-selecionado');
                         if (tabelaFornecedor) tabelaFornecedor.innerHTML = '';
+
                          document.getElementById('CondicaoPagamentoCompraId').value = '';
                          document.getElementById('NomeCondicaoCompra').value = '';
                          document.getElementById('tabela-parcelas').innerHTML = '';
@@ -663,7 +786,6 @@
 
                          console.log("Campos do formulário limpos");
 
-                                          
                         modeloInput?.focus();
                     }
 
@@ -673,27 +795,20 @@
             } 
         }
 
-                
-        
         document.addEventListener('DOMContentLoaded', function() {
-                        
             const modeloInput = document.getElementById('Modelo');
             const serieInput = document.getElementById('Serie');
             const numeroNotaInput = document.getElementById('NumeroNota');
-                            
             if(modeloInput) modeloInput.addEventListener('blur', verificarChaveDuplicada);
             if(serieInput) serieInput.addEventListener('blur', verificarChaveDuplicada);
             if(numeroNotaInput) numeroNotaInput.addEventListener('blur', verificarChaveDuplicada);
 
-                              
         });
 
-         
- 
-                  
-          
-         
- 
+        
+
+
+
         async function buscarEselecionarProdutoPorId() {
             const idInput = document.getElementById('produto-id-input');
             const id = parseInt(idInput.value);
@@ -704,12 +819,11 @@
             }
 
             try {
-                            
                 const response = await fetch(`@Url.Action("BuscarPorIdJSON", "Produto")?id=${id}`);
+
                 if (!response.ok) {
                     const errorData = await response.json();
                     alert(errorData.mensagem || 'Produto não encontrado.');
-                                    
                     document.getElementById('NomeProdutoSelecionado').value = '';
                     document.getElementById('IdProdutoSelecionado').value = '';
                     document.getElementById('UnidadeProdutoSelecionado').value = '';
@@ -720,11 +834,10 @@
 
                 const produto = await response.json();
 
-                                
                 selecionarProduto(produto.idProduto, produto.descricao, produto.nomeUnidade);
 
-                                
                 idInput.value = '';
+
             } catch (error) {
                 console.error('Erro ao buscar produto por ID:', error);
                 alert('Ocorreu um erro de comunicação ao tentar buscar o produto.');
@@ -733,7 +846,6 @@
 
 
         document.addEventListener('DOMContentLoaded', function() {
-                                          
             const btnBuscarProdutoId = document.getElementById('btn-buscar-produto-por-id');
             if (btnBuscarProdutoId) {
                 btnBuscarProdutoId.addEventListener('click', buscarEselecionarProdutoPorId);
@@ -741,10 +853,6 @@
         });
 
 
-         
- 
-                  
-          
         async function buscarEselecionarFornecedorPorId() {
             const idInput = document.getElementById('fornecedor-id-input');
             const id = parseInt(idInput.value);
@@ -765,9 +873,8 @@
 
                 const fornecedor = await response.json();
 
-                              
-                                          
                 selecionarFornecedor(fornecedor.idPessoa, fornecedor.nome, fornecedor.idCondPgto);
+
                 idInput.value = '';
 
             } catch (error) {
@@ -784,14 +891,8 @@
         });
 
 
-              
-      
-
-                
-        
-         
- 
         document.addEventListener('DOMContentLoaded', function() {
+
             function getFormattedDate(date) {
                 const year = date.getFullYear();
                 const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -807,45 +908,40 @@
             const dataChegadaInput = document.getElementById('DataChegada');
 
             if (dataEmissaoInput) {
-                          
                 dataEmissaoInput.max = formattedToday;
 
                 dataEmissaoInput.addEventListener('input', function() {
                     if (dataChegadaInput) {
                         dataChegadaInput.min = dataEmissaoInput.value;
 
-                                              
                         if (dataChegadaInput.value < dataEmissaoInput.value) {
                             dataChegadaInput.value = '';         
                         }
                     }
                 });
             }
+
             if (dataChegadaInput) {
-                          
                 dataChegadaInput.max = formattedToday;
+
                 if (dataEmissaoInput && dataEmissaoInput.value) {
                      dataChegadaInput.min = dataEmissaoInput.value;
                 } else {
-                                      
                 }
             }
 
-                      
         if (dataEmissaoInput) {
             dataEmissaoInput.addEventListener('blur', function() {
                 const parts = this.value.split('-');
                 if (parts.length === 3) {
-                                           
                      const inputDate = new Date(Date.UTC(parts[0], parts[1] - 1, parts[2]));
+
                     if (inputDate > today) {
                         alert('A Data de Emissão não pode ser futura. Corrigindo para hoje.');
                         this.value = formattedToday;       
-                                              
                         this.dispatchEvent(new Event('input'));
                     }
                 } else if (this.value !== '') {
-                                             
                      alert('Formato de data inválido para Data de Emissão.');
                      this.value = formattedToday;           
                      this.dispatchEvent(new Event('input'));
@@ -853,12 +949,12 @@
             });
         }
 
-                                    
         if (dataChegadaInput) {
             dataChegadaInput.addEventListener('blur', function() {
                 const parts = this.value.split('-');
                 if (parts.length === 3) {
                      const inputDate = new Date(Date.UTC(parts[0], parts[1] - 1, parts[2]));
+
                      let dataEmissaoValue = '';
                      let dataEmissaoDate = null;
                      if (dataEmissaoInput && dataEmissaoInput.value) {
@@ -868,6 +964,7 @@
                               dataEmissaoDate = new Date(Date.UTC(emissaoParts[0], emissaoParts[1] - 1, emissaoParts[2]));
                           }
                      }
+
                      if (inputDate > today) {
                          alert('A Data de Chegada não pode ser futura. Corrigindo para hoje.');
                          this.value = formattedToday;
@@ -878,20 +975,15 @@
                 } else if (this.value !== '') {
                      alert('Formato de data inválido para Data de Chegada.');
                      this.value = '';       
-                                 
-                               
                 }
             });
         }
-                                
-                                  
+
             if (dataEmissaoInput) {
                 dataEmissaoInput.dispatchEvent(new Event('input'));
             }
         });
 
-                  
-      
         function calcularTotalItem() {
             const qtdInput = document.getElementById('produto-quantidade');
             const valorInput = document.getElementById('produto-valor');
@@ -899,37 +991,31 @@
 
             const quantidade = parseFloat(qtdInput.value) || 0;
 
-                                    
             const valorUnitario = parseFloat((valorInput.value || '0').replace(',', '.')) || 0;
 
             const total = quantidade * valorUnitario;
+
             if (totalInput) {
-                                  
                 totalInput.value = formatarMoeda(total);
             }
         }
             
         document.addEventListener('DOMContentLoaded', function () {
-                              
             const qtdInput = document.getElementById('produto-quantidade');
             const valorInput = document.getElementById('produto-valor');
+
             if (qtdInput) {
                 qtdInput.addEventListener('input', calcularTotalItem);
             }
             if (valorInput) {
-                                        
                 valorInput.addEventListener('input', calcularTotalItem);
             }
 
-                            
         });
 
 
 
-             
- 
         document.addEventListener('DOMContentLoaded', function () {
-                                    
             const ajaxModalContents = [
                 '#modalNovoFornecedorContent',
                 '#modalNovoProdutoContent',
@@ -945,9 +1031,7 @@
             ajaxModalContents.forEach(function (contentId) {
                 const modalElement = document.querySelector(contentId)?.closest('.modal');
                 if (modalElement) {
-                                      
                     modalElement.addEventListener('hidden.bs.modal', function () {
-                                            
                         const contentDiv = modalElement.querySelector(contentId);
                         if (contentDiv) {
                             contentDiv.innerHTML = '';
@@ -955,7 +1039,13 @@
                     });
                 }
             });
+
         });
+
+        
+
+
+                
         function filtrarTabelaFornecedorProduto() {
           const filtro = $('#filtroFornecedorProduto').val().toLowerCase();
           $('#tabelaFornecedoresProduto tbody tr').each(function () {
@@ -964,29 +1054,9 @@
           });
         }
         let idCondicaoPermitida = 0;
-                 
-         
-             
-     
-                     
-             
-               
-       
 
-                       
-         
-
-                    
-               
-       
-
-                   
-           
-
-           
 
         function selecionarFornecedor(id, nome, idCondPgto) {
-                                  
             document.getElementById('FornecedorId').value = id;
             document.getElementById('tabela-fornecedor-selecionado').innerHTML = `<tr><td style="width: 60px;">${id}</td><td>${nome}</td></tr>`;
             idCondicaoPermitida = idCondPgto || 0;
@@ -994,22 +1064,19 @@
             document.getElementById('NomeCondicaoCompra').value = '';
             document.getElementById('tabela-parcelas').innerHTML = '';
 
-                        
             const modalFornecedor = bootstrap.Modal.getInstance(document.getElementById('modalFornecedor'));
              if (modalFornecedor && document.getElementById('modalFornecedor').classList.contains('show')) {
                  modalFornecedor.hide();
              }
+
             verificarChaveDuplicada();
         }
 
 
-                
-        
         document.addEventListener('DOMContentLoaded', function () {
             const modalCondicaoEl = document.getElementById('modalCondicaoCompra');
 
             if (modalCondicaoEl) {
-                                
                 modalCondicaoEl.addEventListener('show.bs.modal', function (event) {
 
                     if (idCondicaoPermitida === 0) {
@@ -1018,18 +1085,14 @@
                         return;
                     }
 
-                                
                     const todasAsLinhas = document.querySelectorAll('#tabelaCondicoesCompra tbody tr');
 
-                            
                     todasAsLinhas.forEach(linha => {
                         const idDaLinha = linha.getAttribute('data-id');
 
-                                          
                         if (idDaLinha == idCondicaoPermitida) {
                             linha.style.display = '';       
                         }
-                              
                         else {
                             linha.style.display = 'none';
                         }
@@ -1037,7 +1100,6 @@
                 });
             }
 
-                                      
         });
 
         function abrirFormNovoFornecedor() {
@@ -1091,23 +1153,11 @@
             });
         });
 
-        
-      
-            
-    
-            
-    
-            
-    
-           
-   
-         
- 
+       
+
 
             
         function selecionarCidadeFornecedor(id, nome) {
-                            
-                                
             var $formAtivo = $('#modalNovoFornecedorContent:not(:empty), #modalFornecedorProdutoContent:not(:empty)').first();
 
             $formAtivo.find('#IdCidade').val(id);
@@ -1125,8 +1175,6 @@
         }
 
 
-               
-       
         $(document).on('submit', '#formCadastrarCidade', function (e) {
           e.preventDefault();
           $.ajax({
@@ -1136,6 +1184,7 @@
             success: function (response) {
               if (response.sucesso) {
                 bootstrap.Modal.getInstance(document.getElementById('modalNovaCidadeFornecedor')).hide();
+
                 const novaLinha = `
                   <tr>
                     <td>${response.cidade.nome}</td>
@@ -1155,8 +1204,6 @@
         });
 
 
-              
-      
         function filtrarTabelaCidadeFornecedor() {
           const filtro = $('#filtroCidadeFornecedor').val().toLowerCase();
           $('#tabelaCidadesFornecedor tbody tr').each(function () {
@@ -1164,6 +1211,9 @@
             $(this).toggle(nome.includes(filtro));
           });
         }
+
+
+
         function filtrarTabelaCidade() {
             const filtro = $('#filtroCidade').val().toLowerCase();
             $('#tabelaCidades tbody tr').each(function () {
@@ -1172,49 +1222,10 @@
             });
         }
 
-          
-  
-
-
-             
-     
-            
-    
-                           
-                   
-              
-      
-
-                           
-                   
-              
-      
-
-                          
-                  
-                 
-         
-             
-     
-         
- 
-               
-       
-            
-    
-            
-    
-            
-    
-           
-   
-         
- 
 
 
              
         function selecionarCondicaoFornecedor(id, nome) {
-                            
             var $formAtivo = $('#modalNovoFornecedorContent:not(:empty), #modalFornecedorProdutoContent:not(:empty)').first();
 
             $formAtivo.find('#IdCondPgto').val(id);
@@ -1225,21 +1236,8 @@
 
 
 
-           
-   
-                
         
-                 
-         
-                  
-          
-             
-     
-         
- 
 
-              
-      
         function abrirFormNovaCondicaoFornecedor() {
           $.get('/CondicaoPagamento/FormModal', function (html) {
             $('#modalNovaCondicaoContentFornecedor').html(html);
@@ -1287,6 +1285,7 @@
                 success: function (response) {
                     if (response.sucesso) {
                         $('#modalNovaForma').modal('hide');
+
                         const novaLinha = `
                             <tr>
                                 <td>${response.forma.nome}</td>
@@ -1334,6 +1333,7 @@
             };
 
             parcelas.push(parcela);
+
             const linha = `
                 <tr data-numero="${numeroParcela}">
                     <td>${numeroParcela}</td>
@@ -1343,6 +1343,7 @@
                     <td><button type="button" class="btn btn-danger btn-sm removerParcela">Remover</button></td>
                 </tr>`;
             $('#tabelaParcelas tbody').append(linha);
+
             $('.removerParcela').off('click').on('click', function () {
                 const tr = $(this).closest('tr');
                 const num = parseInt(tr.attr('data-numero'));
@@ -1357,10 +1358,6 @@
             $('#NomeFormaSelecionada').val('');
         });
 
-           
-   
-                   
-   
         $(document).on('submit', '#formCadastrarCondicaoPgto', function (e) {
           e.preventDefault();
 
@@ -1407,17 +1404,13 @@
           });
         }
         
-           
-   
         function selecionarProduto(id, nome, unidade) {
             document.getElementById('IdProdutoSelecionado').value = id;
             document.getElementById('NomeProdutoSelecionado').value = nome;
             document.getElementById('UnidadeProdutoSelecionado').value = unidade;     
-                  
             document.getElementById('produto-unidade').value = unidade;
             var modal = bootstrap.Modal.getInstance(document.getElementById('modalProduto'));
             modal.hide();
-                  
             calcularTotalItem();                   
         }
 
@@ -1446,7 +1439,6 @@
                             </td>
                         </tr>`;
 
-                                                  
                         $('#tabelaProdutosModal tbody').append(novaLinha);
                     }  else {
                         $('#modalNovoProdutoContent').html(response);
@@ -1463,31 +1455,22 @@
             });
         }
 
-           
-   
-                         
-         
             function selecionarMarca(id, nome) {
-                
             $('#modalNovoProdutoContent').find('#MarcaId').val(id);
             $('#modalNovoProdutoContent').find('#NomeMarcaSelecionada').val(nome);
             bootstrap.Modal.getInstance(document.getElementById('modalMarcaSelecionar')).hide();
         }
             function selecionarUnidade(id, nome) {
-                
             $('#modalNovoProdutoContent').find('#UnidadeMedidaId').val(id);
             $('#modalNovoProdutoContent').find('#NomeUnidadeSelecionada').val(nome);
             bootstrap.Modal.getInstance(document.getElementById('modalUnidadeSelecionar')).hide();
         }
             function selecionarCategoria(id, nome) {
-                
             $('#modalNovoProdutoContent').find('#CategoriaId').val(id);
             $('#modalNovoProdutoContent').find('#NomeCategoriaSelecionada').val(nome);
             bootstrap.Modal.getInstance(document.getElementById('modalCategoriaSelecionar')).hide();
         }
 
-             
-     
         $(document).on('change', '.chk-fornecedor', function () {
             const fornecedoresSelecionados = [];
             const nomesSelecionados = [];
@@ -1514,8 +1497,6 @@
             document.getElementById('NomeFornecedorSelecionado').value = nomes.join(', ');
         }
 
-          
-  
         function filtrarTabelaMarca() {
             const filtro = $('#filtroMarca').val().toLowerCase();
             $('#tabelaMarcas tbody tr').each(function () {
@@ -1545,9 +1526,6 @@
             });
         }
 
-                  
-          
-        
         
         
         function abrirFormMarca() {
@@ -1575,8 +1553,6 @@
             });
         }
 
-                
-        
         $(document).on('submit', '#formCadastrarMarca', function (e) {
             e.preventDefault();
             $.ajax({
@@ -1603,6 +1579,7 @@
                 }
             });
         });
+
         $(document).on('submit', '#formCadastrarUnidade', function (e) {
             e.preventDefault();
             $.ajax({
@@ -1660,59 +1637,47 @@
         
 
 
-           
-   
-
-             
-     
-              
-      
-        async function selecionarCondicaoCompra(id, descricao) {
-                          
+          window.selecionarCondicaoCompra = async function(id, descricao) {
             document.getElementById('CondicaoPagamentoCompraId').value = id;
             document.getElementById('NomeCondicaoCompra').value = descricao;
+
             var modalEl = document.getElementById('modalCondicaoCompra');
             var modal = bootstrap.Modal.getInstance(modalEl);
             if (modal && modalEl.classList.contains('show')) {
                 modal.hide();
             }
 
-                            
             await gerarParcelas();
         }
        
 
-         
- 
-                       
-       
         async function gerarParcelas() {
             const idCondicao = parseInt(document.getElementById('CondicaoPagamentoCompraId').value);
             const totalNotaStr = document.getElementById('total-nota').value;
             const totalNotaNum = parseMoeda(totalNotaStr);
             const dataEmissaoInput = document.getElementById('DataEmissao');
 
-                                            
             if (!idCondicao || totalNotaNum <= 0) {
                 document.getElementById('tabela-parcelas').innerHTML = '';
                 return;
             }
 
             if (!dataEmissaoInput.value) {
-                                        
                 alert("Por favor, preencha a Data de Emissão para calcular os vencimentos.");
                 return;
             }
 
-                                      
             try {
                 const [ano, mes, dia] = dataEmissaoInput.value.split('-');
                 const dataBaseUTC = new Date(Date.UTC(ano, mes - 1, dia));
+
                 const response = await fetch(`@Url.Action("ObterDetalhes", "CondicaoPagamento")?id=${idCondicao}`);
                 if (!response.ok) {
                     throw new Error('Não foi possível buscar os detalhes da condição de pagamento.');
                 }
                 const condicao = await response.json();
+
+              
 
                 const tabelaParcelasBody = document.getElementById('tabela-parcelas');
                 tabelaParcelasBody.innerHTML = '';             
@@ -1738,15 +1703,14 @@
         }
 
 
-        function abrirFormNovaCondicaoCompra() {
+
+          window.abrirFormNovaCondicaoCompra = function() {
           $.get('@Url.Action("FormModal", "CondicaoPagamento")', function (data) {
             $('#modalNovaCondicaoContentCompra').html(data);
             new bootstrap.Modal(document.getElementById('modalNovaCondicaoCompra')).show();
           });
         }
 
-            
-    
         $(document).on('submit', '#formCadastrarCondicao', function (e) {
             e.preventDefault();
             $.ajax({
@@ -1755,7 +1719,6 @@
                 data: $(this).serialize(),
                 success: function (response) {
                     if (response.sucesso) {
-                          
                         $('#modalNovaCondicaoCompra').modal('hide');
                         var novaLinha = `<tr data-id="${response.condicao.id}">
                             <td>${response.condicao.descricao}</td>
@@ -1765,7 +1728,6 @@
                         </tr>`;
                         $('#tabelaCondicoes tbody').append(novaLinha);
                     } else {
-                          
                         $('#modalNovaCondicaoContentCompra').html(response);
                     }
                 }
@@ -1779,7 +1741,7 @@
                 linha.style.display = descricao.includes(filtro) ? "" : "none";
             });
         }
-   
+
         function limparSelecaoProduto() {
             const idInput = document.getElementById('IdProdutoSelecionado');
             const nomeInput = document.getElementById('NomeProdutoSelecionado');
@@ -1790,27 +1752,14 @@
             }
         }
 
-              
-     
-        
-                      
-         
-                      
          
         function parseMoeda(valorString) {
             if (!valorString) return 0;
             let valorNumerico = valorString.replace('R$', '').trim().replace(/\./g, '').replace(',', '.');
             return parseFloat(valorNumerico) || 0;
         }
-
-             
-     
-        
-                 
          
                  
-         
-            
         function formatarDataUTC(data) {
             if (!data || !(data instanceof Date)) {
                  return '';                 
@@ -1843,6 +1792,8 @@
             }
         }
 
+
+
         function formatarMoeda(valor) {
             const n = parseFloat(valor);
             if (isNaN(n)) return (0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -1856,12 +1807,12 @@
                 const v = parseFloat(l.dataset.valorUnitario || '0');
                 totalProdutos += (q * v);
             });
+
             const frete = parseMoeda(document.getElementById('Frete')?.value || '0');
             const seguro = parseMoeda(document.getElementById('Seguro')?.value || '0');
             const despesas = parseMoeda(document.getElementById('Despesas')?.value || '0');
 
             const totalNota = totalProdutos + frete + seguro + despesas;
-
             document.getElementById('total-produtos').value = formatarMoeda(totalProdutos);
             document.getElementById('total-nota').value = formatarMoeda(totalNota);
                             
@@ -1870,8 +1821,7 @@
 
 
 
-             
-     
+                  
         document.addEventListener('DOMContentLoaded', function () {
             const btnAdicionarProduto = document.getElementById('btn-adicionar-produto');
             const tabelaProdutosBody  = document.getElementById('tabela-produtos');
@@ -1929,12 +1879,10 @@
                     if (quantidadeInput) quantidadeInput.value = '1';
                     if (valorInput) valorInput.value = '';
 
-                                                
                     const unidadeDisplay = document.getElementById('produto-unidade');            
                     const totalDisplay = document.getElementById('produto-total');            
                     if (unidadeDisplay) unidadeDisplay.value = '';            
                     if (totalDisplay) totalDisplay.value = 'R$ 0,00';     
-
                     atualizarTotais();
                 });
 
@@ -1978,5 +1926,36 @@
                 });
             }
         });
+
+      }
+
+
+         if (modo === "Cancelar") {
+
+               document.addEventListener('DOMContentLoaded', function() {
+                   const form = document.getElementById('form-compra');
+                   const btnConfirmarModal = document.getElementById('btn-confirmar-envio-cancelamento');
+                   const motivoInput = document.getElementById('motivoCancelamentoInput');
+
+                   if (btnConfirmarModal && form && motivoInput) {
+                       btnConfirmarModal.addEventListener('click', function() {
+                           const motivo = motivoInput.value.trim();
+
+                               
+                           if (motivo === "") {
+                               alert("Por favor, preencha o motivo do cancelamento.");
+                               motivoInput.focus();
+                               return;
+                           }
+
+                                         
+                                               
+                           form.submit();
+                       });
+                   }
+               });
+
+           }             
     </script>
+  
 }

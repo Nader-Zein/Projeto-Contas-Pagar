@@ -23,6 +23,7 @@
             <th>Fornecedor</th>
             <th>Produtos</th>
             <th>Total da Nota</th>
+            <th>Status</th>
             <th>Ações</th>
         </tr>
     </thead>
@@ -57,8 +58,29 @@
                         @compra.TotalNota.ToString("C", new CultureInfo("pt-BR"))
                     </td>
                     <td>
-                        <a asp-action="Detalhes" asp-route-id="@compra.NumeroNota" class="btn btn-sm btn-info">Detalhes</a>
-                        <a asp-action="Cancelar" asp-route-id="@compra.NumeroNota" class="btn btn-sm btn-danger">Cancelar</a>
+                        @if (compra.Status)
+                        {
+                            <span class="badge bg-success">Ativa</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">Cancelada</span>
+                        }
+                    </td>
+                    <td>
+                        <a asp-action="Detalhes"
+                           asp-route-modelo="@compra.Modelo"
+                           asp-route-serie="@compra.Serie"
+                           asp-route-numeroNota="@compra.NumeroNota"
+                           asp-route-fornecedorId="@compra.FornecedorId"
+                           class="btn btn-sm btn-info">Detalhes</a>
+
+                        <a asp-action="Cancelar"
+                           asp-route-modelo="@compra.Modelo"
+                           asp-route-serie="@compra.Serie"
+                           asp-route-numeroNota="@compra.NumeroNota"
+                           asp-route-fornecedorId="@compra.FornecedorId"
+                           class="btn btn-sm btn-danger">Cancelar</a>
                     </td>
                 </tr>
             }

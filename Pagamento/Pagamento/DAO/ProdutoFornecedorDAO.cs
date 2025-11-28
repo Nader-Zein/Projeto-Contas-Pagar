@@ -42,7 +42,6 @@ namespace Pagamento.DAO
             using var conexao = new MySqlConnection(connectionString);
             conexao.Open();
 
-            
             if (idsFornecedoresMantidos == null || !idsFornecedoresMantidos.Any())
             {
                 using var delAll = new MySqlCommand("DELETE FROM ProdutoFornecedor WHERE IdProduto=@IdProduto", conexao);
@@ -51,7 +50,6 @@ namespace Pagamento.DAO
                 return;
             }
 
-            
             var ids = idsFornecedoresMantidos.Distinct().ToList();
             var inParams = string.Join(",", ids.Select((_, i) => $"@f{i}"));
             var sql = $@"DELETE FROM ProdutoFornecedor 
@@ -84,11 +82,8 @@ namespace Pagamento.DAO
             return lista;
         }
 
-        
         public void AtualizarDadosCompra(int idProduto, int idFornecedor, decimal precoRateado, DateTime dataCompra)
         {
-            
-
             using (var conexao = new MySqlConnection(connectionString))
             {
                 conexao.Open();
@@ -116,9 +111,6 @@ namespace Pagamento.DAO
                 try
                 {
                     conexao.Open();
-                    
-                    
-                    
                     string sql = @"INSERT IGNORE INTO ProdutoFornecedor 
                                    (IdProduto, IdFornecedor) 
                                    VALUES 
@@ -132,7 +124,6 @@ namespace Pagamento.DAO
                 }
                 catch (Exception ex)
                 {
-                    
                     throw new Exception($"Erro ao garantir a associação produto-fornecedor. Detalhes: {ex.Message}");
                 }
             }

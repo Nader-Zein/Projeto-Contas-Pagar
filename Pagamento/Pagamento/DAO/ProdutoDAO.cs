@@ -31,7 +31,7 @@ namespace Pagamento.DAO
                         CategoriaId = reader.GetInt32("CategoriaId"),
                         ValorVenda = reader.GetDecimal("ValorVenda"),
                         Quantidade = reader.GetInt32("Quantidade"),
-                        CustoMedio = reader.GetDecimal("CustoMedio"), 
+                        CustoMedio = reader.GetDecimal("CustoMedio"),     
                         CustoUltimaCompra = reader.GetDecimal("CustoUltimaCompra"), 
                         QuantidadeMinima = reader.GetInt32("QuantidadeMinima"),
                         PercentualLucro = reader.GetDecimal("PercentualLucro"),
@@ -94,7 +94,7 @@ namespace Pagamento.DAO
                 cmd.Parameters.AddWithValue("@CategoriaId", produto.CategoriaId);
                 cmd.Parameters.AddWithValue("@ValorVenda", produto.ValorVenda);
                 cmd.Parameters.AddWithValue("@Quantidade", 0);
-                cmd.Parameters.AddWithValue("@CustoMedio", 0.00); 
+                cmd.Parameters.AddWithValue("@CustoMedio", 0.00);     
                 cmd.Parameters.AddWithValue("@CustoUltimaCompra", 0.00);
                 cmd.Parameters.AddWithValue("@QuantidadeMinima", produto.QuantidadeMinima);
                 cmd.Parameters.AddWithValue("@PercentualLucro", produto.PercentualLucro);
@@ -131,7 +131,7 @@ namespace Pagamento.DAO
                         CategoriaId = reader.GetInt32("CategoriaId"),
                         ValorVenda = reader.GetDecimal("ValorVenda"),
                         Quantidade = reader.GetInt32("Quantidade"),
-                        CustoMedio = reader.GetDecimal("CustoMedio"), 
+                        CustoMedio = reader.GetDecimal("CustoMedio"),     
                         CustoUltimaCompra = reader.GetDecimal("CustoUltimaCompra"), 
                         QuantidadeMinima = reader.GetInt32("QuantidadeMinima"),
                         PercentualLucro = reader.GetDecimal("PercentualLucro"),
@@ -148,12 +148,11 @@ namespace Pagamento.DAO
 
 
 
-        public Produto BuscarPorIdComNomes(int id) 
+        public Produto BuscarPorIdComNomes(int id)         
         {
             using (var conexao = new MySqlConnection(connectionString))
             {
                 conexao.Open();
-                
                 string sql = @"
                                 SELECT
                                     p.IdProduto,
@@ -162,21 +161,17 @@ namespace Pagamento.DAO
                                 FROM Produto p
                                 JOIN vw_produto_marca_unidade v ON p.IdProduto = v.IdProduto
                                 WHERE p.IdProduto = @Id";
-                
                 var cmd = new MySqlCommand(sql, conexao);
                 cmd.Parameters.AddWithValue("@Id", id);
                 var reader = cmd.ExecuteReader();
 
                 if (reader.Read())
                 {
-                    
                     return new Produto
                     {
                         IdProduto = reader.GetInt32("IdProduto"),
                         Descricao = reader.GetString("Descricao"),
                         NomeUnidade = reader.GetString("NomeUnidade"),
-                        
-                        
                     };
                 }
             }
@@ -280,26 +275,6 @@ namespace Pagamento.DAO
                 }
             }
         }
-
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-
-        
-        
-        
-        
-
-        
-        
-        
 
         public void AtualizarEstoqueECusto(int idProduto, int novaQuantidadeTotal, decimal novoCustoMedio,decimal novoCustoUltimaCompra)
         {

@@ -6,7 +6,6 @@ namespace Pagamento.Models
 {
     public class Compra
     {
-        
         [Required(ErrorMessage = "O campo Modelo é obrigatório.")]
         public string Modelo { get; set; }
 
@@ -20,8 +19,6 @@ namespace Pagamento.Models
         public int FornecedorId { get; set; }
 
         public string? NomeFornecedor { get; set; }
-        
-
         public bool Status { get; set; }
 
         [Required(ErrorMessage = "A Data de Emissão é obrigatória.")]
@@ -33,14 +30,15 @@ namespace Pagamento.Models
         [Range(1, int.MaxValue, ErrorMessage = "É obrigatório selecionar uma Condição de Pagamento.")]
         public int CondicaoPagamentoId { get; set; }
 
-        
         public decimal Frete { get; set; }
         public decimal Seguro { get; set; }
         public decimal Despesas { get; set; }
 
         public List<ItemCompra> Itens { get; set; } = new List<ItemCompra>();
 
-        
+
+        public List<ContaAPagar> ParcelasGeradas { get; set; } = new List<ContaAPagar>();
+
         public decimal TotalProdutos
         {
             get
@@ -60,8 +58,9 @@ namespace Pagamento.Models
 
         
 
-        
-        public string? Observacoes { get; set; } 
+        public string? Observacoes { get; set; }         
+        public string? Motivo_Cancelamento { get; set; } 
+
 
     }
 }

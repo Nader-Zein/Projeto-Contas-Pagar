@@ -8,6 +8,12 @@ namespace Pagamento.DAO
     public class CompraDAO
     {
         private readonly string connectionString = "server=localhost;database=pagamento;user=User;password=Na@der!1234";
+
+        private readonly ParcelaCondicaoPagamentoDAO _parcelaCondPgtoDAO = new ParcelaCondicaoPagamentoDAO();
+        private readonly ContaAPagarDAO _contaAPagarDAO = new ContaAPagarDAO();
+        private readonly CondicaoPagamentoDAO _condicaoPagamentoDAO = new CondicaoPagamentoDAO();
+        private readonly ProdutoDAO _produtoDAO = new ProdutoDAO();
+        private readonly ProdutoFornecedorDAO _produtoFornecedorDAO = new ProdutoFornecedorDAO();
         public List<Compra> Listar()
         {
             var listaDeCompras = new List<Compra>();
@@ -17,7 +23,6 @@ namespace Pagamento.DAO
                 {
                     conexao.Open();
 
-                    
                     string sqlPrincipal = @"SELECT 
                                         c.*, 
                                         f.Nome_RazaoSocial AS NomeFornecedor 
@@ -47,16 +52,18 @@ namespace Pagamento.DAO
                         };
                         listaDeCompras.Add(compra);
                     }
-                    readerPrincipal.Close(); 
+                    readerPrincipal.Close();         
 
-                    
                     foreach (var compra in listaDeCompras)
                     {
                         string sqlItens = @"SELECT 
                                         ic.*, 
-                                        p.Descricao AS NomeProduto 
+                                        p.Descricao AS NomeProduto, 
+                                        um.Descricao AS NomeUnidade,
+                                        ic.CustoUnitarioReal
                                     FROM ItemCompra ic
                                     JOIN Produto p ON ic.ProdutoId = p.IdProduto
+                                    JOIN UnidadeMedida um ON p.UnidadeMedidaId = um.IdUnidadeMedida
                                     WHERE 
                                         ic.CompraModelo = @Modelo AND
                                         ic.CompraSerie = @Serie AND
@@ -77,11 +84,13 @@ namespace Pagamento.DAO
                                 ProdutoId = Convert.ToInt32(readerItens["ProdutoId"]),
                                 Quantidade = Convert.ToInt32(readerItens["Quantidade"]),
                                 ValorUnitario = Convert.ToDecimal(readerItens["ValorUnitario"]),
-                                NomeProduto = readerItens["NomeProduto"].ToString()
+                                NomeProduto = readerItens["NomeProduto"].ToString(),
+                                NomeUnidade = readerItens["NomeUnidade"].ToString(),
+                                CustoUnitarioReal = Convert.ToDecimal(readerItens["CustoUnitarioReal"])
                             };
                             compra.Itens.Add(item);
                         }
-                        readerItens.Close(); 
+                        readerItens.Close();      
                     }
                 }
                 catch (Exception ex)
@@ -94,7 +103,6 @@ namespace Pagamento.DAO
 
         public void Inserir(Compra compra)
         {
-            
             using (MySqlConnection conexao = new MySqlConnection(connectionString))
             {
                 try
@@ -103,13 +111,11 @@ namespace Pagamento.DAO
 
                     var custosRateados = RatearCustosAdicionais(compra);
 
-                    
                     string sqlCompra = @"INSERT INTO Compra 
                                          (Modelo, Serie, NumeroNota, FornecedorId, DataEmissao, DataChegada, CondicaoPagamentoId, Frete, Seguro, Despesas, Status,DataCriacao) 
                                          VALUES 
                                          (@Modelo, @Serie, @NumeroNota, @FornecedorId, @DataEmissao, @DataChegada, @CondicaoPagamentoId, @Frete, @Seguro, @Despesas, @Status,@DataCriacao)";
 
-                    
                     MySqlCommand cmdCompra = new MySqlCommand(sqlCompra, conexao);
                     cmdCompra.Parameters.AddWithValue("@Modelo", compra.Modelo);
                     cmdCompra.Parameters.AddWithValue("@Serie", compra.Serie);
@@ -126,7 +132,6 @@ namespace Pagamento.DAO
 
                     cmdCompra.ExecuteNonQuery();
 
-                    
                     foreach (var item in compra.Itens)
                     {
 
@@ -153,25 +158,24 @@ namespace Pagamento.DAO
                         cmdItem.Parameters.AddWithValue("@ValorUnitario", item.ValorUnitario);
                         cmdItem.Parameters.AddWithValue("@CustoAdicionalUnitario", Math.Round(custoRealRateado - item.ValorUnitario, 2));
                         cmdItem.Parameters.AddWithValue("@CustoUnitarioReal", Math.Round(custoRealRateado, 2));
-                        cmdItem.ExecuteNonQuery(); 
+                        cmdItem.ExecuteNonQuery();     
                     }
 
-                    
-                    
-                    var produtoDAO = new ProdutoDAO(); 
+                    var produtoDAO = new ProdutoDAO();           
                     var produtoFornecedorDAO = new ProdutoFornecedorDAO();
 
                     foreach (var item in compra.Itens)
                     {
                         if (custosRateados.TryGetValue(item.ProdutoId, out decimal custoRealRateado))
                         {
+
+
+
                             produtoFornecedorDAO.GarantirAssociacao(item.ProdutoId, compra.FornecedorId);
 
 
-                            
                             produtoFornecedorDAO.AtualizarDadosCompra(item.ProdutoId, compra.FornecedorId, custoRealRateado, compra.DataEmissao);
 
-                            
                             Produto produtoAtual = produtoDAO.BuscarPorId(item.ProdutoId);
                             if (produtoAtual != null)
                             {
@@ -190,17 +194,58 @@ namespace Pagamento.DAO
                             }
                         }
                     }
+
+
+
+                    var condicao = _condicaoPagamentoDAO.BuscarPorId(compra.CondicaoPagamentoId);
+                    if (condicao == null)
+                    {
+                        throw new Exception($"A Condição de Pagamento com ID {compra.CondicaoPagamentoId} não foi encontrada.");
+                    }
+
+
+                    var parcelasDefinidas = _parcelaCondPgtoDAO.ListarPorCondicaoPagamento(compra.CondicaoPagamentoId);
+
+                    decimal totalNota = compra.TotalNota;
+
+                    foreach (var parcelaDef in parcelasDefinidas)
+                    {
+                        decimal valorParcela = totalNota * (parcelaDef.ValorPercentual / 100);
+
+                        DateTime dataVencimento = compra.DataEmissao.AddDays(parcelaDef.DiasAposVenda);
+
+                        var contaAPagar = new ContaAPagar
+                        {
+                            Modelo = compra.Modelo,
+                            Serie = compra.Serie,
+                            NumeroNota = compra.NumeroNota,
+                            FornecedorId = compra.FornecedorId,
+
+                            NumeroParcela = parcelaDef.NumeroParcela,
+                            ValorParcela = Math.Round(valorParcela, 2),      
+                            DataVencimento = dataVencimento,
+                            DataEmissao = compra.DataEmissao,       
+
+                            Status = true,          
+                            Situacao = "A PAGAR",     
+
+
+                            Juros = condicao.Juros,
+                            Multa = condicao.Multa,
+                            Desconto = condicao.Desconto,
+                            IdFormaPgto = parcelaDef.IdFormaPgto
+                        };
+
+                        _contaAPagarDAO.Inserir(contaAPagar);
+                    }
                 }
                 catch (Exception ex)
                 {
-                    
-                    
                     throw new Exception("Ocorreu um erro durante a inserção da compra. O processo foi interrompido, mas alguns dados podem ter sido salvos. Detalhes: " + ex.Message);
                 }
             }
         }
 
-        
         private Dictionary<int, decimal> RatearCustosAdicionais(Compra compra)
         {
             decimal valorTotalItens = compra.Itens.Sum(item => item.ValorUnitario * item.Quantidade);
@@ -223,14 +268,11 @@ namespace Pagamento.DAO
             return custosReais;
         }
 
-        
-        
         public bool ExisteChaveComposta(string modelo, string serie, string numeroNota, int fornecedorId)
         {
             using (var conexao = new MySqlConnection(connectionString))
             {
                 conexao.Open();
-                
                 string sql = @"
                                 SELECT COUNT(*) 
                                 FROM Compra 
@@ -240,29 +282,24 @@ namespace Pagamento.DAO
                                   AND FornecedorId = @FornecedorId";
 
                 var cmd = new MySqlCommand(sql, conexao);
-                cmd.Parameters.AddWithValue("@Modelo", modelo ?? (object)DBNull.Value); 
+                cmd.Parameters.AddWithValue("@Modelo", modelo ?? (object)DBNull.Value);      
                 cmd.Parameters.AddWithValue("@Serie", serie ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@NumeroNota", numeroNota ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@FornecedorId", fornecedorId);
 
-                
                 var count = Convert.ToInt64(cmd.ExecuteScalar());
 
-                return count > 0; 
+                return count > 0;         
             }
-            
         }
 
 
-        
-        
         public Compra BuscarDetalhesPorChaveComposta(string modelo, string serie, string numeroNota, int fornecedorId)
         {
             using (var conexao = new MySqlConnection(connectionString))
             {
                 conexao.Open();
 
-                
                 string sql = @"
                             SELECT 
                                 c.DataEmissao, c.DataChegada, c.Modelo, c.Serie, c.NumeroNota, 
@@ -277,63 +314,135 @@ namespace Pagamento.DAO
                               AND c.Serie = @Serie 
                               AND c.NumeroNota = @NumeroNota 
                               AND c.FornecedorId = @FornecedorId
-                            LIMIT 1"; 
-                                      
-
+                            LIMIT 1";        
                 var cmd = new MySqlCommand(sql, conexao);
                 cmd.Parameters.AddWithValue("@Modelo", modelo ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@Serie", serie ?? (object)DBNull.Value);
 
-                
                 if (int.TryParse(numeroNota, out int numeroNotaInt))
                 {
                     cmd.Parameters.AddWithValue("@NumeroNota", numeroNotaInt);
                 }
                 else
                 {
-                    
-                    
                     cmd.Parameters.AddWithValue("@NumeroNota", DBNull.Value);
                 }
-                
-
                 cmd.Parameters.AddWithValue("@FornecedorId", fornecedorId);
 
-                try 
+                try         
                 {
                     var reader = cmd.ExecuteReader();
 
                     if (reader.Read())
                     {
-                        
-                        int numeroNotaString = reader.GetInt32("NumeroNota");       
+                        int numeroNotaString = reader.GetInt32("NumeroNota");            
 
-                        
                         string observacaoLida = reader.IsDBNull(reader.GetOrdinal("Observacao")) ? null : reader.GetString("Observacao");
 
                         return new Compra
                         {
                             Modelo = reader.GetString("Modelo"),
                             Serie = reader.GetString("Serie"),
-                            NumeroNota = numeroNotaString, 
+                            NumeroNota = numeroNotaString,           
                             FornecedorId = reader.GetInt32("FornecedorId"),
                             DataEmissao = reader.GetDateTime("DataEmissao"),
                             DataChegada = reader.GetDateTime("DataChegada"),
-                            NomeFornecedor = reader.GetString("FornecedorNome"), 
-                            Observacoes = observacaoLida 
-                                                         
+                            NomeFornecedor = reader.GetString("FornecedorNome"),         
+                            Observacoes = observacaoLida         
                         };
                     }
                 }
                 catch (Exception ex)
                 {
-                    
-                    Console.WriteLine($"Erro em BuscarDetalhesPorChaveComposta - DB Query/Read: {ex.ToString()}"); 
-                                                                                                                   
-                    throw; 
+                    Console.WriteLine($"Erro em BuscarDetalhesPorChaveComposta - DB Query/Read: {ex.ToString()}");   
+                    throw;             
                 }
             }
-            return null; 
+            return null;             
+        }
+
+        public void Cancelar(string modelo, string serie, int numeroNota, int fornecedorId, string motivoCancelamento)
+        {
+            if (_contaAPagarDAO.VerificarParcelasPagas(modelo, serie, numeroNota, fornecedorId))
+            {
+                throw new Exception("Não é possível cancelar a compra. Existem parcelas que já foram pagas.");
+            }
+
+            var compra = this.Listar()
+                .FirstOrDefault(c =>
+                    c.Modelo == modelo &&
+                    c.Serie == serie &&
+                    c.NumeroNota == numeroNota &&
+                    c.FornecedorId == fornecedorId);
+
+            if (compra == null || compra.Itens == null || !compra.Itens.Any())
+            {
+                throw new Exception("Compra não encontrada ou sem itens para reverter.");
+            }
+
+            foreach (var itemCancelado in compra.Itens)
+            {
+                Produto produtoAtual = _produtoDAO.BuscarPorId(itemCancelado.ProdutoId);
+                if (produtoAtual == null) continue;
+
+                int qtdAtual = produtoAtual.Quantidade;
+                decimal custoMedioAtual = produtoAtual.CustoMedio;
+
+                int qtdCancelada = itemCancelado.Quantidade;
+                decimal custoRealCancelado = itemCancelado.CustoUnitarioReal;      
+
+                int novaQtdTotal = qtdAtual - qtdCancelada;
+                if (novaQtdTotal < 0)
+                {
+                    throw new Exception($"Não é possível cancelar: O produto '{produtoAtual.Descricao}' ficaria com estoque negativo ({novaQtdTotal}).");
+                }
+
+                decimal novoCustoMedio = 0;
+                if (novaQtdTotal > 0)
+                {
+                    decimal valorTotalEstoqueAtual = qtdAtual * custoMedioAtual;
+                    decimal valorTotalEstoqueCancelado = qtdCancelada * custoRealCancelado;
+
+                    decimal novoValorTotalEstoque = valorTotalEstoqueAtual - valorTotalEstoqueCancelado;
+
+                    novoCustoMedio = (novoValorTotalEstoque > 0) ? (novoValorTotalEstoque / novaQtdTotal) : 0;
+                }
+                decimal novoCustoUltimaCompra = (novaQtdTotal > 0) ? novoCustoMedio : 0;
+
+                _produtoDAO.AtualizarEstoqueECusto(
+                    itemCancelado.ProdutoId,
+                    novaQtdTotal,
+                    Math.Round(novoCustoMedio, 2),     
+                    Math.Round(novoCustoUltimaCompra, 2)     
+                );
+
+            }
+
+            _contaAPagarDAO.CancelarPorCompra(modelo, serie, numeroNota, fornecedorId, motivoCancelamento);
+
+            using (var conexao = new MySqlConnection(connectionString))
+            {
+                conexao.Open();
+                string sql = @"
+                    UPDATE Compra 
+                    SET Status = false,  -- Define como Inativo/Cancelado
+                    MotivoCancelamento = @MotivoCancelamento
+                      WHERE Modelo = @Modelo 
+                      AND Serie = @Serie 
+                      AND NumeroNota = @NumeroNota 
+                      AND FornecedorId = @FornecedorId";
+
+                var cmd = new MySqlCommand(sql, conexao);
+
+                cmd.Parameters.AddWithValue("@MotivoCancelamento", motivoCancelamento);
+
+                cmd.Parameters.AddWithValue("@Modelo", modelo);
+                cmd.Parameters.AddWithValue("@Serie", serie);
+                cmd.Parameters.AddWithValue("@NumeroNota", numeroNota);
+                cmd.Parameters.AddWithValue("@FornecedorId", fornecedorId);
+
+                cmd.ExecuteNonQuery();
+            }
         }
     }
 }
