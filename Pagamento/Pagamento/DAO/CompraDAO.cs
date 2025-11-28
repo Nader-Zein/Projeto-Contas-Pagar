@@ -305,7 +305,8 @@ namespace Pagamento.DAO
                                 c.DataEmissao, c.DataChegada, c.Modelo, c.Serie, c.NumeroNota, 
                                 c.FornecedorId, 
                                 f.Nome_RazaoSocial AS FornecedorNome, -- Pega o nome da tabela Fornecedor
-                                c.Observacao -- Seleciona a coluna correta 'Observacao' (singular)
+                                c.Observacao,
+                                c.Status
                                 -- Adicione outras colunas da tabela Compra se precisar exibi-las
                                 -- Ex: c.Status, c.DataCriacao
                             FROM Compra c
@@ -348,7 +349,8 @@ namespace Pagamento.DAO
                             DataEmissao = reader.GetDateTime("DataEmissao"),
                             DataChegada = reader.GetDateTime("DataChegada"),
                             NomeFornecedor = reader.GetString("FornecedorNome"),         
-                            Observacoes = observacaoLida         
+                            Observacoes = observacaoLida,         
+                            Status = reader.GetBoolean("Status")              
                         };
                     }
                 }

@@ -19,14 +19,17 @@
 
 <div class="row">
     <div class="col-md-10">
+        @* 3. O formulário aponta para a Action correta com base no modo *@
         <form asp-action="@(isCriar ? "CriarAvulsa" : (isBaixar ? "Baixar" : "Cancelar"))" method="post" id="form-conta-pagar">
             @Html.AntiForgeryToken()
 
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
+            @* 4. Inputs hidden para os IDs e também para os campos-chave no modo "Baixar" *@
             <input type="hidden" asp-for="FornecedorId" id="FornecedorId" />
             <input type="hidden" asp-for="IdFormaPgto" id="IdFormaPgto" />
 
+            @* Se for baixa, precisamos reenviar os campos-chave *@
             @if (isBaixar || isCancelar || isDetalhes)
             {
                 <input type="hidden" asp-for="Modelo" />
@@ -39,6 +42,7 @@
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span>Dados da Conta</span>
                     <div class="form-check form-switch">
+                        @* 5. O status "Ativo" é desabilitado nos modos de baixa/cancelamento *@
                         <input asp-for="Status" class="form-check-input" type="checkbox" role="switch" disabled="@isReadOnly">
                         <label asp-for="Status" class="form-check-label">Ativo</label>
                     </div>
@@ -106,7 +110,6 @@
 
             
 
-            @*           *@
             <div class="card mt-3">
                 <div class="card-header">
                     Termos e Forma de Pagamento
@@ -115,7 +118,6 @@
                     <div class="row mb-3">
                         <div class="col-md-4">
                             <label asp-for="Juros" class="form-label">Juros (%)</label>
-                            @*         *@
                             <input asp-for="Juros" class="form-control" type="number" step="0.01" placeholder="0,00" id="Juros" disabled="@(isCancelar || isDetalhes)" />
                         </div>
                         <div class="col-md-4">
@@ -187,7 +189,6 @@
 
 
 
-            @*            *@
             @if (isBaixar || (isDetalhes && Model.Situacao == "PAGO"))
             {
                 <div class="card mt-3">
@@ -216,7 +217,6 @@
             }
 
 
-           
             @if (isDetalhes && Model.Status == false)
             {
                 <div class="card mt-3">
@@ -233,7 +233,8 @@
                     </div>
                 </div>
             }
-           
+
+
             <div class="card mt-3">
                 <div class="card-footer text-end">
                     <a asp-action="Index" class="btn btn-secondary">Voltar</a>
@@ -409,13 +410,247 @@
 
 </div>
 
+<div class="modal fade" id="modalCompraExistente" tabindex="-1" aria-labelledby="modalCompraExistenteLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-warning" id="modalCompraExistenteLabel">
+                    <i class="bi bi-exclamation-triangle-fill"></i> Atenção: Compra Duplicada Encontrada
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <p>Já existe uma compra registrada com os dados informados:</p>
+                <dl class="row">
+
+                    <dt class="col-sm-3">Modelo:</dt>
+                    <dd class="col-sm-9"><span id="compra-existente-modelo">-</span></dd>
+
+                    <dt class="col-sm-3">Série:</dt>
+                    <dd class="col-sm-9"><span id="compra-existente-serie">-</span></dd>
+
+                    <dt class="col-sm-3">Número da Nota:</dt>
+                    <dd class="col-sm-9"><span id="compra-existente-numero">-</span></dd>
+
+                    <dt class="col-sm-3">Fornecedor:</dt>
+                    <dd class="col-sm-9"><span id="compra-existente-fornecedor">-</span></dd>
+
+                    <dt class="col-sm-3">Data Emissão:</dt>
+                    <dd class="col-sm-9"><span id="compra-existente-emissao">-</span></dd>
+
+                    <dt class="col-sm-3">Data Chegada:</dt>
+                    <dd class="col-sm-9"><span id="compra-existente-chegada">-</span></dd>
+
+                    <dt class="col-sm-3">Observações:</dt>
+                    <dd class="col-sm-9"><span id="compra-existente-obs">-</span></dd>
+
+                </dl>
+                <hr />
+                <p class="text-muted small">Os campos do formulário foram limpos. Por favor, verifique os dados ou insira uma nova nota.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modalContaAvulsaDuplicada" tabindex="-1" aria-labelledby="modalContaAvulsaDuplicadaLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-warning" id="modalContaAvulsaDuplicadaLabel">
+                    <i class="bi bi-exclamation-triangle-fill"></i> Parcela Duplicada Encontrada
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <p>Já existe uma conta a pagar registrada com esta chave (Modelo, Série, N°, Fornecedor e N° Parcela).</p>
+                <p>Abaixo estão os detalhes da conta já existente:</p>
+
+                <dl class="row">
+                    <dt class="col-sm-3">Fornecedor:</dt>
+                    <dd class="col-sm-9"><span id="duplicada-fornecedor">-</span></dd>
+
+                    <dt class="col-sm-3">Nota:</dt>
+                    <dd class="col-sm-9"><span id="duplicada-nota">-</span></dd>
+
+                    <dt class="col-sm-3">Nº Parcela:</dt>
+                    <dd class="col-sm-9"><span id="duplicada-parcela">-</span></dd>
+
+                    <dt class="col-sm-3">Vencimento:</dt>
+                    <dd class="col-sm-9"><span id="duplicada-vencimento">-</span></dd>
+
+                    <dt class="col-sm-3">Valor:</dt>
+                    <dd class="col-sm-9"><span id="duplicada-valor">-</span></dd>
+
+                    <dt class="col-sm-3">Situação:</dt>
+                    <dd class="col-sm-9"><span id="duplicada-situacao">-</span></dd>
+                </dl>
+
+                <hr />
+                <p class="text-muted small">O campo "Número da Parcela" foi limpo. Por favor, insira um número diferente.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 
     <script>
 
 
-            function hideModalById(id) {
+        async function verificarDuplicidadeContaAvulsa() {
+            const modeloInput = document.getElementById('Modelo');
+            const serieInput = document.getElementById('Serie');
+            const numeroNotaInput = document.getElementById('NumeroNota');
+            const fornecedorIdInput = document.getElementById('FornecedorId');       
+            const numeroParcelaInput = document.getElementById('NumeroParcela');
+
+            const modelo = modeloInput?.value?.trim() || '';
+            const serie = serieInput?.value?.trim() || '';
+            const numeroNota = parseInt(numeroNotaInput?.value || '0');
+            const fornecedorId = parseInt(fornecedorIdInput?.value || '0');
+            const numeroParcela = parseInt(numeroParcelaInput?.value || '0');
+
+            if (modo === "Criar" && fornecedorId > 0 && numeroParcela > 0) {
+
+                console.log('Verificando duplicidade de parcela:', { modelo, serie, numeroNota, fornecedorId, numeroParcela });
+
+                try {
+                    const url = `@Url.Action("VerificarContaDuplicada", "ContaAPagar")?modelo=${encodeURIComponent(modelo)}&serie=${encodeURIComponent(serie)}&numeroNota=${numeroNota}&fornecedorId=${fornecedorId}&numeroParcela=${numeroParcela}`;
+                    const response = await fetch(url);
+
+                    if (!response.ok) {
+                        console.error('Erro na resposta do servidor:', response.statusText);
+                        return;
+                    }
+
+                    const resultado = await response.json();
+
+                    if (resultado.existe) {
+                        const conta = resultado.conta;
+
+                        document.getElementById('duplicada-fornecedor').textContent = `${conta.fornecedorId} - ${conta.nomeFornecedor || 'N/A'}`;
+                        document.getElementById('duplicada-nota').textContent = `${conta.modelo || 'N/D'} / ${conta.serie || 'N/D'} - ${conta.numeroNota || 'N/A'}`;
+                        document.getElementById('duplicada-parcela').textContent = conta.numeroParcela;
+                        document.getElementById('duplicada-vencimento').textContent = formatarDataString(conta.dataVencimento);
+                        document.getElementById('duplicada-valor').textContent = formatarMoeda(conta.valorParcela);
+                        document.getElementById('duplicada-situacao').textContent = `${conta.situacao} (${conta.status ? 'Ativo' : 'Cancelado'})`;
+
+                        const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('modalContaAvulsaDuplicada'));
+                        modal.show();
+
+                        numeroParcelaInput.value = '';       
+                        numeroParcelaInput.focus();
+                    }
+
+                } catch (error)
+                {
+                    console.error('Erro ao verificar duplicidade de parcela:', error);
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            if (modo === "Criar") {
+                const numeroParcelaInput = document.getElementById('NumeroParcela');
+                if(numeroParcelaInput) {
+                    numeroParcelaInput.addEventListener('blur', verificarDuplicidadeContaAvulsa);
+                }
+            }
+        });
+
+         function formatarDataString(dataString) {
+             if (!dataString || !dataString.includes('-')) return '-';
+             try {
+                 const [ano, mes, dia] = dataString.split('-');
+                 if (dia && mes && ano && dia.length === 2 && mes.length === 2 && ano.length === 4) {
+                     return `${dia}/${mes}/${ano}`;
+                 }
+                 return 'Data Inválida';
+             } catch(e) {
+                 console.error("Erro ao formatar data string:", e, dataString);
+                 return 'Erro Formato';
+             }
+         }
+
+         async function verificarChaveDuplicada() {
+             const modeloInput = document.getElementById('Modelo');
+             const serieInput = document.getElementById('Serie');
+             const numeroNotaInput = document.getElementById('NumeroNota');
+             const fornecedorIdInput = document.getElementById('FornecedorId');       
+
+             const modelo = modeloInput?.value?.trim() || '';
+             const serie = serieInput?.value?.trim() || '';
+             const numeroNota = numeroNotaInput?.value?.trim() || '';
+             const fornecedorId = parseInt(fornecedorIdInput?.value || '0');
+
+             if (modo === "Criar" && modelo && serie && numeroNota && fornecedorId > 0) {
+
+                 try {
+                     const url = `@Url.Action("VerificarChaveExistente", "Compra")?modelo=${encodeURIComponent(modelo)}&serie=${encodeURIComponent(serie)}&numeroNota=${encodeURIComponent(numeroNota)}&fornecedorId=${fornecedorId}`;
+                     const response = await fetch(url);
+
+                     if (!response.ok) {
+                         console.error('Erro na resposta do servidor ao verificar chave:', response.statusText);
+                         return;
+                     }
+
+                     const resultado = await response.json();
+
+                     if (resultado.existe) {
+                         const compraDetalhes = resultado.compra;
+
+                         document.getElementById('compra-existente-modelo').textContent = compraDetalhes.modelo || '-';
+                         document.getElementById('compra-existente-serie').textContent = compraDetalhes.serie || '-';
+                         document.getElementById('compra-existente-numero').textContent = compraDetalhes.numeroNota || '-';
+                         document.getElementById('compra-existente-fornecedor').textContent = `${compraDetalhes.fornecedorId} - ${compraDetalhes.nomeFornecedor || 'N/A'}`;
+                         document.getElementById('compra-existente-emissao').textContent = formatarDataString(compraDetalhes.dataEmissao);
+                         document.getElementById('compra-existente-chegada').textContent = formatarDataString(compraDetalhes.dataChegada);
+                         document.getElementById('compra-existente-obs').textContent = compraDetalhes.observacoes || '(Nenhuma)';
+
+                         const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('modalCompraExistente'));
+                         modal.show();
+
+                         if (modeloInput) modeloInput.value = '';
+                         if (serieInput) serieInput.value = '';
+                         if (numeroNotaInput) numeroNotaInput.value = '';
+                         if (fornecedorIdInput) fornecedorIdInput.value = '';
+
+                         document.getElementById('FornecedorIdInput').value = '';
+                         document.getElementById('NomeFornecedor').value = 'Nenhum fornecedor selecionado';
+                         modeloInput?.focus();
+                     }
+
+                 } catch (error) {
+                     console.error('Erro ao verificar chave duplicada:', error);
+                 }
+             }
+         }
+
+         document.addEventListener('DOMContentLoaded', function () {
+            if (modo === "Criar") {
+                const modeloInput = document.getElementById('Modelo');
+                const serieInput = document.getElementById('Serie');
+                const numeroNotaInput = document.getElementById('NumeroNota');
+
+                if(modeloInput) modeloInput.addEventListener('blur', verificarChaveDuplicada);
+                if(serieInput) serieInput.addEventListener('blur', verificarChaveDuplicada);
+                if(numeroNotaInput) numeroNotaInput.addEventListener('blur', verificarChaveDuplicada);
+            }
+        });
+
+
+
+        function hideModalById(id) {
           const el = document.getElementById(id);
           if (!el) return;
           const inst = bootstrap.Modal.getInstance(el);
@@ -426,6 +661,8 @@
                 document.getElementById('FornecedorId').value = id;
                 document.getElementById('NomeFornecedor').value = nome;
                 hideModalById('modalFornecedor');
+
+                verificarChaveDuplicada();
             }
 
             function filtrarTabelaFornecedor() {
@@ -607,7 +844,7 @@
             const multaInput = document.getElementById('Multa');
             const descontoInput = document.getElementById('Desconto');
 
-            const jurosPercent = parseValor(jurosInput.value);
+            const jurosPercentAoDia = parseValor(jurosInput.value);
             const multaPercent = parseValor(multaInput.value);
             const descontoPercent = parseValor(descontoInput.value);
 
@@ -622,7 +859,15 @@
 
                 if (dataPag > dataVenc) {
                     total += (valorBase * (multaPercent / 100));
-                    total += (valorBase * (jurosPercent / 100));
+
+                    const diffTime = dataPag - dataVenc;             
+                    const diasDeAtraso = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                    const valorJurosPorDia = (valorBase * (jurosPercentAoDia / 100));
+
+                    const totalJuros = valorJurosPorDia * diasDeAtraso;
+
+                    total += totalJuros;
                 } else {
                     total -= (valorBase * (descontoPercent / 100));
                 }
@@ -702,6 +947,23 @@
                 if (!dataPagamentoInput.value) {
                     dataPagamentoInput.value = todayString;
                 }
+
+                dataPagamentoInput.addEventListener('blur', function() {
+                    const dataPagValue = dataPagamentoInput.value;
+                    const dataEmissaoValue = dataEmissaoInput.value;
+
+                    if (dataPagValue && dataEmissaoValue && dataPagValue < dataEmissaoValue) {
+                        alert('A Data de Pagamento não pode ser anterior à Data de Emissão. Ajustando para hoje.');
+                        dataPagamentoInput.value = todayString;
+                        dataPagamentoInput.dispatchEvent(new Event('input'));
+                    }
+
+                    if (dataPagValue > todayString) {
+                         alert('A Data de Pagamento não pode ser futura. Ajustando para hoje.');
+                         dataPagamentoInput.value = todayString;
+                         dataPagamentoInput.dispatchEvent(new Event('input'));
+                    }
+                });
             }
 
             if (dataPagamentoInput) dataPagamentoInput.addEventListener('input', calcularValorPago);

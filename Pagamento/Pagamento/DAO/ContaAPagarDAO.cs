@@ -374,5 +374,147 @@ namespace Pagamento.DAO
                 cmd.ExecuteNonQuery();
             }
         }
+
+
+        public bool TemParcelaAnteriorPendente(string modelo, string serie, int numeroNota, int fornecedorId, int numeroParcela)
+        {
+            if (numeroParcela <= 1)
+            {
+                return false;
+            }
+
+            using (var conexao = new MySqlConnection(connectionString))
+            {
+                conexao.Open();
+
+                string sqlVerificaCompra = @"
+                SELECT COUNT(*) 
+                FROM Compra 
+                WHERE Modelo = @Modelo 
+                  AND Serie = @Serie 
+                  AND NumeroNota = @NumeroNota 
+                  AND FornecedorId = @FornecedorId";
+
+                var cmdVerifica = new MySqlCommand(sqlVerificaCompra, conexao);
+                cmdVerifica.Parameters.AddWithValue("@Modelo", (object)modelo ?? DBNull.Value);
+                cmdVerifica.Parameters.AddWithValue("@Serie", (object)serie ?? DBNull.Value);
+                cmdVerifica.Parameters.AddWithValue("@NumeroNota", numeroNota);
+                cmdVerifica.Parameters.AddWithValue("@FornecedorId", fornecedorId);
+
+                var compraCount = Convert.ToInt64(cmdVerifica.ExecuteScalar());
+
+                if (compraCount == 0)
+                {
+                    return false;     
+                }
+
+
+                string sql = @"
+                SELECT COUNT(*) 
+                FROM Conta_a_Pagar
+                WHERE Modelo = @Modelo 
+                  AND Serie = @Serie 
+                  AND NumeroNota = @NumeroNota 
+                  AND FornecedorId = @FornecedorId
+                  AND NumeroParcela < @NumeroParcela
+                  AND Situacao != 'PAGO'
+                  AND Status = true";        
+
+                var cmd = new MySqlCommand(sql, conexao);
+                cmd.Parameters.AddWithValue("@Modelo", modelo);
+                cmd.Parameters.AddWithValue("@Serie", serie);
+                cmd.Parameters.AddWithValue("@NumeroNota", numeroNota);
+                cmd.Parameters.AddWithValue("@FornecedorId", fornecedorId);
+                cmd.Parameters.AddWithValue("@NumeroParcela", numeroParcela);
+
+                var count = Convert.ToInt64(cmd.ExecuteScalar());
+
+                return count > 0;
+            }
+        }
+
+        public bool ExisteChaveDaNota(string modelo, string serie, int numeroNota, int fornecedorId)
+        {
+            using (var conexao = new MySqlConnection(connectionString))
+            {
+                conexao.Open();
+                string sql = @"
+                        SELECT 1 
+                        FROM Conta_a_Pagar
+                        WHERE Modelo = @Modelo 
+                          AND Serie = @Serie 
+                          AND NumeroNota = @NumeroNota 
+                          AND FornecedorId = @FornecedorId
+                        LIMIT 1";
+
+                var cmd = new MySqlCommand(sql, conexao);
+                cmd.Parameters.AddWithValue("@Modelo", (object)modelo ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@Serie", (object)serie ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@NumeroNota", numeroNota);
+                cmd.Parameters.AddWithValue("@FornecedorId", fornecedorId);
+
+                var result = cmd.ExecuteScalar();       
+
+                return result != null && result != DBNull.Value;
+            }
+        }
+
+        public ContaAPagar BuscarPrimeiraParcelaDaNota(string modelo, string serie, int numeroNota, int fornecedorId)
+        {
+            ContaAPagar conta = null;
+            using (var conexao = new MySqlConnection(connectionString))
+            {
+                try
+                {
+                    conexao.Open();
+                    string sql = @"
+                        SELECT 
+                            c.*, 
+                            f.Nome_RazaoSocial AS NomeFornecedor,
+                            fp.Descricao AS NomeFormaPgto
+                        FROM Conta_a_Pagar c
+                        JOIN Fornecedor f ON c.FornecedorId = f.IdFornecedor
+                        LEFT JOIN FormaPagamento fp ON c.IdFormaPgto = fp.IdFormaPgto
+                        WHERE 
+                            c.Modelo = @Modelo AND
+                            c.Serie = @Serie AND
+                            c.NumeroNota = @NumeroNota AND
+                            c.FornecedorId = @FornecedorId AND
+                            c.Status = true AND          -- <-- LINHA ADICIONADA
+                            c.Situacao = 'A PAGAR'       -- <-- LINHA ADICIONADA
+                        ORDER BY c.NumeroParcela ASC
+                        LIMIT 1";
+
+                    var cmd = new MySqlCommand(sql, conexao);
+                    cmd.Parameters.AddWithValue("@Modelo", (object)modelo ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@Serie", (object)serie ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@NumeroNota", numeroNota);
+                    cmd.Parameters.AddWithValue("@FornecedorId", fornecedorId);
+
+                    var reader = cmd.ExecuteReader();
+                    if (reader.Read())
+                    {
+                        conta = new ContaAPagar
+                        {
+                            Modelo = reader.GetString("Modelo"),
+                            Serie = reader.GetString("Serie"),
+                            NumeroNota = reader.GetInt32("NumeroNota"),
+                            FornecedorId = reader.GetInt32("FornecedorId"),
+                            NumeroParcela = reader.GetInt32("NumeroParcela"),
+                            DataVencimento = reader.GetDateTime("DataVencimento"),
+                            ValorParcela = reader.GetDecimal("ValorParcela"),
+                            Situacao = reader.GetString("Situacao"),
+                            NomeFornecedor = reader.GetString("NomeFornecedor"),
+                            NomeFormaPgto = reader.IsDBNull(reader.GetOrdinal("NomeFormaPgto")) ? null : reader.GetString("NomeFormaPgto")
+                        };
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception($"Erro ao buscar primeira parcela da nota. Detalhes: {ex.Message}");
+                }
+            }
+            return conta;
+        }
     }
 }

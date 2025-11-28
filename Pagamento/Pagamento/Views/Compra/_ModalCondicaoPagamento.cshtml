@@ -12,9 +12,9 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
-            
+           
             <div class="modal-body">
-                <input type="text" id="filtroCondicao" class="form-control mb-3" placeholder="Digite para buscar..." onkeyup="filtrarTabelaCondicaoCompra()" />
+                <input type="text" id="filtroCondicao" class="form-control mb-3" placeholder="Digite para buscar..." onkeyup="filtrarTabelaCondicao()" />
 
                 <table class="table table-bordered table-hover" id="tabelaCondicoesCompra">
                     <thead>
@@ -28,7 +28,7 @@
                         {
                             @foreach (var condicao in Model)
                             {
-                              
+                             
                                 <tr data-id="@condicao.IdCondPgto">
                                     <td>@condicao.Descricao</td>
                                     <td>

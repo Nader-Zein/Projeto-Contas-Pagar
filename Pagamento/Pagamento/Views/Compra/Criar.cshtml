@@ -69,7 +69,9 @@
                         }
                 </div>
 
-                @*  
+                @* <div class="col-md-10">
+                    <label class="form-label mb-0">Fornecedor</label> <div class="row gx-2 align-items-end border-bottom pb-1 mb-1">
+
                  *@
 
             </div>
@@ -99,7 +101,8 @@
                         <button type="button" id="btn-buscar-produto-por-id" class="btn btn-primary">Buscar ID</button>
                         <button class="btn btn-outline-secondary ms-2" type="button" data-bs-toggle="modal" data-bs-target="#modalProduto" id="btn-buscar-produto-modal" title="Abrir lista de produtos">Buscar</button>
                     </div>
-                   
+                    @*  
+                     *@
                 </div>
 
                 <div class="col-md-2">
@@ -283,6 +286,9 @@
     </div>
 </form>
 
+<partial name="_ModalCondicaoPagamento" model="ViewBag.CondicoesPagamento" />
+
+
 @if (modo == "Criar")
 {
 
@@ -295,6 +301,7 @@
                 <table class="table table-bordered table-hover" id="tabelaFornecedores">
                     <thead><tr><th>ID</th><th>Nome</th><th>Ação</th></tr></thead>              
                     <tbody>
+                      
                         @foreach (var fornecedor in ViewBag.Fornecedores as List<Pagamento.Models.Fornecedor>)
                         {
                             <tr>
@@ -333,6 +340,7 @@
                                 <td>@produto.IdProduto</td>
                                 <td>@produto.Descricao</td>
                                 <td>
+                                  
                                     <button type="button" class="btn btn-sm btn-primary" onclick="selecionarProduto(@produto.IdProduto, '@produto.Descricao', '@produto.NomeUnidade')">Selecionar</button>
                                 </td>
                             </tr>
@@ -355,12 +363,15 @@
     </div>
 </div>
 
+
+
 <div class="modal fade" id="modalNovoProduto" tabindex="-1">
     <div class="modal-dialog modal-xl">
         <div class="modal-content" id="modalNovoProdutoContent">
         </div>
     </div>
 </div>
+
 
 <div class="modal fade" id="modalMarcaSelecionar" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -379,6 +390,7 @@
                         </tr>
                     </thead>
                     <tbody>
+                      
                          @foreach (var marca in ViewBag.MarcasItens as List<SelectListItem>)
                         {
                             <tr>
@@ -496,7 +508,6 @@
                         </tr>
                     </thead>
                     <tbody>
-                     
                         @foreach (var t in ViewBag.FornecedoresItens as List<SelectListItem>)
                         {
                             <tr>
@@ -519,7 +530,6 @@
     </div>
 </div>
 
-
 <div class="modal fade" id="modalMarca" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog"><div class="modal-content" id="modalMarcaContent"></div></div>
 </div>
@@ -532,7 +542,6 @@
 <div class="modal fade" id="modalFornecedorProduto" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-xl"><div class="modal-content" id="modalFornecedorProdutoContent"></div></div>
 </div>
-
 
 
 
@@ -556,7 +565,6 @@
                         </tr>
                     </thead>
                     <tbody>
-                      
                         @foreach (var cidade in ViewBag.CidadesItens as List<SelectListItem>)
                         {
                             <tr>
@@ -597,7 +605,6 @@
                         </tr>
                     </thead>
                     <tbody>
-                      
                         @foreach (var condicao in ViewBag.CondicoesPagamentoItens as List<SelectListItem>)
                         {
                             <tr>
@@ -668,7 +675,53 @@
 </div>
 
 
+    <div class="modal fade" id="modalContaAvulsaExistente" tabindex="-1" aria-labelledby="modalContaAvulsaExistenteLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-danger" id="modalContaAvulsaExistenteLabel">
+                        <i class="bi bi-exclamation-triangle-fill"></i> Erro: Conflito de Chave Encontrado
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Não é possível cadastrar esta compra. Já existe uma <strong>Conta a Pagar (avulsa)</strong> registrada com esta chave. Abaixo estão os detalhes da primeira parcela encontrada:</p>
 
+                    <dl class="row">
+                        <dt class="col-sm-3">Modelo:</dt>
+                        <dd class="col-sm-9"><span id="avulsa-modelo">-</span></dd>
+
+                        <dt class="col-sm-3">Série:</dt>
+                        <dd class="col-sm-9"><span id="avulsa-serie">-</span></dd>
+
+                        <dt class="col-sm-3">Número da Nota:</dt>
+                        <dd class="col-sm-9"><span id="avulsa-numero">-</span></dd>
+
+                        <dt class="col-sm-3">Fornecedor:</dt>
+                        <dd class="col-sm-9"><span id="avulsa-fornecedor">-</span></dd>
+
+                        <dt class="col-sm-3">Nº Parcela:</dt>
+                        <dd class="col-sm-9"><span id="avulsa-parcela">-</span></dd>
+
+                        <dt class="col-sm-3">Vencimento:</dt>
+                        <dd class="col-sm-9"><span id="avulsa-vencimento">-</span></dd>
+
+                        <dt class="col-sm-3">Valor:</dt>
+                        <dd class="col-sm-9"><span id="avulsa-valor">-</span></dd>
+
+                        <dt class="col-sm-3">Situação:</dt>
+                        <dd class="col-sm-9"><span id="avulsa-situacao">-</span></dd>
+                    </dl>
+
+                    <hr />
+                    <p class="text-muted small">Os campos do formulário foram limpos. Por favor, verifique os dados ou utilize uma chave de nota diferente.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 <div class="modal fade" id="modalNovaCidadeFornecedor" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
@@ -676,7 +729,6 @@
         </div>
     </div>
 </div>
-
 
 <div class="modal fade" id="modalNovaCondicaoFornecedor" tabindex="-1" aria-labelledby="modalNovaCondicaoFornecedorLabel">
     <div class="modal-dialog modal-xl">
@@ -688,11 +740,9 @@
         </div>
     </div>
 </div>
-
 <div class="modal fade" id="modalNovaCondicaoCompra" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content" id="modalNovaCondicaoContentCompra">
-           
         </div>
     </div>
 </div>
@@ -700,8 +750,6 @@
 }
 
 
-
-<partial name="_ModalCondicaoPagamento" model="ViewBag.CondicoesPagamento" />
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
@@ -729,12 +777,16 @@
                 try {
                     const url = `@Url.Action("VerificarChaveExistente", "Compra")?modelo=${encodeURIComponent(modelo)}&serie=${encodeURIComponent(serie)}&numeroNota=${encodeURIComponent(numeroNota)}&fornecedorId=${fornecedorId}`;
 
+                    const response = await fetch(url);
+
                     if (!response.ok) {
                         console.error('Erro na resposta do servidor ao verificar chave:', response.statusText);
                         return;                     
                     }
 
                     const resultado = await response.json();
+
+                    let modalToShow = null;
 
                     if (resultado.existe) {
                         console.log("Entrou no bloco if (resultado.existe)");     
@@ -751,29 +803,47 @@
 
                         console.log("Campos do modal preenchidos");     
 
+                        modalToShow = bootstrap.Modal.getOrCreateInstance(document.getElementById('modalCompraExistente'));
 
-                        const modalElement = document.getElementById('modalCompraExistente');
-                        const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
-                        console.log("Instância do modal obtida:", modal);     
-                        modal.show();       
-                        console.log("modal.show() chamado");     
-                        if (modeloInput) modeloInput.value = '';
-                        if (serieInput) serieInput.value = '';
-                        if (numeroNotaInput) numeroNotaInput.value = '';
-                        if (fornecedorIdInput) fornecedorIdInput.value = '';
+                      } else if (resultado.existeAvulsa) {
+                          const contaAvulsa = resultado.contaAvulsa;
 
-                        const tabelaFornecedor = document.getElementById('tabela-fornecedor-selecionado');
-                        if (tabelaFornecedor) tabelaFornecedor.innerHTML = '';
+                          document.getElementById('avulsa-modelo').textContent = contaAvulsa.modelo || '-';
+                          document.getElementById('avulsa-serie').textContent = contaAvulsa.serie || '-';
+                          document.getElementById('avulsa-numero').textContent = contaAvulsa.numeroNota || '-';
+                          document.getElementById('avulsa-fornecedor').textContent = `${contaAvulsa.fornecedorId} - ${contaAvulsa.nomeFornecedor || 'N/A'}`;
+                          document.getElementById('avulsa-parcela').textContent = contaAvulsa.numeroParcela || '-';
+                          document.getElementById('avulsa-vencimento').textContent = formatarDataString(contaAvulsa.dataVencimento);
+                          document.getElementById('avulsa-valor').textContent = formatarMoeda(contaAvulsa.valorParcela);
+                          document.getElementById('avulsa-situacao').textContent = contaAvulsa.situacao || 'N/D';
 
-                         document.getElementById('CondicaoPagamentoCompraId').value = '';
-                         document.getElementById('NomeCondicaoCompra').value = '';
-                         document.getElementById('tabela-parcelas').innerHTML = '';
-                         idCondicaoPermitida = 0;         
+                          modalToShow = bootstrap.Modal.getOrCreateInstance(document.getElementById('modalContaAvulsaExistente'));
+                      }
 
-                         console.log("Campos do formulário limpos");
+                          if (modalToShow) {
+                              modalToShow.show();
 
-                        modeloInput?.focus();
-                    }
+                              if (modeloInput) modeloInput.value = '';
+                              if (serieInput) serieInput.value = '';
+                              if (numeroNotaInput) numeroNotaInput.value = '';
+                              if (fornecedorIdInput) fornecedorIdInput.value = '';
+
+                              const tabelaFornecedor = document.getElementById('tabela-fornecedor-selecionado');
+                              if (tabelaFornecedor) tabelaFornecedor.innerHTML = '';
+                              const fornecedorIdInputDisplay = document.getElementById('fornecedor-id-input');
+                              if(fornecedorIdInputDisplay) fornecedorIdInputDisplay.value = '';
+
+
+                               document.getElementById('CondicaoPagamentoCompraId').value = '';
+                               document.getElementById('NomeCondicaoCompra').value = '';
+                               document.getElementById('tabela-parcelas').innerHTML = '';
+                               idCondicaoPermitida = 0;         
+
+                              console.log("Campos do formulário limpos");
+                              modeloInput?.focus();
+                          }
+                        
+                    
 
                 } catch (error) {
                     console.error('Erro ao verificar chave duplicada:', error);
@@ -1233,14 +1303,6 @@
 
                 
        
-        function filtrarTabelaCondicao() {
-            const filtro = $('#filtroCondicao').val().toLowerCase();
-            $('#tabelaCondicoes tbody tr').each(function () {
-                const nome = $(this).find('td:first').text().toLowerCase();
-                $(this).toggle(nome.includes(filtro));
-            });
-        }
-
         function selecionarFormaPgto(id, nome) {
             $('#IdFormaPgto').val(id);
             $('#NomeFormaSelecionada').val(nome);
@@ -1712,7 +1774,7 @@
                                 <button class='btn btn-sm btn-primary' onclick='selecionarCondicaoCompra(${response.condicao.id}, "${response.condicao.descricao}")'>Selecionar</button>
                             </td>
                         </tr>`;
-                        $('#tabelaCondicoes tbody').append(novaLinha);
+                          $('#tabelaCondicoesCompra tbody').append(novaLinha);
                     } else {
                         $('#modalNovaCondicaoContentCompra').html(response);
                     }
@@ -1767,7 +1829,6 @@
             if (!dataString || !dataString.includes('-')) return '-';
             try {
                 const [ano, mes, dia] = dataString.split('-');
-                                
                 if (dia && mes && ano && dia.length === 2 && mes.length === 2 && ano.length === 4) {
                     return `${dia}/${mes}/${ano}`;
                 }
@@ -1799,15 +1860,14 @@
             const despesas = parseMoeda(document.getElementById('Despesas')?.value || '0');
 
             const totalNota = totalProdutos + frete + seguro + despesas;
+
             document.getElementById('total-produtos').value = formatarMoeda(totalProdutos);
             document.getElementById('total-nota').value = formatarMoeda(totalNota);
-                            
             gerarParcelas();                 
         }
 
 
 
-                  
         document.addEventListener('DOMContentLoaded', function () {
             const btnAdicionarProduto = document.getElementById('btn-adicionar-produto');
             const tabelaProdutosBody  = document.getElementById('tabela-produtos');
@@ -1843,7 +1903,6 @@
                     linha.dataset.quantidade    = quantidade;
                     linha.dataset.valorUnitario = valorUnitario.toFixed(2);
 
-                                          
                     linha.innerHTML = `
                     <td>${produtoId}</td>
                     <td>${produtoNome}</td>
@@ -1855,7 +1914,6 @@
                     `;
                     tabelaProdutosBody.appendChild(linha);
 
-                        
                     if (produtoIdInput) produtoIdInput.value = '';
                     if (unidadeInput) unidadeInput.value = '';     
                     if (produtoNomeInput) {
@@ -1869,10 +1927,10 @@
                     const totalDisplay = document.getElementById('produto-total');            
                     if (unidadeDisplay) unidadeDisplay.value = '';            
                     if (totalDisplay) totalDisplay.value = 'R$ 0,00';     
+
                     atualizarTotais();
                 });
 
-                      
                 tabelaProdutosBody.addEventListener('click', function (e) {
                     const btn = e.target.closest('.btn-remover');
                     if (!btn) return;
@@ -1881,13 +1939,11 @@
                 });
             }
 
-                      
             ['Frete', 'Seguro', 'Despesas'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.addEventListener('input', atualizarTotais);
             });
 
-                          
             const form = document.getElementById('form-compra');
             if (form) {
                 form.addEventListener('submit', function (e) {
@@ -1924,18 +1980,16 @@
                    const motivoInput = document.getElementById('motivoCancelamentoInput');
 
                    if (btnConfirmarModal && form && motivoInput) {
+
                        btnConfirmarModal.addEventListener('click', function() {
                            const motivo = motivoInput.value.trim();
 
-                               
                            if (motivo === "") {
                                alert("Por favor, preencha o motivo do cancelamento.");
                                motivoInput.focus();
                                return;
                            }
 
-                                         
-                                               
                            form.submit();
                        });
                    }

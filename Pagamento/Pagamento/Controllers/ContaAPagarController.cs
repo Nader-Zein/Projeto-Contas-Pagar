@@ -11,6 +11,8 @@ namespace Pagamento.Controllers
         private readonly FornecedorDAO _fornecedorDAO = new FornecedorDAO();
         private readonly FormaPagamentoDAO _formaPagamentoDAO = new FormaPagamentoDAO();
 
+        private readonly CompraDAO _compraDAO = new CompraDAO();
+
         public IActionResult Index()
         {
             try
@@ -36,7 +38,7 @@ namespace Pagamento.Controllers
             {
                 DataEmissao = DateTime.Today,
                 DataVencimento = DateTime.Today,
-                NumeroParcela = 1,
+                NumeroParcela = 0,
                 Status = true
             };
 
@@ -50,6 +52,39 @@ namespace Pagamento.Controllers
             try
             {
                 conta.Situacao = "A PAGAR";      
+
+                if (!string.IsNullOrEmpty(conta.Modelo) &&
+                    !string.IsNullOrEmpty(conta.Serie) &&
+                    conta.NumeroNota > 0 &&
+                    conta.FornecedorId > 0)
+                {
+                    Compra compraExistente = _compraDAO.BuscarDetalhesPorChaveComposta(
+                        conta.Modelo,
+                        conta.Serie,
+                        conta.NumeroNota.ToString(),          
+                        conta.FornecedorId
+                    );
+
+                    if (compraExistente != null && compraExistente.Status == true)
+                    {
+                        ModelState.AddModelError("", "Não é possível criar esta conta avulsa. Os dados de Nota (Modelo, Série, N°, Fornecedor) já existem em uma Compra. Contas avulsas não podem ser anexadas a compras existentes.");
+                    }
+                }
+                if (ModelState.IsValid)
+                {
+                    var contaDuplicada = _contaAPagarDAO.BuscarPorChave(
+                        conta.Modelo,
+                        conta.Serie,
+                        conta.NumeroNota,
+                        conta.FornecedorId,
+                        conta.NumeroParcela
+                    );
+
+                    if (contaDuplicada != null)
+                    {
+                        ModelState.AddModelError("", $"Não é possível salvar. Já existe uma conta registrada com esta chave exata (Parcela: {conta.NumeroParcela}), mesmo que ela esteja cancelada.");
+                    }
+                }
                 if (ModelState.IsValid)
                 {
                     _contaAPagarDAO.Inserir(conta);     
@@ -81,6 +116,8 @@ namespace Pagamento.Controllers
         [HttpGet]
         public IActionResult Baixar(string modelo, string serie, int numeroNota, int fornecedorId, int numeroParcela)
         {
+
+
             ViewData["Modo"] = "Baixar";
             ViewData["Title"] = "Baixa de Conta a Pagar";
 
@@ -253,6 +290,76 @@ namespace Pagamento.Controllers
             PreencherViewBagsAvulsa();
 
             return View("CriarAvulsa", conta);
+        }
+
+        [HttpGet]
+        public IActionResult VerificarPendenciaParcela(string modelo, string serie, int numeroNota, int fornecedorId, int numeroParcela)
+        {
+            try
+            {
+                bool temPendencia = _contaAPagarDAO.TemParcelaAnteriorPendente(modelo, serie, numeroNota, fornecedorId, numeroParcela);
+
+                if (temPendencia)
+                {
+                    return Json(new
+                    {
+                        temPendencia = true,
+                        mensagem = "Não é possível dar baixar nesta parcela. Parcelas anteriores pendentes."
+                    });
+                }
+
+                return Json(new { temPendencia = false });
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    temPendencia = true,         
+                    mensagem = $"Erro ao validar pendências da parcela: {ex.Message}"
+                });
+            }
+        }
+
+        [HttpGet]
+        public IActionResult VerificarContaDuplicada(string modelo, string serie, int numeroNota, int fornecedorId, int numeroParcela)
+        {
+            if (numeroParcela <= 0 || fornecedorId <= 0)
+            {
+                return Json(new { existe = false });
+            }
+
+            try
+            {
+                var conta = _contaAPagarDAO.BuscarPorChave(modelo, serie, numeroNota, fornecedorId, numeroParcela);
+
+                if (conta != null)
+                {
+                    return Json(new
+                    {
+                        existe = true,
+                        conta = new
+                        {
+                            modelo = conta.Modelo,
+                            serie = conta.Serie,
+                            numeroNota = conta.NumeroNota,
+                            fornecedorId = conta.FornecedorId,
+                            nomeFornecedor = conta.NomeFornecedor,    
+                            numeroParcela = conta.NumeroParcela,
+                            dataVencimento = conta.DataVencimento.ToString("yyyy-MM-dd"),
+                            valorParcela = conta.ValorParcela,
+                            situacao = conta.Situacao,
+                            status = conta.Status
+                        }
+                    });
+                }
+
+                return Json(new { existe = false });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro ao verificar duplicidade de conta: {ex.Message}");
+                return Json(new { existe = false });
+            }
         }
     }
 }

@@ -128,9 +128,15 @@ namespace Pagamento.Controllers
 
             try
             {
+
+                if (!int.TryParse(numeroNota, out int numeroNotaInt))
+                {
+                    return BadRequest(new { existe = false, mensagem = "Número da nota inválido." });
+                }
+
                 Compra compraExistente = _compraDAO.BuscarDetalhesPorChaveComposta(modelo, serie, numeroNota, fornecedorId);
 
-                if (compraExistente != null)
+                if (compraExistente != null )
                 {
                     return Json(new
                     {
@@ -150,7 +156,29 @@ namespace Pagamento.Controllers
                 }
                 else
                 {
-                    return Json(new { existe = false });
+                    ContaAPagar contaAvulsa = _contaAPagarDAO.BuscarPrimeiraParcelaDaNota(modelo, serie, numeroNotaInt, fornecedorId);
+                   
+                    if (contaAvulsa != null)
+                    {
+                        return Json(new
+                        {
+                            existe = false,
+                            existeAvulsa = true,
+                            contaAvulsa = new
+                            {
+                                modelo = contaAvulsa.Modelo,
+                                serie = contaAvulsa.Serie,
+                                numeroNota = contaAvulsa.NumeroNota,
+                                fornecedorId = contaAvulsa.FornecedorId,
+                                nomeFornecedor = contaAvulsa.NomeFornecedor,
+                                dataVencimento = contaAvulsa.DataVencimento.ToString("yyyy-MM-dd"),
+                                valorParcela = contaAvulsa.ValorParcela,
+                                numeroParcela = contaAvulsa.NumeroParcela,
+                                situacao = contaAvulsa.Situacao
+                            }
+                        });
+                    }
+                    return Json(new { existe = false, existeAvulsa = false });
                 }
             }
             catch (Exception ex)

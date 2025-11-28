@@ -10,12 +10,11 @@ namespace Pagamento.Models
         [StringLength(10)]
         public string Modelo { get; set; }
 
-      
         [Required(ErrorMessage = "A Série da nota é obrigatória.")]
         [StringLength(10)]
         public string Serie { get; set; }
 
-       
+        
         [Required(ErrorMessage = "O Número da Nota é obrigatório.")]
         public int NumeroNota { get; set; }
 

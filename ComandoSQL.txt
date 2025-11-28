@@ -174,7 +174,7 @@ CREATE TABLE Produto (
     CategoriaId INT NOT NULL,
     ValorVenda DECIMAL(10,2) NOT NULL,
     CustoMedio DECIMAL(10,2) NOT NULL DEFAULT 0, 
-    CustoUltimaCompraDECIMAL(10,2) NOT NULL DEFAULT 0, 
+    CustoUltimaCompra DECIMAL(10,2) NOT NULL DEFAULT 0, 
     Quantidade INT NOT NULL,
     QuantidadeMinima INT NOT NULL,
     PercentualLucro DECIMAL(10,2) NOT NULL,
@@ -249,39 +249,38 @@ CREATE TABLE ItemCompra (
     
     FOREIGN KEY (CompraModelo, CompraSerie, CompraNumeroNota, CompraFornecedorId) 
         REFERENCES Compra(Modelo, Serie, NumeroNota, FornecedorId) 
-        ON DELETE CASCADE, -- Se a compra for deletada, os itens são deletados juntos.
+        ON DELETE CASCADE, 
     FOREIGN KEY (ProdutoId) REFERENCES Produto(IdProduto)
 );
 
 
 
 CREATE TABLE Conta_a_Pagar (
-    Modelo VARCHAR(10) NOT NULL,        -- Parte da FK para Compra e PK. Ajustado tamanho para 10.
-    Serie VARCHAR(10) NOT NULL,         -- Parte da FK para Compra e PK. Ajustado tamanho para 10.
-    NumeroNota INT NOT NULL,            -- Parte da FK para Compra e PK.
-    FornecedorId INT NOT NULL,          -- Parte da FK para Compra e PK. RENOMEADO de CodFornecedor.
-    NumeroParcela INT NOT NULL,         -- Identificador da parcela dentro da nota (e PK).
+    Modelo VARCHAR(10) NOT NULL,        
+    Serie VARCHAR(10) NOT NULL,         
+    NumeroNota INT NOT NULL,            
+    FornecedorId INT NOT NULL,         
+    NumeroParcela INT NOT NULL,         
 
     Status BOOLEAN NOT NULL, 
     Situacao  VARCHAR(25) NULL,
-    ValorParcela DECIMAL(10,2) NOT NULL, -- Valor calculado da parcela.
-    DataVencimento DATE NOT NULL,         -- Data de vencimento calculada.
-    DataEmissao DATE NOT NULL,            -- Data de Emissão da Nota original (para referência).
-
+    ValorParcela DECIMAL(10,2) NOT NULL, 
+    DataVencimento DATE NOT NULL,         
+    DataEmissao DATE NOT NULL,            
    
-    DataPagamento DATE NULL,              -- Data em que a parcela foi paga (NULL se não paga).
-    Juros DECIMAL(10,2) NULL DEFAULT 0.00,  -- Juros aplicados no pagamento.
-    Multa DECIMAL(10,2) NULL DEFAULT 0.00,  -- Multa aplicada no pagamento.
-    Desconto DECIMAL(10,2) NULL DEFAULT 0.00, -- Desconto concedido no pagamento.
-    ValorPago DECIMAL(10,2) NULL,         -- Valor total efetivamente pago.
-    IdFormaPgto INT NULL,                 -- Forma como foi pago (NULL se não pago).
+    DataPagamento DATE NULL,              
+    Juros DECIMAL(10,2) NULL DEFAULT 0.00,  
+    Multa DECIMAL(10,2) NULL DEFAULT 0.00,  
+    Desconto DECIMAL(10,2) NULL DEFAULT 0.00, 
+    ValorPago DECIMAL(10,2) NULL,         
+    IdFormaPgto INT NULL,                 
 
     
     PRIMARY KEY (Modelo, Serie, NumeroNota, FornecedorId, NumeroParcela),
 
     
-    FOREIGN KEY (Modelo, Serie, NumeroNota, FornecedorId) -- Colunas correspondentes na Conta_a_Pagar
-        REFERENCES Compra(Modelo, Serie, NumeroNota, FornecedorId) -- Referencia a tabela Compra e suas colunas PK
-        ON DELETE CASCADE, -- Se a compra for excluída, as contas a pagar são excluídas.
+    FOREIGN KEY (Modelo, Serie, NumeroNota, FornecedorId) 
+        REFERENCES Compra(Modelo, Serie, NumeroNota, FornecedorId) 
+        ON DELETE CASCADE, 
     FOREIGN KEY (IdFormaPgto) REFERENCES FormaPagamento(IdFormaPgto)
 );

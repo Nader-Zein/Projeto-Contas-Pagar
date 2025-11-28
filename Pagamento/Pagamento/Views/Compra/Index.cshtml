@@ -68,6 +68,11 @@
                         }
                     </td>
                     <td>
+
+                        @{
+                            // Define as condições de desabilitar
+                            string cancelarDisabled = (!compra.Status) ? "disabled" : "";
+                        }
                         <a asp-action="Detalhes"
                            asp-route-modelo="@compra.Modelo"
                            asp-route-serie="@compra.Serie"
@@ -80,6 +85,8 @@
                            asp-route-serie="@compra.Serie"
                            asp-route-numeroNota="@compra.NumeroNota"
                            asp-route-fornecedorId="@compra.FornecedorId"
+                           class="btn btn-sm btn-danger @cancelarDisabled"
+                           aria-disabled="@( !compra.Status ? "true" : "false")"
                            class="btn btn-sm btn-danger">Cancelar</a>
                     </td>
                 </tr>

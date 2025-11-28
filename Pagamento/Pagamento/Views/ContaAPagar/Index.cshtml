@@ -29,6 +29,7 @@
                     <th>Valor</th>
                     <th>Situação</th>
                     <th>Origem (Nº Nota)</th>
+                    <th>Nº Parcela</th>
                     <th>Status</th>
                     <th>Ações</th>
                 </tr>
@@ -36,6 +37,7 @@
             <tbody>
                 @foreach (var item in Model)
                 {
+                     //Define classes de cor com base na Situação e Status
                     string trClass = "";
                     if (item.Situacao == "PAGO")
                     {
@@ -43,10 +45,10 @@
                     }
                     else if (item.DataVencimento.Date < DateTime.Today)
                     {
-                        trClass = "table-danger";    
+                        trClass = "table-danger"; // Vencida
                     }
 
-                    if (!item.Status)                
+                    if (!item.Status) // Se Status == false (Cancelada)
                     {
                         trClass = "table-secondary text-decoration-line-through";
                     }
@@ -56,6 +58,7 @@
                         <td>@item.DataVencimento.ToString("dd/MM/yyyy")</td>
                         <td title="@(item.ValorPago.HasValue ? "Valor pago" : "Valor da parcela")">
                             @{
+                                // se houver ValorPago, usa; senão, cai para ValorParcela
                                 decimal valor = item.ValorPago.GetValueOrDefault(item.ValorParcela);
                             }
                             @valor.ToString("C2")
@@ -79,6 +82,7 @@
                                 <small>Avulsa</small>
                             }
                         </td>
+                        <td>@item.NumeroParcela</td>
                         <td>
                             <span class="badge @(item.Status ? "bg-success" : "bg-danger")">
                                 @(item.Status ? "Ativo" : "Cancelado")
@@ -86,6 +90,7 @@
                         </td>
                         <td>
                             @{
+                                // Define as condições de desabilitar
                                 string baixarDisabled = (item.Situacao != "A PAGAR" || item.Status == false) ? "disabled" : "";
                                 string cancelarDisabled = (item.Situacao == "PAGO" || item.Status == false) ? "disabled" : "";
                             }
@@ -99,25 +104,31 @@
                                title="Ver Detalhes">
                                 Detalhes
                             </a>
-                            @*   
-                                            
-                                             
+                            @* 1. Botão Baixar:
+                                - Usa a tag helper asp-action para criar o link.
+                                - Adiciona a classe "disabled" do Bootstrap se a condição 'baixarDisabled' for atendida.
+                                  A classe "disabled" do Bootstrap 5 já previne o clique (pointer-events: none).
                             *@
-                            <a asp-action="Baixar"
-                               asp-route-modelo="@item.Modelo"
-                               asp-route-serie="@item.Serie"
-                               asp-route-numeroNota="@item.NumeroNota"
-                               asp-route-fornecedorId="@item.FornecedorId"
-                               asp-route-numeroParcela="@item.NumeroParcela"
-                               class="btn btn-sm btn-primary @baixarDisabled"
-                               title="Pagar/Baixar">
+                            <button type="button"
+                                    class="btn btn-sm btn-primary btn-verificar-baixa @baixarDisabled"
+                                    title="Pagar/Baixar"
+                                    data-modelo="@item.Modelo"
+                                    data-serie="@item.Serie"
+                                    data-numero-nota="@item.NumeroNota"
+                                    data-fornecedor-id="@item.FornecedorId"
+                                    data-numero-parcela="@item.NumeroParcela"
+                                    data-url-baixar="@Url.Action("Baixar", new { 
+                                        modelo = item.Modelo, 
+                                        serie = item.Serie, 
+                                        numeroNota = item.NumeroNota, 
+                                        fornecedorId = item.FornecedorId, 
+                                        numeroParcela = item.NumeroParcela 
+                                    })">
                                 Baixar
-                            </a>
+                            </button>
 
-                            @*   
-                                       
-                               
-                                       
+                            @* 2. Botão Cancelar:
+                                - Mesma lógica, mas usa a condição 'cancelarDisabled'.
                             *@
                             <a asp-action="Cancelar"
                                asp-route-modelo="@item.Modelo"
@@ -136,3 +147,80 @@
         </table>
     </div>
 </div>
+
+<div class="modal fade" id="modalAvisoPendencia" tabindex="-1" aria-labelledby="modalAvisoLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-warning" id="modalAvisoLabel">Aviso de Pendência</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <p id="modalAvisoPendenciaBody">Mensagem de erro.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            
+            // 1. Pega a instância do Modal (mas não mostra)
+            const modalElement = document.getElementById('modalAvisoPendencia');
+            const modalAviso = new bootstrap.Modal(modalElement);
+            const modalBody = document.getElementById('modalAvisoPendenciaBody');
+
+            // 2. Adiciona o listener para TODOS os botões de baixar
+            document.querySelectorAll('.btn-verificar-baixa').forEach(button => {
+                
+                button.addEventListener('click', async function () {
+                    
+                    // 3. Pega os dados do botão clicado
+                    const dataset = this.dataset;
+                    const modelo = dataset.modelo || '';
+                    const serie = dataset.serie || '';
+                    const numeroNota = dataset.numeroNota || 0;
+                    const fornecedorId = dataset.fornecedorId || 0;
+                    const numeroParcela = dataset.numeroParcela || 0;
+                    
+                    // 4. Se for conta avulsa (sem modelo), pula a verificação e vai direto
+                    if (modelo === '') {
+                        window.location.href = dataset.urlBaixar;
+                        return;
+                    }
+
+                    // 5. Constrói a URL de verificação
+                    const urlVerificar = `@Url.Action("VerificarPendenciaParcela", "ContaAPagar")?modelo=${encodeURIComponent(modelo)}&serie=${encodeURIComponent(serie)}&numeroNota=${numeroNota}&fornecedorId=${fornecedorId}&numeroParcela=${numeroParcela}`;
+
+                    try {
+                        // 6. Faz a chamada AJAX
+                        const response = await fetch(urlVerificar);
+                        if (!response.ok) {
+                            throw new Error('Erro ao conectar com o servidor.');
+                        }
+                        
+                        const data = await response.json();
+
+                        // 7. Analisa a resposta
+                        if (data.temPendencia) {
+                            // Se TEM PENDÊNCIA: Preenche o modal e mostra
+                            modalBody.textContent = data.mensagem;
+                            modalAviso.show();
+                        } else {
+                            // Se NÃO TEM PENDÊNCIA: Redireciona para a página de baixa
+                            window.location.href = dataset.urlBaixar;
+                        }
+
+                    } catch (error) {
+                        // Em caso de erro de script/rede
+                        modalBody.textContent = 'Erro ao verificar parcela: ' + error.message;
+                        modalAviso.show();
+                    }
+                });
+            });
+        });
+    </script>
+}
