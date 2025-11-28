@@ -104,7 +104,28 @@ namespace Pagamento.Controllers
         [HttpPost, ActionName("Excluir")]
         public IActionResult ConfirmarExclusao(int id)
         {
-            _estadoDAO.Excluir(id);
+            try
+            {
+                _estadoDAO.Excluir(id);
+
+                TempData["SuccessMessage"] = "Estado  excluído com sucesso!";
+            }
+            catch (MySql.Data.MySqlClient.MySqlException ex)
+            {
+                if (ex.Number == 1451)
+                {
+                    TempData["ErrorMessage"] = "Este estado nao pode ser excluído,pois esta sendo utilizado em outro cadastro.";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Ocorreu um erro de banco de dados ao tentar excluir o estado.";
+                }
+            }
+            catch (Exception)
+            {
+                TempData["ErrorMessage"] = "Ocorreu um erro inesperado no sistema.";
+            }
+
             return RedirectToAction("Index");
         }
 
@@ -122,6 +143,10 @@ namespace Pagamento.Controllers
         [HttpPost]
         public IActionResult FormModal(Estado estado)
         {
+            if (_estadoDAO.ExisteEstadoPorNome(estado.NomeEstado))
+            {
+                ModelState.AddModelError("NomeEstado", "Este estado já está cadastrado!");
+            }
 
             if (ModelState.IsValid)
             {
@@ -129,7 +154,7 @@ namespace Pagamento.Controllers
                 return Json(new
                 {
                     sucesso = true,
-                    estado = new { id = estado.IdEstado, nome = estado.NomeEstado }
+                    estado = new { id = estado.IdEstado, nome = estado.NomeEstado.ToUpper() }
                 });
             }
 

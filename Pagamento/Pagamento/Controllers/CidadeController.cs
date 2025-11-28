@@ -80,7 +80,29 @@ namespace Pagamento.Controllers
         [HttpPost, ActionName("Excluir")]
         public IActionResult ConfirmarExclusao(int id)
         {
-            _cidadeDAO.Excluir(id);
+            
+            try
+            {
+                _cidadeDAO.Excluir(id);
+
+                TempData["SuccessMessage"] = "Cidade excluída com sucesso!";
+            }
+            catch (MySql.Data.MySqlClient.MySqlException ex)
+            {
+                if (ex.Number == 1451)
+                {
+                    TempData["ErrorMessage"] = "Esta cidade nao pode ser excluida, pois esta sendo utilizada em outro cadastro.";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Ocorreu um erro de banco de dados ao tentar excluir a cidade.";
+                }
+            }
+            catch (Exception)
+            {
+                TempData["ErrorMessage"] = "Ocorreu um erro inesperado no sistema.";
+            }
+
             return RedirectToAction("Index");
         }
 
@@ -141,13 +163,17 @@ namespace Pagamento.Controllers
         public IActionResult FormModal(Cidade cidade)
         {
 
+            if (_cidadeDAO.ExisteCidadePorNome(cidade.NomeCidade, cidade.IdEstado))
+            {
+                ModelState.AddModelError("NomeCidade", "Esta cidade já está cadastrada!");
+            }
             if (ModelState.IsValid)
             {
                 _cidadeDAO.Inserir(cidade);
                 return Json(new
                 {
                     sucesso = true,
-                    cidade = new { id = cidade.IdCidade, nome = cidade.NomeCidade }
+                    cidade = new { id = cidade.IdCidade, nome = cidade.NomeCidade.ToUpper() }
                 });
             }
 

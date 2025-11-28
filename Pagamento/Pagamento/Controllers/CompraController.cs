@@ -218,6 +218,9 @@ namespace Pagamento.Controllers
                 ViewData["Title"] = "Detalhes da Compra";
                 ViewData["Modo"] = "Detalhes";
 
+
+                PreencherViewBags();
+
                 ViewBag.TotalProdutosFormatado = compra.TotalProdutos.ToString("C2");
                 ViewBag.TotalNotaFormatado = compra.TotalNota.ToString("C2");
 
@@ -233,6 +236,14 @@ namespace Pagamento.Controllers
         [HttpGet]
         public IActionResult Cancelar(string modelo, string serie, int numeroNota, int fornecedorId)
         {
+
+            if (_contaAPagarDAO.VerificarParcelasPagas(modelo, serie, numeroNota, fornecedorId))
+            {
+                TempData["ErrorMessage"] = "Não é possível cancelar esta compra pois existem parcelas que já foram pagas (baixadas).";
+                return RedirectToAction("Index");
+            }
+
+
             var compra = _compraDAO.Listar()
                 .FirstOrDefault(c =>
                     c.Modelo == modelo &&

@@ -11,10 +11,6 @@
     <a asp-action="Criar" class="btn btn-primary">Cadastrar Nova Compra</a>
 </p>
 
-@if (TempData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
-}
 
 <table class="table table-striped table-hover">
     <thead>
@@ -100,3 +96,33 @@
         }
     </tbody>
 </table>
+
+<div class="modal fade" id="modalAvisoErro" tabindex="-1" aria-labelledby="modalAvisoErroLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="modalAvisoErroLabel">Atenção</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @TempData["ErrorMessage"]
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            var mensagemErro = '@TempData["ErrorMessage"]';
+
+            if (mensagemErro && mensagemErro.trim() !== "") {
+                var myModal = new bootstrap.Modal(document.getElementById('modalAvisoErro'));
+                myModal.show();
+            }
+        });
+    </script>
+}

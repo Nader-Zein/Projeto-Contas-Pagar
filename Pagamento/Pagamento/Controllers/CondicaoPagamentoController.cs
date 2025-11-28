@@ -137,8 +137,27 @@ namespace Pagamento.Controllers
         [HttpPost]
         public IActionResult Excluir(CondicaoPagamento condicao)
         {
-            condicaodao.Excluir(condicao.IdCondPgto);
-            
+             try
+            {
+                condicaodao.Excluir(condicao.IdCondPgto);
+
+                TempData["SuccessMessage"] = "Condicao de pagamento excluída com sucesso!";
+            }
+            catch (MySql.Data.MySqlClient.MySqlException ex)
+            {
+                if (ex.Number == 1451)
+                {
+                    TempData["ErrorMessage"] = "Esta condicao de pagamento nao pode ser excluída,pois esta sendo utilizada em outro cadastro.";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Ocorreu um erro de banco de dados ao tentar excluir a condicao de pagamento.";
+                }
+            }
+            catch (Exception)
+            {
+                TempData["ErrorMessage"] = "Ocorreu um erro inesperado no sistema.";
+            }
 
             return RedirectToAction("Index");
         }
@@ -160,6 +179,13 @@ namespace Pagamento.Controllers
         [HttpPost]
         public IActionResult FormModal(CondicaoPagamento condicao, string ParcelasJson)
         {
+
+            if (condicaodao.ExisteCondicao(condicao.Descricao))
+            {
+                ModelState.AddModelError("Descricao", "Esta condição de pagamento já está cadastrada!");
+                
+            }
+
             if (!ModelState.IsValid)
             {
                 condicao.FormasPagamento = formaPgtoDAO.Listar() ?? new List<FormaPagamento>();
@@ -184,7 +210,7 @@ namespace Pagamento.Controllers
                 condicao = new
                 {
                     id = condicao.IdCondPgto,
-                    nome = condicao.Descricao
+                    nome = condicao.Descricao.ToUpper()
                 }
             });
         }

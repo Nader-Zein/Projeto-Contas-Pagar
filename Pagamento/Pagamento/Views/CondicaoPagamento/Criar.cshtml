@@ -48,14 +48,19 @@
 
 
 
-    <div class="col-md-3">
-        <label for="NumeroParcela">Número da Parcela</label>
-        <input type="number" id="NumeroParcela" class="form-control" min="1" />
-    </div>
+   
 
     <h3 class="mt-4">Parcelas</h3>
 
+    
     <div class="row mb-3 align-items-end">
+
+        <div class="col-md-2">
+            <label for="NumeroParcela">Número da Parcela</label>
+            <input type="number" id="NumeroParcela" class="form-control" min="1" />
+        </div>
+
+
         <div class="col-md-3">
             <label class="form-label">Forma de Pagamento</label>
             <div class="input-group">
@@ -226,6 +231,15 @@
                 return;
             }
 
+           
+            let totalAtual = parcelas.reduce((sum, p) => sum + p.valorPercentual, 0);
+
+            if (totalAtual + valor > 100) {
+                alert("A soma das parcelas não pode ultrapassar 100%. Total atual: " + totalAtual + "%. Restante: " + (100 - totalAtual) + "%.");
+                return;
+            }
+
+
             if (parcelas.some(p => p.numeroParcela === numeroParcela)) {
                 alert("Já existe uma parcela com esse número.");
                 return;
@@ -267,7 +281,15 @@
             document.getElementById("DiasAposVenda").value = "";
         });
 
-        document.querySelector("form").addEventListener("submit", function () {
+        document.querySelector("form").addEventListener("submit", function (e) {
+
+            let total = parcelas.reduce((sum, p) => sum + p.valorPercentual, 0);
+
+            if (total !== 100) {
+                e.preventDefault();           
+                alert("A soma das porcentagens das parcelas deve ser exatamente 100%. Total atual: " + total + "%.");
+                return;
+            }
             let input = document.createElement("input");
             input.type = "hidden";
             input.name = "ParcelasJson";

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Pagamento.DAO;
 using Pagamento.Models;
 
@@ -13,6 +14,8 @@ namespace Pagamento.Controllers
 
         private readonly CompraDAO _compraDAO = new CompraDAO();
 
+        private readonly CidadeDAO _cidadeDAO = new CidadeDAO();
+        private readonly CondicaoPagamentoDAO _condicaoPagamentoDAO = new CondicaoPagamentoDAO();
         public IActionResult Index()
         {
             try
@@ -31,6 +34,8 @@ namespace Pagamento.Controllers
         public IActionResult CriarAvulsa()
         {
             ViewData["Title"] = "Cadastro de Conta a Pagar";
+
+            ViewData["Modo"] = "Criar";
 
             PreencherViewBagsAvulsa();
 
@@ -109,6 +114,17 @@ namespace Pagamento.Controllers
 
             ViewBag.Fornecedores = fornecedores;
             ViewBag.FormasPagamento = formasPgto;
+
+            var cidades = _cidadeDAO.Listar() ?? new List<Cidade>();
+            var condicoes = _condicaoPagamentoDAO.Listar() ?? new List<CondicaoPagamento>();
+
+            ViewBag.CidadesItens = cidades
+                .Select(c => new SelectListItem(c.NomeCidade, c.IdCidade.ToString()))
+                .ToList();
+
+            ViewBag.CondicoesPagamentoItens = condicoes
+                .Select(c => new SelectListItem(c.Descricao, c.IdCondPgto.ToString()))
+                .ToList();
         }
 
 
@@ -195,6 +211,15 @@ namespace Pagamento.Controllers
         {
             ViewData["Modo"] = "Cancelar";
             ViewData["Title"] = "Cancelamento de Conta a Pagar";
+
+
+            bool ehParcelaDeCompra = _compraDAO.ExisteChaveComposta(modelo, serie, numeroNota.ToString(), fornecedorId);
+
+            if (ehParcelaDeCompra)
+            {
+                TempData["ErrorMessage"] = "Não é permitido cancelar esta parcela por aqui. Como ela pertence a uma Compra, você deve cancelar a Compra inteira no menu de Compras.";
+                return RedirectToAction(nameof(Index));
+            }
 
             var conta = _contaAPagarDAO.BuscarPorChave(modelo, serie, numeroNota, fornecedorId, numeroParcela);
 

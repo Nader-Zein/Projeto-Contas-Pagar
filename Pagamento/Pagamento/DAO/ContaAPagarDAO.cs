@@ -56,6 +56,9 @@ namespace Pagamento.DAO
                             Situacao = reader.GetString("Situacao"),
                             Motivo_Cancelamento = reader.IsDBNull(reader.GetOrdinal("MotivoCancelamento")) ? null : reader.GetString("MotivoCancelamento"),
 
+                            ValJuros = reader.IsDBNull(reader.GetOrdinal("ValJuros")) ? 0 : reader.GetDecimal("ValJuros"),
+                            ValMulta = reader.IsDBNull(reader.GetOrdinal("ValMulta")) ? 0 : reader.GetDecimal("ValMulta"),
+                            ValDesconto = reader.IsDBNull(reader.GetOrdinal("ValDesconto")) ? 0 : reader.GetDecimal("ValDesconto"),
                             NomeFornecedor = reader.GetString("NomeFornecedor"),
                             NomeFormaPgto = reader.IsDBNull(reader.GetOrdinal("NomeFormaPgto")) ? null : reader.GetString("NomeFormaPgto"),
 
@@ -282,6 +285,11 @@ namespace Pagamento.DAO
                             Multa = reader.IsDBNull(reader.GetOrdinal("Multa")) ? (decimal?)null : reader.GetDecimal("Multa"),
                             Desconto = reader.IsDBNull(reader.GetOrdinal("Desconto")) ? (decimal?)null : reader.GetDecimal("Desconto"),
 
+
+                            ValJuros = reader.IsDBNull(reader.GetOrdinal("ValJuros")) ? 0m : reader.GetDecimal("ValJuros"),
+                            ValMulta = reader.IsDBNull(reader.GetOrdinal("ValMulta")) ? 0m : reader.GetDecimal("ValMulta"),
+                            ValDesconto = reader.IsDBNull(reader.GetOrdinal("ValDesconto")) ? 0m : reader.GetDecimal("ValDesconto"),
+
                             DataPagamento = reader.IsDBNull(reader.GetOrdinal("DataPagamento")) ? (DateTime?)null : reader.GetDateTime("DataPagamento"),
                             ValorPago = reader.IsDBNull(reader.GetOrdinal("ValorPago")) ? (decimal?)null : reader.GetDecimal("ValorPago"),
                             IdFormaPgto = reader.IsDBNull(reader.GetOrdinal("IdFormaPgto")) ? (int?)null : reader.GetInt32("IdFormaPgto"),
@@ -313,6 +321,9 @@ namespace Pagamento.DAO
                                Juros = @Juros,
                                Multa = @Multa,
                                Desconto = @Desconto,
+                               ValJuros = @ValJuros,
+                               ValMulta = @ValMulta,
+                              ValDesconto = @ValDesconto,
                                ValorPago = @ValorPago,
                                IdFormaPgto = @IdFormaPgto
                            WHERE 
@@ -328,6 +339,10 @@ namespace Pagamento.DAO
                     cmd.Parameters.AddWithValue("@Juros", conta.Juros ?? 0.00m);
                     cmd.Parameters.AddWithValue("@Multa", conta.Multa ?? 0.00m);
                     cmd.Parameters.AddWithValue("@Desconto", conta.Desconto ?? 0.00m);
+                    cmd.Parameters.AddWithValue("@ValJuros", conta.ValJuros);
+                    cmd.Parameters.AddWithValue("@ValMulta", conta.ValMulta);
+                    cmd.Parameters.AddWithValue("@ValDesconto", conta.ValDesconto);
+
                     cmd.Parameters.AddWithValue("@ValorPago", conta.ValorPago ?? 0.00m);
                     cmd.Parameters.AddWithValue("@IdFormaPgto", conta.IdFormaPgto.HasValue ? (object)conta.IdFormaPgto.Value : (object)DBNull.Value);
 

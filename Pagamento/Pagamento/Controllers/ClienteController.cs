@@ -164,7 +164,28 @@ namespace Pagamento.Controllers
         [HttpPost, ActionName("Excluir")]
         public IActionResult ConfirmarExclusao(int id)
         {
-            _clienteDAO.Excluir(id);
+            try
+            {
+                _clienteDAO.Excluir(id);
+
+                TempData["SuccessMessage"] = "Cliente excluído com sucesso!";
+            }
+            catch (MySql.Data.MySqlClient.MySqlException ex)
+            {
+                if (ex.Number == 1451)
+                {
+                    TempData["ErrorMessage"] = "Este cliente nao pode ser excluído,pois esta sendo utilizado em outro cadastro.";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Ocorreu um erro de banco de dados ao tentar excluir o cliente.";
+                }
+            }
+            catch (Exception)
+            {
+                TempData["ErrorMessage"] = "Ocorreu um erro inesperado no sistema.";
+            }
+
             return RedirectToAction("Index");
         }
     }

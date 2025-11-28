@@ -62,7 +62,28 @@ namespace Pagamento.Controllers
         [HttpPost, ActionName("Excluir")]
         public IActionResult ConfirmarExclusao(int id)
         {
-            _marcaDAO.Excluir(id);
+            try
+            {
+                _marcaDAO.Excluir(id);
+
+                TempData["SuccessMessage"] = "Marca excluída com sucesso!";
+            }
+            catch (MySql.Data.MySqlClient.MySqlException ex)
+            {
+                if (ex.Number == 1451)
+                {
+                    TempData["ErrorMessage"] = "Este marca nao pode ser excluída,pois esta sendo utilizada em outro cadastro.";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Ocorreu um erro de banco de dados ao tentar excluir a marca.";
+                }
+            }
+            catch (Exception)
+            {
+                TempData["ErrorMessage"] = "Ocorreu um erro inesperado no sistema.";
+            }
+
             return RedirectToAction("Index");
         }
 
@@ -74,13 +95,19 @@ namespace Pagamento.Controllers
         [HttpPost]
         public IActionResult FormModal(Marca marca)
         {
+
+            if (_marcaDAO.MarcaDuplicada(marca.Descricao))
+            {
+                ModelState.AddModelError("Descricao", "Já existe uma marca com essa descrição.");
+            }
+
             if (ModelState.IsValid)
             {
                 _marcaDAO.Inserir(marca);
                 return Json(new
                 {
                     sucesso = true,
-                    marca = new { id = marca.IdMarca, nome = marca.Descricao }
+                    marca = new { id = marca.IdMarca, nome = marca.Descricao.ToUpper() }
                 });
             }
 

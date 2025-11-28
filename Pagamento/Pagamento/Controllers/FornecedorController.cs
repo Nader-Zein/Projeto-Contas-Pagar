@@ -163,7 +163,28 @@ namespace Pagamento.Controllers
         [HttpPost, ActionName("Excluir")]
         public IActionResult ConfirmarExclusao(int id)
         {
-            _fornecedorDAO.Excluir(id);
+            try
+            {
+                _fornecedorDAO.Excluir(id);
+
+                TempData["SuccessMessage"] = "Fornecedor excluído com sucesso!";
+            }
+            catch (MySql.Data.MySqlClient.MySqlException ex)
+            {
+                if (ex.Number == 1451)
+                {
+                    TempData["ErrorMessage"] = "Este fornecedor nao pode ser excluído,pois esta sendo utilizado em outro cadastro.";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Ocorreu um erro de banco de dados ao tentar excluir o fornecedor.";
+                }
+            }
+            catch (Exception)
+            {
+                TempData["ErrorMessage"] = "Ocorreu um erro inesperado no sistema.";
+            }
+
             return RedirectToAction("Index");
         }
 
@@ -197,7 +218,15 @@ namespace Pagamento.Controllers
                 {
                     ModelState.AddModelError("CPF_CNPJ", "O CPF/CNPJ é obrigatório para fornecedores brasileiros.");
                 }
+
+
+                else if (_fornecedorDAO.ExisteCpfCnpj(fornecedor.CPF_CNPJ))
+                {
+                    ModelState.AddModelError("CPF_CNPJ", "Já existe um fornecedor com este CPF ou CNPJ.");
+                }
             }
+
+
 
             if (ModelState.IsValid)
             {
@@ -208,7 +237,7 @@ namespace Pagamento.Controllers
                     fornecedor = new
                     {
                         id = fornecedor.IdPessoa,
-                        nome = fornecedor.Nome_RazaoSocial,
+                        nome = fornecedor.Nome_RazaoSocial.ToUpper(),
                         idCondPgto = fornecedor.IdCondPgto
                     }
                 });

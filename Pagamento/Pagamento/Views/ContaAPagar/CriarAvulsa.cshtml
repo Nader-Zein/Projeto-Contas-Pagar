@@ -19,17 +19,14 @@
 
 <div class="row">
     <div class="col-md-10">
-        @* 3. O formulário aponta para a Action correta com base no modo *@
         <form asp-action="@(isCriar ? "CriarAvulsa" : (isBaixar ? "Baixar" : "Cancelar"))" method="post" id="form-conta-pagar">
             @Html.AntiForgeryToken()
 
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            @* 4. Inputs hidden para os IDs e também para os campos-chave no modo "Baixar" *@
             <input type="hidden" asp-for="FornecedorId" id="FornecedorId" />
             <input type="hidden" asp-for="IdFormaPgto" id="IdFormaPgto" />
 
-            @* Se for baixa, precisamos reenviar os campos-chave *@
             @if (isBaixar || isCancelar || isDetalhes)
             {
                 <input type="hidden" asp-for="Modelo" />
@@ -42,7 +39,6 @@
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span>Dados da Conta</span>
                     <div class="form-check form-switch">
-                        @* 5. O status "Ativo" é desabilitado nos modos de baixa/cancelamento *@
                         <input asp-for="Status" class="form-check-input" type="checkbox" role="switch" disabled="@isReadOnly">
                         <label asp-for="Status" class="form-check-label">Ativo</label>
                     </div>
@@ -95,7 +91,7 @@
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label asp-for="ValorParcela" class="form-label">Valor da Parcela</label>
-                            <input asp-for="ValorParcela" class="form-control" type="number" step="0.01" id="ValorParcela" readonly="@isReadOnly" />
+                            <input asp-for="ValorParcela" class="form-control" type="text"  id="ValorParcela" readonly="@isReadOnly" />
                             <span asp-validation-for="ValorParcela" class="text-danger"></span>
                         </div>
                         <div class="col-md-6">
@@ -115,20 +111,53 @@
                     Termos e Forma de Pagamento
                 </div>
                 <div class="card-body">
-                    <div class="row mb-3">
-                        <div class="col-md-4">
-                            <label asp-for="Juros" class="form-label">Juros (%)</label>
-                            <input asp-for="Juros" class="form-control" type="number" step="0.01" placeholder="0,00" id="Juros" disabled="@(isCancelar || isDetalhes)" />
-                        </div>
-                        <div class="col-md-4">
-                            <label asp-for="Multa" class="form-label">Multa (%)</label>
-                            <input asp-for="Multa" class="form-control" type="number" step="0.01" placeholder="0,00" id="Multa" disabled="@(isCancelar || isDetalhes)" />
-                        </div>
-                        <div class="col-md-4">
-                            <label asp-for="Desconto" class="form-label">Desconto (%)</label>
-                            <input asp-for="Desconto" class="form-control" type="number" step="0.01" placeholder="0,00" id="Desconto" disabled="@(isCancelar || isDetalhes)" />
+
+                    <div class="row mb-1">
+                        <div class="col-md-12">
+                            <h6 class="text-muted">Taxas Configuradas (%)</h6>
                         </div>
                     </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label asp-for="Juros" class="form-label small">Juros (%)</label>
+                            <input asp-for="Juros" class="form-control bg-light" type="text"  placeholder="0,00" id="JurosPercentual"
+                                   readonly="@(isBaixar || isCancelar || isDetalhes)" />
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="Multa" class="form-label small">Multa (%)</label>
+                            <input asp-for="Multa" class="form-control bg-light" type="text"  placeholder="0,00" id="MultaPercentual"
+                                   readonly="@(isBaixar || isCancelar || isDetalhes)" />
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="Desconto" class="form-label small">Desconto (%)</label>
+                            <input asp-for="Desconto" class="form-control bg-light" type="text"  placeholder="0,00" id="DescontoPercentual"
+                                   readonly="@(isBaixar || isCancelar || isDetalhes)" />
+                        </div>
+                    </div>
+
+                    @if (isBaixar || isDetalhes && Model.Situacao == "PAGO")
+                    {
+                        <div class="row mb-1">
+                            <div class="col-md-12">
+                                <h6 class="text-primary">Valores Calculados (R$) - <small>Editáveis</small></h6>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label asp-for="ValJuros" class="form-label fw-bold">Valor Juros (R$)</label>
+                                <input asp-for="ValJuros" type="text" class="form-control money" oninput="somarTotalFinal()" readonly="@(isDetalhes)" />
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="ValMulta" class="form-label fw-bold">Valor Multa (R$)</label>
+                                <input asp-for="ValMulta" type="text" class="form-control money" oninput="somarTotalFinal()" readonly="@(isDetalhes)" />
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="ValDesconto" class="form-label fw-bold">Valor Desconto (R$)</label>
+                                <input asp-for="ValDesconto" type="text" class="form-control money" oninput="somarTotalFinal()" readonly="@(isDetalhes)" />
+                            </div>
+                    
+                        </div>
+                    }
 
                     <div class="row mb-3">
                         <div class="col-md-8">
@@ -327,6 +356,10 @@
 
                 </table>
 
+                <button type="button" class="btn btn-success" onclick="abrirFormNovoFornecedor()">
+                    + Cadastrar Novo Fornecedor
+                </button>
+
             </div>
 
         </div>
@@ -401,6 +434,10 @@
                     </tbody>
 
                 </table>
+
+                <button class="btn btn-success" type="button" onclick="abrirFormNovaFormaPagamento()">
+                    + Cadastrar Nova Forma
+                </button>
 
             </div>
 
@@ -499,13 +536,534 @@
     </div>
 </div>
 
+<div class="modal fade" id="modalNovoFornecedor" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content" id="modalNovoFornecedorContent">
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalNovaFormaPagamento" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" id="modalNovaFormaPagamentoContent">
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalCidadeFornecedor" tabindex="-1" aria-labelledby="modalCidadeFornecedorLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Selecionar Cidade</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="filtroCidadeFornecedor" class="form-control mb-3" placeholder="Digite para buscar..." onkeyup="filtrarTabelaCidadeFornecedor()" />
+
+                <table class="table table-bordered table-hover" id="tabelaCidadesFornecedor">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (ViewBag.CidadesItens != null)
+                        {
+                            @foreach (var cidade in ViewBag.CidadesItens as List<SelectListItem>)
+                            {
+                                <tr>
+                                    <td>@cidade.Text</td>
+                                    <td>
+                                        <button type="button" class="btn btn-sm btn-primary"
+                                                onclick="selecionarCidadeFornecedor('@cidade.Value', '@Html.Raw(System.Web.HttpUtility.JavaScriptStringEncode(cidade.Text))')">
+                                            Selecionar
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+
+                <button class="btn btn-success" type="button" onclick="abrirFormNovaCidadeFornecedor()">
+                    + Cadastrar Nova Cidade excluir
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalNovaCidadeFornecedor" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" id="modalNovaCidadeContentFornecedor">
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalCondicaoPgtoFornecedor" tabindex="-1" aria-labelledby="modalCondicaoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Selecionar Condição de Pagamento</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="filtroCondicaoFornecedor" class="form-control mb-3" placeholder="Digite para buscar..." onkeyup="filtrarTabelaCondicaoFornecedor()" />
+                <table class="table table-bordered table-hover" id="tabelaCondicoesFornecedor">
+                    <thead>
+                        <tr>
+                            <th>Descrição</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (ViewBag.CondicoesPagamentoItens != null)
+                        {
+                            @foreach (var condicao in ViewBag.CondicoesPagamentoItens as List<SelectListItem>)
+                            {
+                                <tr>
+                                    <td>@condicao.Text</td>
+                                    <td>
+                                        <button type="button" class="btn btn-sm btn-primary"
+                                                onclick="selecionarCondicaoFornecedor('@condicao.Value', '@Html.Raw(System.Web.HttpUtility.JavaScriptStringEncode(condicao.Text))')">
+                                            Selecionar
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+
+                <button class="btn btn-success" type="button" onclick="abrirFormNovaCondicaoFornecedor()">
+                    + Cadastrar Nova Condição excluir
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalNovaCondicaoFornecedor" tabindex="-1" aria-labelledby="modalNovaCondicaoLabel">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content" id="modalNovaCondicaoContentFornecedor">
+        </div>
+    </div>
+</div>
+
+
 
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 
     <script>
+        $.validator.methods.number = function (value, element) {
+            return this.optional(element) || /^-?(?:\d+|\d{1,3}(?:\.\d{3})+)(?:,\d+)?$/.test(value);
+        };
 
+        $.validator.methods.range = function (value, element, param) {
+            var globalizedValue = value.replace(".", "").replace(",", ".");
+            return this.optional(element) || (globalizedValue >= param[0] && globalizedValue <= param[1]);
+        };
+    </script>
+
+
+    <script>
+
+
+
+        function abrirFormNovaFormaPagamento() {
+            $.get('@Url.Action("FormModal", "FormaPagamento")', function (html) {
+                $('#modalNovaFormaPagamentoContent').html(html);
+                new bootstrap.Modal(document.getElementById('modalNovaFormaPagamento')).show();
+            });
+        }
+
+        $(document).on('submit', '#formCadastrarFormaPgto', function (e) {
+            e.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("FormModal", "FormaPagamento")',
+                data: $(this).serialize(),
+                success: function (response) {
+                    if (response.sucesso) {
+                        var modalEl = document.getElementById('modalNovaFormaPagamento');
+                        var modal = bootstrap.Modal.getInstance(modalEl);
+                        if (modal) modal.hide();
+
+                        const novaLinha = `
+                          <tr>
+                            <td>${response.forma.id}</td>
+                            <td>${response.forma.nome}</td>
+                            <td>
+                              <button type='button' class='btn btn-sm btn-primary'
+                                onclick='selecionarFormaPgto(${response.forma.id}, "${response.forma.nome}")'>
+                                Selecionar
+                              </button>
+                            </td>
+                          </tr>`;
+                        $('#tabelaFormasPagamento tbody').append(novaLinha);
+
+                    } else {
+                        $('#modalNovaFormaPagamentoContent').html(response);
+                    }
+                },
+                error: function () {
+                    alert("Erro ao cadastrar forma de pagamento.");
+                }
+            });
+        });
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const contentsToClean = [
+                '#modalNovoFornecedorContent',
+                '#modalNovaCidadeContentFornecedor',
+                '#modalNovaCondicaoContentFornecedor',
+                '#modalNovaFormaPagamentoContent'       
+            ];
+
+            contentsToClean.forEach(id => {
+                 const el = document.querySelector(id)?.closest('.modal');
+                 if(el) {
+                     el.addEventListener('hidden.bs.modal', function() {
+                         document.querySelector(id).innerHTML = '';
+                     });
+                 }
+            });
+        });
+
+
+        function selecionarCidadeFornecedor(id, nome) {
+            var $formAtivo = $('#modalNovoFornecedorContent');
+            $formAtivo.find('#IdCidade').val(id);
+            $formAtivo.find('#NomeCidadeSelecionada').val(nome);
+
+            var modalEl = document.getElementById('modalCidadeFornecedor');
+            var modal = bootstrap.Modal.getInstance(modalEl);
+            if (modal) modal.hide();
+        }
+
+        function abrirFormNovaCidadeFornecedor() {
+            $.get('/Cidade/FormModal', function (html) {
+                $('#modalNovaCidadeContentFornecedor').html(html);
+                new bootstrap.Modal(document.getElementById('modalNovaCidadeFornecedor')).show();
+            });
+        }
+
+        $(document).on('submit', '#formCadastrarCidade', function (e) {
+            e.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("FormModal", "Cidade")',
+                data: $(this).serialize(),
+                success: function (response) {
+                    if (response.sucesso) {
+                        bootstrap.Modal.getInstance(document.getElementById('modalNovaCidadeFornecedor')).hide();
+
+                        const novaLinha = `
+                            <tr>
+                                <td>${response.cidade.nome}</td>
+                                <td>
+                                    <button class='btn btn-sm btn-primary'
+                                        onclick='selecionarCidadeFornecedor(${response.cidade.id}, "${response.cidade.nome}")'>
+                                        Selecionar
+                                    </button>
+                                </td>
+                            </tr>`;
+                        $('#tabelaCidadesFornecedor tbody').append(novaLinha);
+
+                        selecionarCidadeFornecedor(response.cidade.id, response.cidade.nome);
+                    } else {
+                        $('#modalNovaCidadeContentFornecedor').html(response);
+                    }
+                }
+            });
+        });
+
+        function filtrarTabelaCidadeFornecedor() {
+            const filtro = $('#filtroCidadeFornecedor').val().toLowerCase();
+            $('#tabelaCidadesFornecedor tbody tr').each(function () {
+                const nome = $(this).find('td:first').text().toLowerCase();
+                $(this).toggle(nome.includes(filtro));
+            });
+        }
+
+        function selecionarCondicaoFornecedor(id, nome) {
+            var $formAtivo = $('#modalNovoFornecedorContent');
+            $formAtivo.find('#IdCondPgto').val(id);
+            $formAtivo.find('#NomeCondicaoSelecionada').val(nome);
+
+            var modalEl = document.getElementById('modalCondicaoPgtoFornecedor');
+            var modal = bootstrap.Modal.getInstance(modalEl);
+            if (modal) modal.hide();
+        }
+
+        function abrirFormNovaCondicaoFornecedor() {
+            $.get('/CondicaoPagamento/FormModal', function (html) {
+                $('#modalNovaCondicaoContentFornecedor').html(html);
+                new bootstrap.Modal(document.getElementById('modalNovaCondicaoFornecedor')).show();
+            });
+        }
+
+        function filtrarTabelaCondicaoFornecedor() {
+            const filtro = $('#filtroCondicaoFornecedor').val().toLowerCase();
+            $('#tabelaCondicoesFornecedor tbody tr').each(function () {
+                const nome = $(this).find('td:first').text().toLowerCase();
+                $(this).toggle(nome.includes(filtro));
+            });
+        }
+
+        let parcelas = [];
+
+        $(document).on('click', '#btnAdicionarParcela', function () {
+            const numeroParcela = parseInt($('#NumeroParcela').val());
+            const idForma = parseInt($('#IdFormaPgto').val());                 
+            const nomeForma = $('#NomeFormaSelecionada').val();
+            const valor = parseFloat($('#ValorPercentual').val());
+            const dias = parseInt($('#DiasAposVenda').val());
+
+            if (!numeroParcela || !idForma || !nomeForma || isNaN(valor) || isNaN(dias)) {
+                alert("Preencha todos os campos da parcela corretamente.");
+                return;
+            }
+
+            parcelas.push({
+                numeroParcela: numeroParcela,
+                idFormaPgto: idForma,
+                descricaoFormaPgto: nomeForma,
+                valorPercentual: valor,
+                diasAposVenda: dias
+            });
+
+            const linha = `
+                <tr data-numero="${numeroParcela}">
+                    <td>${numeroParcela}</td>
+                    <td>${nomeForma}</td>
+                    <td>${valor}%</td>
+                    <td>${dias} dias</td>
+                    <td><button type="button" class="btn btn-danger btn-sm removerParcela">Remover</button></td>
+                </tr>`;
+            $('#tabelaParcelas tbody').append(linha);
+
+            $('#NumeroParcela').val('');
+            $('#ValorPercentual').val('');
+            $('#DiasAposVenda').val('');
+        });
+
+        $(document).on('click', '.removerParcela', function () {
+            const tr = $(this).closest('tr');
+            const num = parseInt(tr.attr('data-numero'));
+            parcelas = parcelas.filter(p => p.numeroParcela !== num);
+            tr.remove();
+        });
+
+        $(document).on('submit', '#formCadastrarCondicaoPgto', function (e) {
+            e.preventDefault();
+
+            const formData = $(this).serializeArray();
+            formData.push({ name: "ParcelasJson", value: JSON.stringify(parcelas) });
+
+            $.ajax({
+                type: 'POST',
+                url: '/CondicaoPagamento/FormModal',
+                data: $.param(formData),
+                success: function (response) {
+                    if (response.sucesso) {
+                        var modalEl = document.getElementById('modalNovaCondicaoFornecedor');
+                        var modal = bootstrap.Modal.getInstance(modalEl);
+                        if(modal) modal.hide();
+
+                        const linha = `
+                          <tr>
+                            <td>${response.condicao.nome}</td>
+                            <td>
+                              <button type='button' class='btn btn-sm btn-primary'
+                                onclick='selecionarCondicaoFornecedor(${response.condicao.id}, "${response.condicao.nome}")'>
+                                Selecionar
+                              </button>
+                            </td>
+                          </tr>`;
+                        $('#tabelaCondicoesFornecedor tbody').append(linha);
+
+                        selecionarCondicaoFornecedor(response.condicao.id, response.condicao.nome);
+
+                        parcelas = [];
+                    } else {
+                        $('#modalNovaCondicaoContentFornecedor').html(response);
+                    }
+                },
+                error: function () {
+                    alert("Erro ao cadastrar condição.");
+                }
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const contentsToClean = ['#modalNovaCidadeContentFornecedor', '#modalNovaCondicaoContentFornecedor'];
+            contentsToClean.forEach(id => {
+                 const el = document.querySelector(id)?.closest('.modal');
+                 if(el) {
+                     el.addEventListener('hidden.bs.modal', function() {
+                         document.querySelector(id).innerHTML = '';
+                     });
+                 }
+            });
+        });
+
+
+
+        function abrirFormNovoFornecedor() {
+            $.get('@Url.Action("FormModal", "Fornecedor")', function (data) {
+                $('#modalNovoFornecedorContent').html(data);
+                var modal = new bootstrap.Modal(document.getElementById('modalNovoFornecedor'));
+                modal.show();
+            });
+        }
+
+        $(document).on('submit', '#formCadastrarFornecedor', function (e) {
+            e.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("FormModal", "Fornecedor")',         
+                data: $(this).serialize(),
+                success: function (response) {
+                    if (response.sucesso) {
+                        var modalEl = document.getElementById('modalNovoFornecedor');
+                        var modal = bootstrap.Modal.getInstance(modalEl);
+                        if (modal) modal.hide();
+
+                        var novaLinha = `
+                            <tr>
+                                <td>${response.fornecedor.id}</td>
+                                <td>${response.fornecedor.nome}</td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-primary"
+                                        onclick="selecionarFornecedor(${response.fornecedor.id}, '${response.fornecedor.nome}')">
+                                        Selecionar
+                                    </button>
+                                </td>
+                            </tr>`;
+                        $('#tabelaFornecedores tbody').append(novaLinha);
+
+                    } else {
+                        $('#modalNovoFornecedorContent').html(response);
+                    }
+                },
+                error: function () {
+                    alert("Erro ao processar o cadastro do fornecedor.");
+                }
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var modalNovoFornecedor = document.getElementById('modalNovoFornecedor');
+            if (modalNovoFornecedor) {
+                modalNovoFornecedor.addEventListener('hidden.bs.modal', function () {
+                    document.getElementById('modalNovoFornecedorContent').innerHTML = '';
+                });
+            }
+        });
+
+
+        function calcularValoresIniciais() {
+            if (modo !== "Baixar" && modo !== "Detalhes") return;
+
+            const valorParcelaInput = document.getElementById('ValorParcela');
+            const valorBase = parseValor(valorParcelaInput.value);
+
+            const jurosPercent = parseValor(document.getElementById('JurosPercentual').value);
+            const multaPercent = parseValor(document.getElementById('MultaPercentual').value);
+            const descontoPercent = parseValor(document.getElementById('DescontoPercentual').value);
+
+            const dataPagamentoInput = document.getElementById('DataPagamento');
+            const dataVencimentoInput = document.getElementById('DataVencimento');
+
+            let valJuros = 0;
+            let valMulta = 0;
+            let valDesconto = 0;
+
+            if (dataPagamentoInput.value && dataVencimentoInput.value) {
+                const dataPag = new Date(dataPagamentoInput.value + 'T00:00:00');
+                const dataVenc = new Date(dataVencimentoInput.value + 'T00:00:00');
+
+                if (dataPag > dataVenc) {
+                    valMulta = valorBase * (multaPercent / 100);
+
+                    const diffTime = dataPag - dataVenc;
+                    const diasDeAtraso = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    const valorJurosPorDia = (valorBase * (jurosPercent / 100));     
+                    valJuros = valorJurosPorDia * diasDeAtraso;
+
+                    valDesconto = 0;
+
+                } else {
+                    valDesconto = valorBase * (descontoPercent / 100);
+
+                    valJuros = 0;
+                    valMulta = 0;
+                }
+            }
+
+            document.getElementById('ValJuros').value = valJuros.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            document.getElementById('ValMulta').value = valMulta.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            document.getElementById('ValDesconto').value = valDesconto.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+           if (modo === "Baixar") {
+            somarTotalFinal();
+            }
+        }
+
+        function somarTotalFinal() {
+            const valorParcelaInput = document.getElementById('ValorParcela');
+            const valorBase = parseValor(valorParcelaInput.value);
+
+            const vJuros = parseValor(document.getElementById('ValJuros').value);
+            const vMulta = parseValor(document.getElementById('ValMulta').value);
+            const vDesconto = parseValor(document.getElementById('ValDesconto').value);
+
+            let total = valorBase + vJuros + vMulta - vDesconto;
+
+            if (total < 0) total = 0;
+
+            const valorPagoDisplayInput = document.getElementById('ValorPagoDisplay');
+            const valorPagoHiddenInput = document.getElementById('ValorPagoHidden');
+
+            if (valorPagoDisplayInput && valorPagoHiddenInput) {
+                valorPagoDisplayInput.value = formatarMoeda(total);
+                valorPagoHiddenInput.value = total.toLocaleString('pt-BR', { minimumFractionDigits: 2, useGrouping: false });
+            }
+        }
+
+
+     
+
+        document.addEventListener('DOMContentLoaded', function () {
+            if (modo === "Baixar" || modo === "Detalhes") {
+                const dataPagamentoInput = document.getElementById('DataPagamento');
+
+                if (modo === "Baixar" && dataPagamentoInput && !dataPagamentoInput.value) {
+                    const todayString = new Date().toISOString().split('T')[0];
+                    dataPagamentoInput.value = todayString;
+                }
+
+                if (dataPagamentoInput) {
+                    dataPagamentoInput.addEventListener('change', calcularValoresIniciais);
+                    dataPagamentoInput.addEventListener('blur', function() {
+                         calcularValoresIniciais();
+                    });
+                }
+
+                document.getElementById('ValJuros').addEventListener('input', somarTotalFinal);
+                document.getElementById('ValMulta').addEventListener('input', somarTotalFinal);
+                document.getElementById('ValDesconto').addEventListener('input', somarTotalFinal);
+
+                if (modo === "Baixar") {
+                calcularValoresIniciais();
+                }
+            }
+        });
 
         async function verificarDuplicidadeContaAvulsa() {
             const modeloInput = document.getElementById('Modelo');

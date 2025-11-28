@@ -506,6 +506,13 @@
                 return;
             }
 
+            let totalAtual = parcelas.reduce((sum, p) => sum + p.valorPercentual, 0);
+
+            if (totalAtual + valor > 100) {
+                alert("A soma das parcelas não pode ultrapassar 100%. Total atual: " + totalAtual + "%. Restante permitido: " + (100 - totalAtual) + "%.");
+                return;
+            }
+
             if (parcelas.some(p => p.numeroParcela === numeroParcela)) {
                 alert("Já existe uma parcela com esse número.");
                 return;
@@ -548,6 +555,13 @@
         $(document).on('submit', '#formCadastrarCondicaoPgto', function (e) {
             e.preventDefault();
 
+            var totalPercentual = parcelas.reduce((soma, p) => soma + (parseFloat(p.valorPercentual) || 0), 0);
+
+            if (Math.abs(totalPercentual - 100) > 0.001) {
+                alert("A soma das parcelas deve ser exatamente 100%. Total atual: " + totalPercentual.toFixed(2) + "%");
+                return;           
+            }
+
             const formData = $(this).serializeArray();
             formData.push({ name: "ParcelasJson", value: JSON.stringify(parcelas) });
 
@@ -573,6 +587,7 @@
 
                         $('#IdCondPgto').val(response.condicao.id);
                         $('#NomeCondicaoSelecionada').val(response.condicao.nome);
+                        parcelas = [];
                     } else {
                         $('#modalNovaCondicaoContent').html(response);
                     }

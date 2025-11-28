@@ -63,7 +63,28 @@ namespace Pagamento.Controllers
         [HttpPost, ActionName("Excluir")]
         public IActionResult ConfirmarExclusao(int id)
         {
-            _categoriaDAO.Excluir(id);
+            try
+            {
+                _categoriaDAO.Excluir(id);
+
+                TempData["SuccessMessage"] = "Categoria excluída com sucesso!";
+            }
+            catch (MySql.Data.MySqlClient.MySqlException ex)
+            {
+                if (ex.Number == 1451)
+                {
+                    TempData["ErrorMessage"] = "Esta categoria nao pode ser excluída,pois esta sendo utilizada em outro cadastro.";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Ocorreu um erro de banco de dados ao tentar excluir a categoria.";
+                }
+            }
+            catch (Exception)
+            {
+                TempData["ErrorMessage"] = "Ocorreu um erro inesperado no sistema.";
+            }
+
             return RedirectToAction("Index");
         }
 
@@ -75,13 +96,17 @@ namespace Pagamento.Controllers
         [HttpPost]
         public IActionResult FormModal(Categoria categoria)
         {
+            if (_categoriaDAO.ExisteCategoriao(categoria.Descricao))
+            {
+                ModelState.AddModelError("Descricao", "Esta categoria já está cadastrada!");
+            }
             if (ModelState.IsValid)
             {
                 _categoriaDAO.Inserir(categoria);
                 return Json(new
                 {
                     sucesso = true,
-                    categoria = new { id = categoria.IdCategoria, nome = categoria.Descricao }
+                    categoria = new { id = categoria.IdCategoria, nome = categoria.Descricao.ToUpper() }
                 });
             }
 

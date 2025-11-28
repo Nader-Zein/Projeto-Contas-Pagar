@@ -7,6 +7,14 @@
 <div class="text-center">
     <h1 class="display-4">Países</h1>
 
+  
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success" role="alert">
+            @TempData["SuccessMessage"]
+        </div>
+    }
     <div class="d-flex justify-content-start mb-3">
         <a asp-controller="Pais" asp-action="Criar" class="btn btn-primary">Criar</a>
     </div>
@@ -54,3 +62,36 @@
         </tbody>
     </table>
 </div>
+<div class="modal fade" id="modalErro" tabindex="-1" aria-labelledby="modalErroLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalErroLabel">Atenção!</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="mensagemErroModal"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+
+            const mensagemErro = '@Html.Raw(TempData["ErrorMessage"])';
+
+            if (mensagemErro) {
+                document.getElementById('mensagemErroModal').innerHTML = mensagemErro;
+
+                const modalErroElement = document.getElementById('modalErro');
+                const modal = new bootstrap.Modal(modalErroElement);
+                modal.show();
+            }
+        });
+    </script>
+}

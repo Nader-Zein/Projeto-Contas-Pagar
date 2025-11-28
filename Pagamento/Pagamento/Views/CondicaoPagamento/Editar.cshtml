@@ -243,6 +243,13 @@
                 return;
             }
 
+            let totalAtual = parcelas.reduce((sum, p) => sum + p.valorPercentual, 0);
+
+            if (totalAtual + valor > 100) {
+                alert("A soma das parcelas não pode ultrapassar 100%. Total atual: " + totalAtual + "%. Restante permitido: " + (100 - totalAtual) + "%.");
+                return;
+            }
+
             if (parcelas.some(p => p.numeroParcela === numeroParcela)) {
                 alert("Número de parcela já utilizado.");
                 return;
@@ -262,6 +269,7 @@
 
             let tbody = document.querySelector("#tabelaParcelas tbody");
             tbody.insertAdjacentHTML("beforeend", novaLinha);
+
             tbody.querySelectorAll(".removerParcela").forEach(btn => {
                 btn.onclick = function () {
                     let tr = this.closest("tr");
@@ -277,6 +285,15 @@
         });
 
         document.querySelector("form").addEventListener("submit", function () {
+
+            let total = parcelas.reduce((sum, p) => sum + p.valorPercentual, 0);
+
+            if (total !== 100) {
+                e.preventDefault();           
+                alert("A soma das porcentagens das parcelas deve ser exatamente 100%. Total atual: " + total + "%.");
+                return;
+            }
+
             const input = document.createElement("input");
             input.type = "hidden";
             input.name = "ParcelasJson";

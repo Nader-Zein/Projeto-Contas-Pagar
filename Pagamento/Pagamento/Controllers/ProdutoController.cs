@@ -181,7 +181,28 @@ namespace Pagamento.Controllers
         [HttpPost, ActionName("Excluir")]
         public IActionResult ConfirmarExclusao(int id)
         {
-            _produtoDAO.Excluir(id);
+            try
+            {
+                _produtoDAO.Excluir(id);
+
+                TempData["SuccessMessage"] = "Produto excluído com sucesso!";
+            }
+            catch (MySql.Data.MySqlClient.MySqlException ex)
+            {
+                if (ex.Number == 1451)
+                {
+                    TempData["ErrorMessage"] = "Este produto nao pode ser excluído,pois esta sendo utilizado em outro cadastro.";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Ocorreu um erro de banco de dados ao tentar excluir o produto.";
+                }
+            }
+            catch (Exception)
+            {
+                TempData["ErrorMessage"] = "Ocorreu um erro inesperado no sistema.";
+            }
+
             return RedirectToAction("Index");
         }
 
@@ -250,7 +271,7 @@ namespace Pagamento.Controllers
                     produto = new
                     {
                         id = produto.IdProduto,
-                        nome = produto.Descricao,
+                        nome = produto.Descricao.ToUpper(),
                         unidade = _unidadeMedidaDAO.BuscarPorId(produto.UnidadeMedidaId)?.Descricao
                     }
                 });

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Pagamento.DAO;
 using Pagamento.Models;
+using static Org.BouncyCastle.Bcpg.Attr.ImageAttrib;
 
 namespace Pagamento.Controllers
 {
@@ -65,9 +66,31 @@ namespace Pagamento.Controllers
         [HttpPost]
         public IActionResult Excluir(FormaPagamento forma)
         {
-            _dao.Excluir(forma.IdFormaPgto);
+            try
+            {
+                _dao.Excluir(forma.IdFormaPgto);
+
+                TempData["SuccessMessage"] = "Forma de pagamento excluída com sucesso!";
+            }
+            catch (MySql.Data.MySqlClient.MySqlException ex)
+            {
+                if (ex.Number == 1451)
+                {
+                    TempData["ErrorMessage"] = "Esta forma de pagamento nao pode ser excluída,pois esta sendo utilizada em outro cadastro.";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Ocorreu um erro de banco de dados ao tentar excluir a forma de pagamento.";
+                }
+            }
+            catch (Exception)
+            {
+                TempData["ErrorMessage"] = "Ocorreu um erro inesperado no sistema.";
+            }
+
             return RedirectToAction("FormaPagamento");
         }
+        
 
         public IActionResult FormModal()
         {
@@ -77,13 +100,19 @@ namespace Pagamento.Controllers
         [HttpPost]
         public IActionResult FormModal(FormaPagamento forma)
         {
+
+            if (_dao.ExisteForma(forma.Descricao))
+            {
+                ModelState.AddModelError("Descricao", "Esta forma de pagamento já está cadastrada!");
+            }
+
             if (ModelState.IsValid)
             {
                 _dao.Inserir(forma);
                 return Json(new
                 {
                     sucesso = true,
-                    forma = new { id = forma.IdFormaPgto, nome = forma.Descricao }
+                    forma = new { id = forma.IdFormaPgto, nome = forma.Descricao.ToUpper() }
                 });
             }
 

@@ -63,7 +63,28 @@ namespace Pagamento.Controllers
         [HttpPost, ActionName("Excluir")]
         public IActionResult ConfirmarExclusao(int id)
         {
-            _unidadeDAO.Excluir(id);
+            try
+            {
+                _unidadeDAO.Excluir(id);
+
+                TempData["SuccessMessage"] = "Unidade de medida excluída com sucesso!";
+            }
+            catch (MySql.Data.MySqlClient.MySqlException ex)
+            {
+                if (ex.Number == 1451)
+                {
+                    TempData["ErrorMessage"] = "Este unidade de medida nao pode ser excluída,pois esta sendo utilizada em outro cadastro.";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Ocorreu um erro de banco de dados ao tentar excluir a unidade de medida.";
+                }
+            }
+            catch (Exception)
+            {
+                TempData["ErrorMessage"] = "Ocorreu um erro inesperado no sistema.";
+            }
+
             return RedirectToAction("Index");
         }
 
@@ -75,13 +96,19 @@ namespace Pagamento.Controllers
         [HttpPost]
         public IActionResult FormModal(UnidadeMedida unidade)
         {
+
+
+            if (_unidadeDAO.UnidadeDuplicada(unidade.Descricao))
+            {
+                ModelState.AddModelError("Descricao", "Já existe uma unidade de medida com essa descrição.");
+            }
             if (ModelState.IsValid)
             {
                 _unidadeDAO.Inserir(unidade);
                 return Json(new
                 {
                     sucesso = true,
-                    unidade = new { id = unidade.IdUnidadeMedida, nome = unidade.Descricao }
+                    unidade = new { id = unidade.IdUnidadeMedida, nome = unidade.Descricao.ToUpper() }
                 });
             }
 

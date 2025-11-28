@@ -123,7 +123,6 @@
                 <textarea asp-for="Observacoes" class="form-control"></textarea>
             </div>
 
-            <!-- Campos de data somente informativos no modal -->
             <div class="col-md-4 mb-3">
                 <label class="form-label">Data de Criação</label>
                 <input type="text" class="form-control" value="@Model.DataCriacao.ToString("dd/MM/yyyy HH:mm")" readonly />
@@ -141,195 +140,20 @@
         </div>
     </form>
 
-    <!-- ====== Mesmas janelas auxiliares de seleção (Marca/Unidade/Categoria/Fornecedor) ====== -->
-    <!-- Copiadas da view principal, mantendo IDs para reutilizar o mesmo script -->
-    @* Seletores *@
-    @* <div class="modal fade" id="modalMarcaSelecionar" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Selecionar Marca</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-                </div>
-                <div class="modal-body">
-                    <input type="text" id="filtroMarca" class="form-control mb-2" placeholder="Buscar..." onkeyup="filtrarTabelaMarca()" />
-                    <table class="table table-bordered" id="tabelaMarcas">
-                        <thead>
-                            <tr>
-                                <th>Nome</th>
-                                <th>Ação</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var marca in ViewBag.Marcas as List<SelectListItem>)
-                            {
-                                <tr>
-                                    <td>@marca.Text</td>
-                                    <td>
-                                        <button type="button" class="btn btn-sm btn-primary"
-                                                onclick="selecionarMarca(@marca.Value, '@marca.Text')">
-                                            Selecionar
-                                        </button>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                    <hr />
-                    <button class="btn btn-success" type="button" onclick="abrirFormMarca()">+ Cadastrar nova Marca</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="modalUnidadeSelecionar" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Selecionar Unidade de Medida</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-                </div>
-                <div class="modal-body">
-                    <input type="text" id="filtroUnidade" class="form-control mb-2" placeholder="Buscar..." onkeyup="filtrarTabelaUnidade()" />
-                    <table class="table table-bordered" id="tabelaUnidades">
-                        <thead>
-                            <tr>
-                                <th>Nome</th>
-                                <th>Ação</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var unidade in ViewBag.Unidades as List<SelectListItem>)
-                            {
-                                <tr>
-                                    <td>@unidade.Text</td>
-                                    <td>
-                                        <button type="button" class="btn btn-sm btn-primary"
-                                                onclick="selecionarUnidade(@unidade.Value, '@unidade.Text')">
-                                            Selecionar
-                                        </button>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                    <hr />
-                    <button class="btn btn-success" type="button" onclick="abrirFormUnidade()">+ Cadastrar nova Unidade</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="modalCategoriaSelecionar" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Selecionar Categoria</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-                </div>
-                <div class="modal-body">
-                    <input type="text" id="filtroCategoria" class="form-control mb-2" placeholder="Buscar..." onkeyup="filtrarTabelaCategoria()" />
-                    <table class="table table-bordered" id="tabelaCategorias">
-                        <thead>
-                            <tr>
-                                <th>Nome</th>
-                                <th>Ação</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var categoria in ViewBag.Categorias as List<SelectListItem>)
-                            {
-                                <tr>
-                                    <td>@categoria.Text</td>
-                                    <td>
-                                        <button type="button" class="btn btn-sm btn-primary"
-                                                onclick="selecionarCategoria(@categoria.Value, '@categoria.Text')">
-                                            Selecionar
-                                        </button>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                    <hr />
-                    <button class="btn btn-success" type="button" onclick="abrirFormCategoria()">+ Cadastrar nova Categoria</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="modalFornecedorSelecionarProduto" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-
-                <div class="modal-header">
-                    <h5 class="modal-title">Selecionar Fornecedores</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-                </div>
-
-                <div class="modal-body">
-                    <input type="text" id="filtroFornecedorProduto" class="form-control mb-2" placeholder="Buscar..." onkeyup="filtrarTabelaFornecedorProduto()" />
-
-                    <table class="table table-bordered" id="tabelaFornecedoresProduto">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th>Nome</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var t in ViewBag.Fornecedores as List<SelectListItem>)
-                            {
-                                <tr>
-                                    <td>
-                                        <input type="checkbox" class="chk-fornecedor" value="@t.Value" data-nome="@t.Text" />
-                                    </td>
-                                    <td>@t.Text</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-
-                    <h6 class="mt-3">Fornecedores Selecionados:</h6>
-                    <ul id="listaFornecedoresSelecionados"></ul>
-
-                    <hr />
-                    <button class="btn btn-success" type="button" onclick="abrirFormNovoFornecedorProduto()">+ Cadastrar novo Fornecedor</button>
-                </div>
-            </div>
-        </div>
-    </div> *@
-
-    @* Sub-modais reais de criação (conteúdo carregado via AJAX, mesmo padrão do projeto) *@
-    @* <div class="modal fade" id="modalMarca" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog"><div class="modal-content" id="modalMarcaContent"></div></div>
-    </div>
-    <div class="modal fade" id="modalUnidade" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog"><div class="modal-content" id="modalUnidadeContent"></div></div>
-    </div>
-    <div class="modal fade" id="modalCategoria" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog"><div class="modal-content" id="modalCategoriaContent"></div></div>
-    </div>
-    <div class="modal fade" id="modalFornecedorProduto" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-xl"><div class="modal-content" id="modalFornecedorProdutoContent"></div></div>
-    </div> *@
+   
 </div>
 
 <script>
-    // =================================================================================
-    // SCRIPTS ESPECÍFICOS PARA O MODAL DE CADASTRO DE PRODUTO
-    // =================================================================================
-
-    // ALTERAÇÃO 5: A função para abrir o form de fornecedor agora tem um nome único
+               
     function abrirFormNovoFornecedorProduto() {
-        // Opcional: Esconde o modal de seleção para evitar problemas de sobreposição
+                              
         var selectionModal = bootstrap.Modal.getInstance(document.getElementById('modalFornecedorSelecionarProduto'));
         if (selectionModal) {
             selectionModal.hide();
         }
 
         $.get('@Url.Action("FormModal", "Fornecedor")', function (data) {
-            // Alvo nos novos IDs únicos
+                      
             $('#modalFornecedorProdutoContent').html(data);
             var modal = new bootstrap.Modal(document.getElementById('modalFornecedorProduto'));
             modal.show();
