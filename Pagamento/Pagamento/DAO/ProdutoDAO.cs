@@ -29,10 +29,10 @@ namespace Pagamento.DAO
                         MarcaId = reader.GetInt32("MarcaId"),
                         UnidadeMedidaId = reader.GetInt32("UnidadeMedidaId"),
                         CategoriaId = reader.GetInt32("CategoriaId"),
-                        ValorCompra = reader.GetDecimal("ValorCompra"),
                         ValorVenda = reader.GetDecimal("ValorVenda"),
                         Quantidade = reader.GetInt32("Quantidade"),
-                        PrecoMedioCusto = reader.GetDecimal("PrecoMedioCusto"), 
+                        CustoMedio = reader.GetDecimal("CustoMedio"), 
+                        CustoUltimaCompra = reader.GetDecimal("CustoUltimaCompra"), 
                         QuantidadeMinima = reader.GetInt32("QuantidadeMinima"),
                         PercentualLucro = reader.GetDecimal("PercentualLucro"),
                         Observacoes = reader.IsDBNull(reader.GetOrdinal("Observacoes")) ? null : reader.GetString("Observacoes"),
@@ -79,11 +79,11 @@ namespace Pagamento.DAO
             {
                 conexao.Open();
                 string sql = @"INSERT INTO Produto 
-                    (Descricao, Codigo_Barras, Referencia, MarcaId, UnidadeMedidaId, CategoriaId, ValorCompra, ValorVenda, 
-                    Quantidade, QuantidadeMinima, PercentualLucro, Observacoes,PrecoMedioCusto, Status, DataCriacao) 
+                    (Descricao, Codigo_Barras, Referencia, MarcaId, UnidadeMedidaId, CategoriaId, ValorVenda, 
+                    Quantidade, QuantidadeMinima, PercentualLucro, Observacoes,CustoMedio,CustoUltimaCompra, Status, DataCriacao) 
                     VALUES 
-                    (@Descricao, @Codigo_Barras, @Referencia, @MarcaId, @UnidadeMedidaId, @CategoriaId, @ValorCompra, 
-                    @ValorVenda, @Quantidade, @QuantidadeMinima, @PercentualLucro, @Observacoes,@PrecoMedioCusto, @Status, @DataCriacao)";
+                    (@Descricao, @Codigo_Barras, @Referencia, @MarcaId, @UnidadeMedidaId, @CategoriaId, 
+                    @ValorVenda, @Quantidade, @QuantidadeMinima, @PercentualLucro, @Observacoes,@CustoMedio,@CustoUltimaCompra, @Status, @DataCriacao)";
 
                 var cmd = new MySqlCommand(sql, conexao);
                 cmd.Parameters.AddWithValue("@Descricao", produto.Descricao.ToUpper());
@@ -92,10 +92,10 @@ namespace Pagamento.DAO
                 cmd.Parameters.AddWithValue("@MarcaId", produto.MarcaId);
                 cmd.Parameters.AddWithValue("@UnidadeMedidaId", produto.UnidadeMedidaId);
                 cmd.Parameters.AddWithValue("@CategoriaId", produto.CategoriaId);
-                cmd.Parameters.AddWithValue("@ValorCompra", 0.00);
                 cmd.Parameters.AddWithValue("@ValorVenda", produto.ValorVenda);
                 cmd.Parameters.AddWithValue("@Quantidade", 0);
-                cmd.Parameters.AddWithValue("@PrecoMedioCusto", 0.00); 
+                cmd.Parameters.AddWithValue("@CustoMedio", 0.00); 
+                cmd.Parameters.AddWithValue("@CustoUltimaCompra", 0.00);
                 cmd.Parameters.AddWithValue("@QuantidadeMinima", produto.QuantidadeMinima);
                 cmd.Parameters.AddWithValue("@PercentualLucro", produto.PercentualLucro);
                 cmd.Parameters.AddWithValue("@Observacoes", string.IsNullOrEmpty(produto.Observacoes) ? DBNull.Value : produto.Observacoes.ToUpper());
@@ -129,10 +129,10 @@ namespace Pagamento.DAO
                         MarcaId = reader.GetInt32("MarcaId"),
                         UnidadeMedidaId = reader.GetInt32("UnidadeMedidaId"),
                         CategoriaId = reader.GetInt32("CategoriaId"),
-                        ValorCompra = reader.GetDecimal("ValorCompra"),
                         ValorVenda = reader.GetDecimal("ValorVenda"),
                         Quantidade = reader.GetInt32("Quantidade"),
-                        PrecoMedioCusto = reader.GetDecimal("PrecoMedioCusto"), 
+                        CustoMedio = reader.GetDecimal("CustoMedio"), 
+                        CustoUltimaCompra = reader.GetDecimal("CustoUltimaCompra"), 
                         QuantidadeMinima = reader.GetInt32("QuantidadeMinima"),
                         PercentualLucro = reader.GetDecimal("PercentualLucro"),
                         Observacoes = reader.IsDBNull(reader.GetOrdinal("Observacoes")) ? null : reader.GetString("Observacoes"),
@@ -153,6 +153,7 @@ namespace Pagamento.DAO
             using (var conexao = new MySqlConnection(connectionString))
             {
                 conexao.Open();
+                
                 string sql = @"
                                 SELECT
                                     p.IdProduto,
@@ -161,17 +162,21 @@ namespace Pagamento.DAO
                                 FROM Produto p
                                 JOIN vw_produto_marca_unidade v ON p.IdProduto = v.IdProduto
                                 WHERE p.IdProduto = @Id";
+                
                 var cmd = new MySqlCommand(sql, conexao);
                 cmd.Parameters.AddWithValue("@Id", id);
                 var reader = cmd.ExecuteReader();
 
                 if (reader.Read())
                 {
+                    
                     return new Produto
                     {
                         IdProduto = reader.GetInt32("IdProduto"),
                         Descricao = reader.GetString("Descricao"),
                         NomeUnidade = reader.GetString("NomeUnidade"),
+                        
+                        
                     };
                 }
             }
@@ -184,9 +189,14 @@ namespace Pagamento.DAO
                 conexao.Open();
                 string sql = @"UPDATE Produto 
                     SET Descricao = @Descricao, Codigo_Barras = @Codigo_Barras, Referencia = @Referencia, 
-                        MarcaId = @MarcaId, UnidadeMedidaId = @UnidadeMedidaId, CategoriaId = @CategoriaId, ValorCompra = @ValorCompra, 
-                        ValorVenda = @ValorVenda, Quantidade = @Quantidade, QuantidadeMinima = @QuantidadeMinima, 
-                        PercentualLucro = @PercentualLucro, Observacoes = @Observacoes, Status = @Status, 
+                        MarcaId = @MarcaId, UnidadeMedidaId = @UnidadeMedidaId, CategoriaId = @CategoriaId,  
+                        ValorVenda = @ValorVenda,  QuantidadeMinima = @QuantidadeMinima, 
+                         Observacoes = @Observacoes, Status = @Status,
+                        PercentualLucro   = CASE
+                           WHEN COALESCE(CustoMedio,0) > 0 AND @ValorVenda > 0
+                                THEN ROUND((@ValorVenda / CustoMedio - 1) * 100, 2)
+                           ELSE 0
+                        END,
                         DataEdicao = @DataEdicao 
                     WHERE IdProduto = @Id";
 
@@ -197,11 +207,8 @@ namespace Pagamento.DAO
                 cmd.Parameters.AddWithValue("@MarcaId", produto.MarcaId);
                 cmd.Parameters.AddWithValue("@UnidadeMedidaId", produto.UnidadeMedidaId);
                 cmd.Parameters.AddWithValue("@CategoriaId", produto.CategoriaId);
-                cmd.Parameters.AddWithValue("@ValorCompra", produto.ValorCompra);
                 cmd.Parameters.AddWithValue("@ValorVenda", produto.ValorVenda);
-                cmd.Parameters.AddWithValue("@Quantidade", produto.Quantidade);
                 cmd.Parameters.AddWithValue("@QuantidadeMinima", produto.QuantidadeMinima);
-                cmd.Parameters.AddWithValue("@PercentualLucro", produto.PercentualLucro);
                 cmd.Parameters.AddWithValue("@Observacoes", string.IsNullOrEmpty(produto.Observacoes) ? DBNull.Value : produto.Observacoes.ToUpper());
                 cmd.Parameters.AddWithValue("@Status", produto.Status);
                 cmd.Parameters.AddWithValue("@DataEdicao", DateTime.Now);
@@ -274,22 +281,49 @@ namespace Pagamento.DAO
             }
         }
 
-        public void AtualizarEstoqueECusto(int idProduto, int novaQuantidadeTotal, decimal novoPrecoMedioCusto)
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+
+        
+        
+        
+        
+
+        
+        
+        
+
+        public void AtualizarEstoqueECusto(int idProduto, int novaQuantidadeTotal, decimal novoCustoMedio,decimal novoCustoUltimaCompra)
         {
             using (var conexao = new MySqlConnection(connectionString))
             {
                 conexao.Open();
-                string sql = @"UPDATE Produto SET
-                        Quantidade = @Quantidade,
-                        PrecoMedioCusto = @PrecoMedioCusto
-                       WHERE 
-                        IdProduto = @IdProduto";
+                const string sql = @"
+                                UPDATE Produto
+                                SET
+                                    Quantidade       = @Quantidade,
+                                    CustoMedio  = @CustoMedio,
+                                    CustoUltimaCompra  = @CustoUltimaCompra,
+                                    PercentualLucro  = CASE
+                                        WHEN @CustoMedio > 0 AND ValorVenda > 0
+                                            THEN ROUND(((ValorVenda / @CustoMedio) - 1) * 100, 2)
+                                        ELSE 0
+                                    END
+                                WHERE IdProduto = @IdProduto;";
 
-                var cmd = new MySqlCommand(sql, conexao);
+                using var cmd = new MySqlCommand(sql, conexao);
                 cmd.Parameters.AddWithValue("@Quantidade", novaQuantidadeTotal);
-                cmd.Parameters.AddWithValue("@PrecoMedioCusto", novoPrecoMedioCusto);
+                cmd.Parameters.AddWithValue("@CustoMedio", novoCustoMedio);
+                cmd.Parameters.AddWithValue("@CustoUltimaCompra", novoCustoUltimaCompra);
                 cmd.Parameters.AddWithValue("@IdProduto", idProduto);
-
                 cmd.ExecuteNonQuery();
             }
         }

@@ -15,34 +15,42 @@
             <label class="form-check-label" asp-for="Status">Ativo</label>
         </div>
     </div>
-    <div class="col-md-3">
-        <label asp-for="NomeCidade" class="form-label">Nome da Cidade</label>
-        <input asp-for="NomeCidade" class="form-control" required />
-        <span asp-validation-for="NomeCidade" class="text-danger"></span>
 
+    <div class="row mt-3">
+        <div class="col-md-1">
+            <label class="form-label">ID</label>
+            <input class="form-control" value="@Model.IdCidade" disabled />
+        </div>
+        <div class="col-md-3">
+            <label asp-for="NomeCidade" class="form-label">Nome da Cidade</label>
+            <input asp-for="NomeCidade" class="form-control" required />
+            <span asp-validation-for="NomeCidade" class="text-danger"></span>
+        </div>
 
-    </div>
-
-    <div class="col-md-4">
-        <label class="form-label">Estado</label>
-        <div class="input-group">
-            <input type="text" id="NomeEstadoSelecionado" class="form-control" value="@ViewBag.NomeEstado" readonly />
-            <input type="hidden" asp-for="IdEstado" id="IdEstado" />
-            <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#modalEstado">
-                Selecionar Estado
-            </button>
+        <div class="col-md-4">
+            <label class="form-label">Estado</label>
+            <div class="input-group">
+                <input type="text" id="NomeEstadoSelecionado" class="form-control" value="@ViewBag.NomeEstado" readonly />
+                <input type="hidden" asp-for="IdEstado" id="IdEstado" />
+                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#modalEstado">
+                    Selecionar Estado
+                </button>
+            </div>
         </div>
     </div>
+    
+    <div class="row mt-3">
+        <div class="col-md-2">
+            <label>Data de Criação</label>
+            <input type="text" class="form-control" value="@Model.DataCriacao.ToString("dd/MM/yyyy HH:mm")" readonly />
+        </div>
 
-    <div class="col-md-4">
-        <label>Data de Criação</label>
-        <input type="text" class="form-control" value="@Model.DataCriacao.ToString("dd/MM/yyyy HH:mm")" readonly />
+        <div class="col-md-2">
+            <label>Última Edição</label>
+            <input type="text" class="form-control" value="@(Model.DataEdicao?.ToString("dd/MM/yyyy HH:mm") ?? "Nunca editado")" readonly />
+        </div>
     </div>
-
-    <div class="col-md-4">
-        <label>Última Edição</label>
-        <input type="text" class="form-control" value="@(Model.DataEdicao?.ToString("dd/MM/yyyy HH:mm") ?? "Nunca editado")" readonly />
-    </div>
+    
 
     <div class="text-end mt-3">
         <button type="submit" class="btn btn-success">Alterar</button>

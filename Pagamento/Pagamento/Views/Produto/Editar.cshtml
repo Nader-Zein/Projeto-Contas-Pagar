@@ -81,13 +81,13 @@
             <input type="hidden" id="fornecedoresSelecionados" name="FornecedoresSelecionados" />
         </div>
         <div class="col-md-4 mb-3">
-            <label asp-for="ValorCompra" class="form-label">Valor de Compra</label>
-            <input asp-for="ValorCompra" class="form-control" type="text" disabled />
+            <label asp-for="CustoMedio" class="form-label">Custo Medio</label>
+            <input asp-for="CustoMedio" class="form-control" type="text" disabled />
         </div>
 
         <div class="col-md-4 mb-3">
             <label asp-for="PercentualLucro" class="form-label">% Lucro</label>
-            <input asp-for="PercentualLucro" class="form-control" type="text" data-val="false" />
+            <input asp-for="PercentualLucro" class="form-control" type="text" data-val="false" readonly />
         </div>
 
         <div class="col-md-4 mb-3">
@@ -95,6 +95,11 @@
             <input asp-for="ValorVenda" class="form-control" type="text" data-val="false" />
         </div>
 
+        <div class="col-md-4 mb-3">
+            <label asp-for="CustoUltimaCompra" class="form-label">Custo Ultima Compra</label>
+            <input asp-for="CustoUltimaCompra" class="form-control" type="text" data-val="false" readonly />
+
+        </div>
         <div class="col-md-4 mb-3">
             <label asp-for="Quantidade" class="form-label">Quantidade</label>
             <input asp-for="Quantidade" class="form-control" disabled />
@@ -415,6 +420,7 @@
                 <h5 class="modal-title" id="modalNovaCondicaoFornecedorLabel">Cadastrar Condição</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
             </div>
+            <!-- conteúdo via AJAX -->
         </div>
     </div>
 </div>
@@ -437,6 +443,7 @@
 
 
 
+        // guarda o último modal pai que foi fechado
         let ultimoModalPaiFechado = null;
 
         function fecharModalPaiAtual() {
@@ -456,7 +463,11 @@
           ultimoModalPaiFechado = null;
         }
 
-        
+        // wrappers para abrir os seletores (filhos)
+        // function abrirSelecaoCidadeDesdeFornecedor() {
+        //   fecharModalPaiAtual();
+        //   bootstrap.Modal.getOrCreateInstance(document.getElementById('modalCidadeFornecedor')).show();
+        // }
 
 
 
@@ -464,6 +475,7 @@
           const filho = document.getElementById('modalCidadeFornecedor');
           const pai = document.querySelector('#modalFornecedor.show, #modalNovoFornecedor.show, #modalFornecedorProduto.show');
           if (pai) {
+            // guarda o id do pai no próprio modal filho (evita variável global ficar “velha”)
             filho.dataset.parentModalId = pai.id;
             bootstrap.Modal.getInstance(pai)?.hide();
           } else {
@@ -471,7 +483,10 @@
           }
           bootstrap.Modal.getOrCreateInstance(filho).show();
         }
-        
+        // function abrirSelecaoCondicaoDesdeFornecedor() {
+        //   fecharModalPaiAtual();
+        //   bootstrap.Modal.getOrCreateInstance(document.getElementById('modalCondicaoPgtoFornecedor')).show();
+        // }
 
 
         function abrirSelecaoCondicaoDesdeFornecedor() {
@@ -486,19 +501,21 @@
           bootstrap.Modal.getOrCreateInstance(filho).show();
         }
 
+                // 2) Se o usuário fechar o modal filho SEM escolher nada, reabrimos o pai salvo
         ['modalCidadeFornecedor', 'modalCondicaoPgtoFornecedor'].forEach(id => {
           const el = document.getElementById(id);
           if (!el) return;
           el.addEventListener('hidden.bs.modal', function () {
             const parentId = el.dataset.parentModalId;
-            if (!parentId) return; 
+            if (!parentId) return; // nada para reabrir
             const pai = document.getElementById(parentId);
             if (pai) bootstrap.Modal.getOrCreateInstance(pai).show();
-            el.dataset.parentModalId = ''; 
+            el.dataset.parentModalId = ''; // limpa para não “vazar” para a próxima abertura
           });
         });
 
 
+        // intercepta cliques em botões/links que abririam os modais filhos via data-bs-*
         document.addEventListener('click', function(e){
           const t = e.target.closest('[data-bs-target="#modalCidadeFornecedor"]');
           if (t) { e.preventDefault(); abrirSelecaoCidadeDesdeFornecedor(); }
@@ -509,6 +526,7 @@
           if (t) { e.preventDefault(); abrirSelecaoCondicaoDesdeFornecedor(); }
         }, true);
 
+        //====================================================================================
             function selecionarMarca(id, nome) {
             $('#MarcaId').val(id);
             $('#NomeMarcaSelecionada').val(nome);
@@ -740,14 +758,21 @@
 
 
 
-       
+        // function selecionarCidade(id, nome) {
+        //     $('#modalFornecedorContent #IdCidade').val(id);
+        //     $('#modalFornecedorContent #NomeCidadeSelecionada').val(nome);
+        //     bootstrap.Modal.getInstance(document.getElementById('modalCidadeFornecedor')).hide();
+        // }
 
-        function selecionarCidadeFornecedor(id, nome) { 
+        function selecionarCidadeFornecedor(id, nome) { // Renomeado para clareza (opcional)
+            // Alvo específico: O contêiner onde o form do fornecedor é carregado NESTA tela
             var $formFornecedor = $('#modalFornecedorContent');
 
+            // Encontra os inputs DENTRO do contêiner
             $formFornecedor.find('#IdCidade').val(id);
             $formFornecedor.find('#NomeCidadeSelecionada').val(nome);
 
+            // Fecha o modal de SELEÇÃO de cidade (Use o ID correto do seu modal de SELEÇÃO)
             bootstrap.Modal.getInstance(document.getElementById('modalCidadeFornecedor'))?.hide();
             reabrirModalPai();
         }
@@ -792,14 +817,21 @@
             });
         }
 
-        
+        // function selecionarCondicaoFornecedor(id, nome) {
+        //     $('#modalFornecedorContent #IdCondPgto').val(id);
+        //     $('#modalFornecedorContent #NomeCondicaoSelecionada').val(nome);
+        //     bootstrap.Modal.getInstance(document.getElementById('modalCondicaoPgtoFornecedor')).hide();
+        // }
 
-        function selecionarCondicaoFornecedor(id, nome) { 
+        function selecionarCondicaoFornecedor(id, nome) { // Renomeado para clareza (opcional)
+            // Alvo específico: O contêiner onde o form do fornecedor é carregado NESTA tela
             var $formFornecedor = $('#modalFornecedorContent');
 
+            // Encontra os inputs DENTRO do contêiner
             $formFornecedor.find('#IdCondPgto').val(id);
             $formFornecedor.find('#NomeCondicaoSelecionada').val(nome);
 
+            // Fecha o modal de SELEÇÃO de condição (Use o ID correto do seu modal de SELEÇÃO)
             bootstrap.Modal.getInstance(document.getElementById('modalCondicaoPgtoFornecedor'))?.hide();
             reabrirModalPai();
         }

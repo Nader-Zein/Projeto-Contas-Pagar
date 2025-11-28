@@ -8,9 +8,6 @@ namespace Pagamento.DAO
     public class CompraDAO
     {
         private readonly string connectionString = "server=localhost;database=pagamento;user=User;password=Na@der!1234";
-
-
-
         public List<Compra> Listar()
         {
             var listaDeCompras = new List<Compra>();
@@ -20,6 +17,7 @@ namespace Pagamento.DAO
                 {
                     conexao.Open();
 
+                    
                     string sqlPrincipal = @"SELECT 
                                         c.*, 
                                         f.Nome_RazaoSocial AS NomeFornecedor 
@@ -51,6 +49,7 @@ namespace Pagamento.DAO
                     }
                     readerPrincipal.Close(); 
 
+                    
                     foreach (var compra in listaDeCompras)
                     {
                         string sqlItens = @"SELECT 
@@ -95,17 +94,22 @@ namespace Pagamento.DAO
 
         public void Inserir(Compra compra)
         {
+            
             using (MySqlConnection conexao = new MySqlConnection(connectionString))
             {
                 try
                 {
                     conexao.Open();
 
+                    var custosRateados = RatearCustosAdicionais(compra);
+
+                    
                     string sqlCompra = @"INSERT INTO Compra 
                                          (Modelo, Serie, NumeroNota, FornecedorId, DataEmissao, DataChegada, CondicaoPagamentoId, Frete, Seguro, Despesas, Status,DataCriacao) 
                                          VALUES 
                                          (@Modelo, @Serie, @NumeroNota, @FornecedorId, @DataEmissao, @DataChegada, @CondicaoPagamentoId, @Frete, @Seguro, @Despesas, @Status,@DataCriacao)";
 
+                    
                     MySqlCommand cmdCompra = new MySqlCommand(sqlCompra, conexao);
                     cmdCompra.Parameters.AddWithValue("@Modelo", compra.Modelo);
                     cmdCompra.Parameters.AddWithValue("@Serie", compra.Serie);
@@ -122,12 +126,22 @@ namespace Pagamento.DAO
 
                     cmdCompra.ExecuteNonQuery();
 
+                    
                     foreach (var item in compra.Itens)
                     {
+
+                        decimal custoRealRateado = custosRateados.TryGetValue(item.ProdutoId, out var v)
+                                                                                ? v : item.ValorUnitario;
+
+                        decimal custoAdicUnit = Math.Round(
+                            custoRealRateado - item.ValorUnitario, 2, MidpointRounding.AwayFromZero);
+                        decimal custoRealUnit = Math.Round(
+                            custoRealRateado, 2, MidpointRounding.AwayFromZero);
+
                         string sqlItem = @"INSERT INTO ItemCompra 
-                                           (CompraModelo, CompraSerie, CompraNumeroNota, CompraFornecedorId, ProdutoId, Quantidade, ValorUnitario) 
+                                           (CompraModelo, CompraSerie, CompraNumeroNota, CompraFornecedorId, ProdutoId, Quantidade, ValorUnitario, CustoAdicionalUnitario, CustoUnitarioReal) 
                                            VALUES 
-                                           (@CompraModelo, @CompraSerie, @CompraNumeroNota, @CompraFornecedorId, @ProdutoId, @Quantidade, @ValorUnitario)";
+                                           (@CompraModelo, @CompraSerie, @CompraNumeroNota, @CompraFornecedorId, @ProdutoId, @Quantidade, @ValorUnitario, @CustoAdicionalUnitario, @CustoUnitarioReal)";
 
                         MySqlCommand cmdItem = new MySqlCommand(sqlItem, conexao);
                         cmdItem.Parameters.AddWithValue("@CompraModelo", compra.Modelo);
@@ -137,10 +151,13 @@ namespace Pagamento.DAO
                         cmdItem.Parameters.AddWithValue("@ProdutoId", item.ProdutoId);
                         cmdItem.Parameters.AddWithValue("@Quantidade", item.Quantidade);
                         cmdItem.Parameters.AddWithValue("@ValorUnitario", item.ValorUnitario);
+                        cmdItem.Parameters.AddWithValue("@CustoAdicionalUnitario", Math.Round(custoRealRateado - item.ValorUnitario, 2));
+                        cmdItem.Parameters.AddWithValue("@CustoUnitarioReal", Math.Round(custoRealRateado, 2));
                         cmdItem.ExecuteNonQuery(); 
                     }
 
-                    var custosRateados = RatearCustosAdicionais(compra);
+                    
+                    
                     var produtoDAO = new ProdutoDAO(); 
                     var produtoFornecedorDAO = new ProdutoFornecedorDAO();
 
@@ -148,28 +165,28 @@ namespace Pagamento.DAO
                     {
                         if (custosRateados.TryGetValue(item.ProdutoId, out decimal custoRealRateado))
                         {
-
-
-
-                            
                             produtoFornecedorDAO.GarantirAssociacao(item.ProdutoId, compra.FornecedorId);
 
 
-                            produtoFornecedorDAO.AtualizarDadosCompra(item.ProdutoId, compra.FornecedorId, custoRealRateado, compra.DataEmissao, compra.Observacoes);
+                            
+                            produtoFornecedorDAO.AtualizarDadosCompra(item.ProdutoId, compra.FornecedorId, custoRealRateado, compra.DataEmissao);
 
+                            
                             Produto produtoAtual = produtoDAO.BuscarPorId(item.ProdutoId);
                             if (produtoAtual != null)
                             {
                                 int qtdAntiga = produtoAtual.Quantidade;
-                                decimal custoMedioAntigo = produtoAtual.PrecoMedioCusto;
+                                decimal custoMedioAntigo = produtoAtual.CustoMedio;
                                 int qtdNova = item.Quantidade;
                                 int novaQtdTotal = qtdAntiga + qtdNova;
-                                decimal novoCustoMedio = custoRealRateado;
+                                decimal novoCustoMedio = (qtdAntiga > 0)
+                                                        ? ((qtdAntiga * custoMedioAntigo) + (qtdNova * custoRealRateado)) / (qtdAntiga + qtdNova)
+                                                        : custoRealRateado;
                                 if (novaQtdTotal > 0 && qtdAntiga > 0)
                                 {
                                     novoCustoMedio = ((qtdAntiga * custoMedioAntigo) + (qtdNova * custoRealRateado)) / novaQtdTotal;
                                 }
-                                produtoDAO.AtualizarEstoqueECusto(item.ProdutoId, novaQtdTotal, novoCustoMedio);
+                                produtoDAO.AtualizarEstoqueECusto(item.ProdutoId, novaQtdTotal, novoCustoMedio, custoRealRateado);
                             }
                         }
                     }
@@ -177,11 +194,13 @@ namespace Pagamento.DAO
                 catch (Exception ex)
                 {
                     
+                    
                     throw new Exception("Ocorreu um erro durante a inserção da compra. O processo foi interrompido, mas alguns dados podem ter sido salvos. Detalhes: " + ex.Message);
                 }
             }
         }
 
+        
         private Dictionary<int, decimal> RatearCustosAdicionais(Compra compra)
         {
             decimal valorTotalItens = compra.Itens.Sum(item => item.ValorUnitario * item.Quantidade);
@@ -202,6 +221,119 @@ namespace Pagamento.DAO
             }
 
             return custosReais;
+        }
+
+        
+        
+        public bool ExisteChaveComposta(string modelo, string serie, string numeroNota, int fornecedorId)
+        {
+            using (var conexao = new MySqlConnection(connectionString))
+            {
+                conexao.Open();
+                
+                string sql = @"
+                                SELECT COUNT(*) 
+                                FROM Compra 
+                                WHERE Modelo = @Modelo 
+                                  AND Serie = @Serie 
+                                  AND NumeroNota = @NumeroNota 
+                                  AND FornecedorId = @FornecedorId";
+
+                var cmd = new MySqlCommand(sql, conexao);
+                cmd.Parameters.AddWithValue("@Modelo", modelo ?? (object)DBNull.Value); 
+                cmd.Parameters.AddWithValue("@Serie", serie ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@NumeroNota", numeroNota ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@FornecedorId", fornecedorId);
+
+                
+                var count = Convert.ToInt64(cmd.ExecuteScalar());
+
+                return count > 0; 
+            }
+            
+        }
+
+
+        
+        
+        public Compra BuscarDetalhesPorChaveComposta(string modelo, string serie, string numeroNota, int fornecedorId)
+        {
+            using (var conexao = new MySqlConnection(connectionString))
+            {
+                conexao.Open();
+
+                
+                string sql = @"
+                            SELECT 
+                                c.DataEmissao, c.DataChegada, c.Modelo, c.Serie, c.NumeroNota, 
+                                c.FornecedorId, 
+                                f.Nome_RazaoSocial AS FornecedorNome, -- Pega o nome da tabela Fornecedor
+                                c.Observacao -- Seleciona a coluna correta 'Observacao' (singular)
+                                -- Adicione outras colunas da tabela Compra se precisar exibi-las
+                                -- Ex: c.Status, c.DataCriacao
+                            FROM Compra c
+                            JOIN Fornecedor f ON c.FornecedorId = f.IdFornecedor -- JOIN CORRETO com Fornecedor
+                            WHERE c.Modelo = @Modelo 
+                              AND c.Serie = @Serie 
+                              AND c.NumeroNota = @NumeroNota 
+                              AND c.FornecedorId = @FornecedorId
+                            LIMIT 1"; 
+                                      
+
+                var cmd = new MySqlCommand(sql, conexao);
+                cmd.Parameters.AddWithValue("@Modelo", modelo ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@Serie", serie ?? (object)DBNull.Value);
+
+                
+                if (int.TryParse(numeroNota, out int numeroNotaInt))
+                {
+                    cmd.Parameters.AddWithValue("@NumeroNota", numeroNotaInt);
+                }
+                else
+                {
+                    
+                    
+                    cmd.Parameters.AddWithValue("@NumeroNota", DBNull.Value);
+                }
+                
+
+                cmd.Parameters.AddWithValue("@FornecedorId", fornecedorId);
+
+                try 
+                {
+                    var reader = cmd.ExecuteReader();
+
+                    if (reader.Read())
+                    {
+                        
+                        int numeroNotaString = reader.GetInt32("NumeroNota");       
+
+                        
+                        string observacaoLida = reader.IsDBNull(reader.GetOrdinal("Observacao")) ? null : reader.GetString("Observacao");
+
+                        return new Compra
+                        {
+                            Modelo = reader.GetString("Modelo"),
+                            Serie = reader.GetString("Serie"),
+                            NumeroNota = numeroNotaString, 
+                            FornecedorId = reader.GetInt32("FornecedorId"),
+                            DataEmissao = reader.GetDateTime("DataEmissao"),
+                            DataChegada = reader.GetDateTime("DataChegada"),
+                            NomeFornecedor = reader.GetString("FornecedorNome"), 
+                            Observacoes = observacaoLida 
+                                                         
+                        };
+                    }
+                }
+                catch (Exception ex)
+                {
+                    
+                    Console.WriteLine($"Erro em BuscarDetalhesPorChaveComposta - DB Query/Read: {ex.ToString()}"); 
+                                                                                                                   
+                    throw; 
+                }
+            }
+            return null; 
         }
     }
 }

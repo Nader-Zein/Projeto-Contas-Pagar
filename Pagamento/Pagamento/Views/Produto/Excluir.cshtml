@@ -56,8 +56,8 @@
         </div>
 
         <div class="col-md-4 mb-3">
-            <label class="form-label">Valor de Compra</label>
-            <input class="form-control" value="@Model.ValorCompra.ToString("C2")" readonly />
+            <label class="form-label">Custo Medio</label>
+            <input class="form-control" value="@Model.CustoMedio" readonly />
         </div>
 
         <div class="col-md-4 mb-3">
@@ -69,6 +69,12 @@
             <label class="form-label">Valor de Venda</label>
             <input class="form-control" value="@Model.ValorVenda.ToString("C2")" readonly />
         </div>
+
+        <div class="col-md-4 mb-3">
+            <label class="form-label">Custo Ultima Compra</label>
+            <input class="form-control" value="@Model.CustoUltimaCompra" readonly />
+        </div>
+
 
         <div class="col-md-4 mb-3">
             <label class="form-label">Quantidade</label>

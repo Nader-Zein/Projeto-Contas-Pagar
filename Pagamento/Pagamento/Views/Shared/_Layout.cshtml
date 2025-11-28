@@ -83,7 +83,35 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
     
-    
+    @* <script>
+        (function () {
+          document.addEventListener('show.bs.modal', function (e) {
+            // quantos modais já estão visíveis
+            const open = document.querySelectorAll('.modal.show').length;
+            // base do Bootstrap 5: modal=1055, backdrop=1050
+            const z = 1055 + (10 * open);
+
+            // eleva o modal atual
+            e.target.style.zIndex = z;
+
+            // eleva o backdrop recém-criado (aparece na tick seguinte)
+            setTimeout(function () {
+              const backs = document.querySelectorAll('.modal-backdrop.show');
+              const topBackdrop = backs[backs.length - 1];
+              if (topBackdrop) topBackdrop.style.zIndex = z - 5;
+            }, 0);
+          }, true);
+
+          document.addEventListener('hidden.bs.modal', function (e) {
+            // limpa estilos inline para não acumular
+            e.target.style.zIndex = '';
+            // se ainda há outro modal aberto, mantém a classe no body
+            if (document.querySelectorAll('.modal.show').length > 0) {
+              document.body.classList.add('modal-open');
+            }
+          }, true);
+        })();
+    </script> *@
 
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js" integrity="sha512-pHVGpX7F/27gaKFG2fiOKAYbmFNmfDcJARLovDqMDVcxPsnDbCKLDGQcI</em>j7J</strong>20K4VoLhurVDltAJvYcdpfhw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>

@@ -25,12 +25,13 @@ namespace Pagamento.Models
         public int UnidadeMedidaId { get; set; }
         public string? NomeUnidade { get; set; }
 
-        public decimal PrecoMedioCusto { get; set; }
+        public decimal CustoMedio { get; set; }
+        public decimal? CustoUltimaCompra { get; set; }
+
 
         public int CategoriaId { get; set; }
         public string? NomeCategoria { get; set; }
 
-        public decimal ValorCompra { get; set; }
 
         [Required(ErrorMessage = "O valor de venda é obrigatório.")]
         public decimal ValorVenda { get; set; }

@@ -231,7 +231,9 @@
 
 
 
+        //======================Marcara Telefone==================
         $(document).ready(function(){
+            // Esta máscara inteligente se adapta para telefone fixo e celular
             var maskBehavior = function (val) {
                 return val.replace(/\D/g, '').length === 11 ? '(00) 00000-0000' : '(00) 0000-00009';
             },
@@ -243,31 +245,43 @@
 
             $('#Telefone').mask(maskBehavior, options);
         });
+        //======================Marcara Telefone==================
 
+        //=====================Mascara CPF========================
 
         $(document).ready(function () {
+            // Seleciona o campo com id 'CPF' e adiciona um "ouvinte" para o evento de pressionar tecla
             $('#CPF_CNPJ').on('keypress', function (event) {
+                // 'event.which' retorna o código numérico da tecla pressionada.
+                // Os códigos para os dígitos '0' a '9' estão no intervalo de 48 a 57.
 
+                // Se o código da tecla estiver FORA desse intervalo...
                 if (event.which < 48 || event.which > 57) {
+                    // ...a ação padrão (digitar o caractere) é prevenida/cancelada.
                     event.preventDefault();
                 }
             });
         });
 
+        //=====================Mascara CPF========================
 
+         //=====================Mascara CEP========================
         $(document).ready(function () {
             var cepInput = $('#Cep');
 
+            // Impede a digitação de não-números
             cepInput.on('keypress', function (event) {
                 if (event.which < 48 || event.which > 57) {
                     event.preventDefault();
                 }
             });
 
+            // Limpa o campo caso algo seja colado
             cepInput.on('input', function () {
                 this.value = this.value.replace(/[^0-9]/g, '');
             });
         });
+         //=====================Mascara CEP========================
 
         function selecionarCidade(id, nome) {
             document.getElementById("IdCidade").value = id;

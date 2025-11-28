@@ -232,13 +232,16 @@ namespace Pagamento.Controllers
         [HttpGet]
         public IActionResult BuscarPorIdJSON(int id)
         {
+            
             var fornecedor = _fornecedorDAO.BuscarPorId(id);
 
+            
             if (fornecedor == null)
             {
                 return NotFound(new { mensagem = "Fornecedor não encontrado com o ID informado." });
             }
 
+            
             return Json(new
             {
                 idPessoa = fornecedor.IdPessoa,

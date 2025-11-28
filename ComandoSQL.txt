@@ -172,10 +172,9 @@ CREATE TABLE Produto (
     MarcaId INT NOT NULL,
     UnidadeMedidaId INT NOT NULL,
     CategoriaId INT NOT NULL,
-    ValorCompra DECIMAL(10,2) NOT NULL,
     ValorVenda DECIMAL(10,2) NOT NULL,
-   media ponderada PrecoMedioCusto DECIMAL(10,2) NULL, = valor de compra na tela = valor unitario mais rateio, este valor soma e devide por 2 com o anterior
-   rateio PrecoUltimaCompra DECIMAL(10,2) NULL, 
+    CustoMedio DECIMAL(10,2) NOT NULL DEFAULT 0, 
+    CustoUltimaCompraDECIMAL(10,2) NOT NULL DEFAULT 0, 
     Quantidade INT NOT NULL,
     QuantidadeMinima INT NOT NULL,
     PercentualLucro DECIMAL(10,2) NOT NULL,
@@ -191,7 +190,7 @@ CREATE TABLE Produto (
 CREATE TABLE ProdutoFornecedor (
     IdProduto INT NOT NULL,
     IdFornecedor INT NOT NULL,
-    PrecoUltimaCompra DECIMAL(10,2) NULL, rateio
+    CustoUltimaCompra DECIMAL(10,2) NOT NULL DEFAULT 0, rateio
     DataUltimaCompra DATETIME NULL,
     Observacao VARCHAR(40) NULL,
     PRIMARY KEY (IdProduto, IdFornecedor),
@@ -202,13 +201,13 @@ CREATE TABLE ProdutoFornecedor (
 
 
 CREATE TABLE Compra (
-    -- Chave Primária Composta, que identifica unicamente uma Nota Fiscal de um Fornecedor
+    
     Modelo VARCHAR(10) NOT NULL,
     Serie VARCHAR(10) NOT NULL,
     NumeroNota INT NOT NULL,
     FornecedorId INT NOT NULL,
     
-    -- Dados da Compra
+   
     DataEmissao DATETIME NOT NULL,
     DataChegada DATETIME NOT NULL,
     CondicaoPagamentoId INT NOT NULL,
@@ -216,12 +215,12 @@ CREATE TABLE Compra (
     Seguro DECIMAL(10,2) DEFAULT 0,
     Despesas DECIMAL(10,2) DEFAULT 0,
     Status BOOLEAN NOT NULL,
-    
+    Observacao VARCHAR(40) NULL,
     -- Campos de Auditoria
     DataCriacao DATETIME NOT NULL,
     
 
-    -- Definição da Chave Primária e Chaves Estrangeiras
+    
     PRIMARY KEY (Modelo, Serie, NumeroNota, FornecedorId),
     FOREIGN KEY (FornecedorId) REFERENCES Fornecedor(IdFornecedor),
     FOREIGN KEY (CondicaoPagamentoId) REFERENCES CondicaoPagamento(IdCondPgto)
@@ -230,25 +229,59 @@ CREATE TABLE Compra (
 
 
 CREATE TABLE ItemCompra (
-    -- Chave Estrangeira Composta que referencia a tabela Compra
+    
     CompraModelo VARCHAR(10) NOT NULL,
     CompraSerie VARCHAR(10) NOT NULL,
     CompraNumeroNota INT NOT NULL,
     CompraFornecedorId INT NOT NULL,
 
-    -- Parte da Chave Primária que referencia o Produto
+   
     ProdutoId INT NOT NULL,
 
-    -- Dados do Item
+    
     Quantidade INT NOT NULL,
     ValorUnitario DECIMAL(10,2) NOT NULL,
-
-    -- Definição da Chave Primária (5 colunas para garantir que um produto não se repita na mesma nota)
+    CustoAdicionalUnitario DECIMAL(18,2) NOT NULL DEFAULT 0,
+    CustoUnitarioReal     DECIMAL(18,2) NOT NULL DEFAULT 0, 	
+    
     PRIMARY KEY (CompraModelo, CompraSerie, CompraNumeroNota, CompraFornecedorId, ProdutoId),
 
-    -- Definição das Chaves Estrangeiras
+    
     FOREIGN KEY (CompraModelo, CompraSerie, CompraNumeroNota, CompraFornecedorId) 
         REFERENCES Compra(Modelo, Serie, NumeroNota, FornecedorId) 
         ON DELETE CASCADE, -- Se a compra for deletada, os itens são deletados juntos.
     FOREIGN KEY (ProdutoId) REFERENCES Produto(IdProduto)
+);
+
+
+
+CREATE TABLE Conta_a_Pagar (
+    Modelo VARCHAR(10) NOT NULL,        -- Parte da FK para Compra e PK. Ajustado tamanho para 10.
+    Serie VARCHAR(10) NOT NULL,         -- Parte da FK para Compra e PK. Ajustado tamanho para 10.
+    NumeroNota INT NOT NULL,            -- Parte da FK para Compra e PK.
+    FornecedorId INT NOT NULL,          -- Parte da FK para Compra e PK. RENOMEADO de CodFornecedor.
+    NumeroParcela INT NOT NULL,         -- Identificador da parcela dentro da nota (e PK).
+
+    Status BOOLEAN NOT NULL, 
+    Situacao  VARCHAR(25) NULL,
+    ValorParcela DECIMAL(10,2) NOT NULL, -- Valor calculado da parcela.
+    DataVencimento DATE NOT NULL,         -- Data de vencimento calculada.
+    DataEmissao DATE NOT NULL,            -- Data de Emissão da Nota original (para referência).
+
+   
+    DataPagamento DATE NULL,              -- Data em que a parcela foi paga (NULL se não paga).
+    Juros DECIMAL(10,2) NULL DEFAULT 0.00,  -- Juros aplicados no pagamento.
+    Multa DECIMAL(10,2) NULL DEFAULT 0.00,  -- Multa aplicada no pagamento.
+    Desconto DECIMAL(10,2) NULL DEFAULT 0.00, -- Desconto concedido no pagamento.
+    ValorPago DECIMAL(10,2) NULL,         -- Valor total efetivamente pago.
+    IdFormaPgto INT NULL,                 -- Forma como foi pago (NULL se não pago).
+
+    
+    PRIMARY KEY (Modelo, Serie, NumeroNota, FornecedorId, NumeroParcela),
+
+    
+    FOREIGN KEY (Modelo, Serie, NumeroNota, FornecedorId) -- Colunas correspondentes na Conta_a_Pagar
+        REFERENCES Compra(Modelo, Serie, NumeroNota, FornecedorId) -- Referencia a tabela Compra e suas colunas PK
+        ON DELETE CASCADE, -- Se a compra for excluída, as contas a pagar são excluídas.
+    FOREIGN KEY (IdFormaPgto) REFERENCES FormaPagamento(IdFormaPgto)
 );

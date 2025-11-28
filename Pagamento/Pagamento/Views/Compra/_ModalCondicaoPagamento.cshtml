@@ -1,14 +1,18 @@
-﻿@model IEnumerable<Pagamento.Models.CondicaoPagamento>
+﻿@* Arquivo: /Views/Compra/_ModalCondicaoPagamento.cshtml *@
+@model IEnumerable<Pagamento.Models.CondicaoPagamento>
 
+@* 1. A ESTRUTURA COMPLETA DO MODAL COMEÇA AQUI *@
 <div class="modal fade" id="modalCondicaoCompra" tabindex="-1" aria-labelledby="modalCondicaoLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
 
+            @* 2. CABEÇALHO DO MODAL *@
             <div class="modal-header">
                 <h5 class="modal-title" id="modalCondicaoLabel">Selecionar Condição de Pagamento</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
+            @* 3. CORPO DO MODAL (ONDE SUA LÓGICA ENTRA) *@
             <div class="modal-body">
                 <input type="text" id="filtroCondicao" class="form-control mb-3" placeholder="Digite para buscar..." onkeyup="filtrarTabelaCondicaoCompra()" />
 
@@ -24,6 +28,7 @@
                         {
                             @foreach (var condicao in Model)
                             {
+                                @* MUDANÇA: Adicionar o data-id na linha da tabela *@
                                 <tr data-id="@condicao.IdCondPgto">
                                     <td>@condicao.Descricao</td>
                                     <td>
