@@ -10,18 +10,18 @@
     </div>
 
     <div class="mb-3">
-        <label asp-for="NomeEstado" class="form-label">Nome do Estado</label>
+        <label asp-for="NomeEstado" class="form-label">Nome do Estado*</label>
         <input asp-for="NomeEstado" class="form-control" required />
         <span asp-validation-for="NomeEstado" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label asp-for="Uf" class="form-label">UF</label>
+        <label asp-for="Uf" class="form-label">UF*</label>
         <input asp-for="Uf" class="form-control" required />
     </div>
 
     <div class="mb-3">
-        <label class="form-label">País</label>
+        <label class="form-label">País*</label>
         <div class="input-group">
             <input type="text" id="NomePaisSelecionado" class="form-control" placeholder="Nenhum país selecionado" value="@ViewBag.NomePais" readonly />
             <input type="hidden" asp-for="IdPais" id="IdPais" />

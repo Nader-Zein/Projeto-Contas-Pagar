@@ -30,22 +30,22 @@
                 <fieldset id="fieldset-dados-nota">
                     <div class="row">
                         <div class="col-md-2">
-                            <label asp-for="Modelo" class="form-label"></label>
+                            <label asp-for="Modelo" class="form-label">Modelo*</label>
                             <input asp-for="Modelo" class="form-control" />
                             <span asp-validation-for="Modelo" class="text-danger"></span>
                         </div>
                         <div class="col-md-2">
-                            <label asp-for="Serie" class="form-label"></label>
+                            <label asp-for="Serie" class="form-label">Serie*</label>
                             <input asp-for="Serie" class="form-control" />
                             <span asp-validation-for="Serie" class="text-danger"></span>
                         </div>
                         <div class="col-md-2">
-                            <label asp-for="NumeroNota" class="form-label">Número da Nota</label>
+                            <label asp-for="NumeroNota" class="form-label">Número da Nota*</label>
                             <input asp-for="NumeroNota" class="form-control" />
                             <span asp-validation-for="NumeroNota" class="text-danger"></span>
                         </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Cliente</label>
+                        <div class="@(modo == "Criar" ? "col-md-4" : "col-md-2")">
+                            <label class="form-label">Cliente*</label>
                             @if (modo == "Criar")
                             {
                                 <div class="input-group mb-2">
@@ -64,12 +64,18 @@
                                 <input type="text" class="form-control" value="@Model.NomeCliente (ID: @Model.ClienteId)" readonly />
                             }
                         </div>
-                        <div class="col-md-3">
+
+                        @if (modo == "Detalhes" || modo == "Cancelar")
+                        {
+                            <div class="w-100 d-none d-md-block"></div>
+                        }
+
+                        <div class="@(modo == "Criar" ? "col-md-3" : "col-md-2")">
                             <label asp-for="DataEmissao" class="form-label">Data de Emissão</label>
                             <input asp-for="DataEmissao" type="date" class="form-control" id="DataEmissao" />
                         </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold">Funcionário (Vendedor)</label>
+                        <div class="@(modo == "Criar" ? "col-md-6" : "col-md-2")">
+                            <label class="form-label text-nowrap">Funcionário (Vendedor)*</label>
 
                             @if (modo == "Criar")
                             {
@@ -121,7 +127,7 @@
                     {
                         <div class="row align-items-end gx-2">
                             <div class="col-md-auto">
-                                <label class="form-label">Produto</label>
+                                <label class="form-label">Produto*</label>
                                 <div class="input-group">
                                     <input type="number" id="produto-id-input" class="form-control" placeholder="ID..." style="max-width: 100px;" />
                                     <button type="button" id="btn-buscar-produto-por-id" class="btn btn-primary">Buscar ID</button>
@@ -140,11 +146,11 @@
                                 <input id="produto-unidade" type="text" class="form-control" readonly />
                             </div>
                             <div class="col-md-1">
-                                <label class="form-label">Qtd</label>
+                                <label class="form-label">Qtd*</label>
                                 <input id="produto-quantidade" type="number" class="form-control" value="1" min="1" />
                             </div>
                             <div style="width: 10%;">
-                                <label class="form-label">Valor (R$)</label>
+                                <label class="form-label">Valor (R$)*</label>
                                 <input id="produto-valor" type="text" class="form-control" />
                             </div>
                             <div style="width: 12.5%;">
@@ -216,9 +222,9 @@
 
                     <div>
                         <h5>Pagamento</h5><hr />
-                        <label class="form-label">Condição de Pagamento</label>
+                        <label class="form-label">Condição de Pagamento*</label>
                         <div class="row">
-                            <div class="col-md-8">
+                            <div class="@(modo == "Criar" ? "col-md-8" : "col-md-3 col-lg-2")">
                                 <div class="input-group flex-grow-1">
                                     <input type="text" id="NomeCondicaoVenda" class="form-control" readonly
                                            placeholder="@(isReadOnly ? "" : "Selecione a condição...")"
@@ -276,6 +282,24 @@
             </div>
         </div>
 
+        @if (modo == "Detalhes" && Model.Status == false)
+        {
+            <div class="card mt-3">
+                <div class="card-header bg-danger text-white">
+                    Motivo do Cancelamento
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label asp-for="Motivo_Cancelamento" class="form-label fw-bold"> Motivo</label>
+                            <textarea asp-for="Motivo_Cancelamento" class="form-control" rows="3" readonly></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+
     </fieldset>
 
     @if (modo == "Cancelar")
@@ -292,7 +316,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Voltar</button>
-                        <button type="button" class="btn btn-danger" id="btn-confirmar-envio-cancelamento">Confirmar</button>
+                        <button type="button" class="btn btn-danger" id="btn-confirmar-envio-cancelamento" disabled>Confirmar</button>
                     </div>
                 </div>
             </div>
@@ -302,7 +326,7 @@
     <div class="mt-4 text-end">
         @if (modo == "Criar")
         {
-            <button type="submit" class="btn btn-success">Finalizar Venda</button>
+            <button type="button" class="btn btn-success" onclick="verificarParcelasAntesDeSalvar()">Finalizar Venda</button>
             <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
         }
         else if (modo == "Detalhes")
@@ -451,10 +475,12 @@
 <div class="modal fade" id="modalNovaCondicao" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-xl">
         <div class="modal-content" id="modalNovaCondicaoContent">
+            <!-- Conteúdo do FormCondicaoPagamento.cshtml será carregado aqui -->
         </div>
     </div>
 </div>
 
+<!-- 2. Modal Auxiliar: Seleção de Forma de Pagamento (Para a Nova Condição) -->
 <div class="modal fade" id="modalFormaPgtoSelect" tabindex="-1" data-bs-backdrop="static">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -468,6 +494,7 @@
                     <table class="table table-hover" id="tabFormaAux">
                         <thead><tr><th>Descrição</th><th>Ação</th></tr></thead>
                         <tbody>
+                            <!-- PREENCHIDO PELO CONTROLLER -->
                             @if (ViewBag.FormasPagamentoItens != null)
                             {
                                 foreach (var f in ViewBag.FormasPagamentoItens as List<SelectListItem>)
@@ -495,7 +522,6 @@
     </div>
 </div>
 
-<!-- 3. Container para Cadastro de Nova Forma (Opcional) -->
 <div class="modal fade" id="modalNovaForma" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog">
         <div class="modal-content" id="modalNovaFormaContent"></div>
@@ -854,12 +880,73 @@
         </div>
     </div>
 </div>
+
+
+<div class="modal fade" id="modalAvisoParcelas" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title">
+                    <i class="bi bi-exclamation-triangle-fill"></i> Atenção
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <p class="fw-bold">Não é possível finalizar a venda.</p>
+                <p>Você informou os dados financeiros, mas ainda não gerou as parcelas de pagamento.</p>
+                <p class="text-muted small">Clique no botão <b>"Gerar Parcelas"</b> na seção Financeiro antes de finalizar.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Entendi</button>
+            </div>
+        </div>
+    </div>
+</div>
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 
     <script>
 
 
+        function verificarParcelasAntesDeSalvar() {
+            var formJQuery = $('#form-venda');
+            var formNativo = document.getElementById('form-venda');
+
+            if (!formJQuery.valid()) {
+                return;
+            }
+
+            var qtdParcelas = document.getElementById('tabela-parcelas').children.length;
+
+            if (qtdParcelas === 0) {
+                var modalAviso = new bootstrap.Modal(document.getElementById('modalAvisoParcelas'));
+                modalAviso.show();
+            } else {
+                if (modo === "Criar") {
+                    formNativo.querySelectorAll('fieldset:disabled').forEach(fs => fs.disabled = false);
+                    formNativo.querySelectorAll('[disabled]').forEach(el => el.disabled = false);
+                }
+
+                const itens = [];
+                document.querySelectorAll('#tabela-produtos tr').forEach(tr => {
+                    itens.push({
+                        ProdutoId: parseInt(tr.dataset.id),
+                        Quantidade: parseFloat(tr.dataset.qtd),
+                        ValorUnitario: parseFloat(tr.dataset.valor)
+                    });
+                });
+
+                if (itens.length === 0) {
+                    alert('É necessário adicionar pelo menos um produto à venda.');
+                    return;           
+                }
+
+                const hidden = document.getElementById('itens-json');
+                if (hidden) hidden.value = JSON.stringify(itens);
+
+                formNativo.submit();
+            }
+        }
 
         async function buscarEselecionarCondicaoPorId() {
             const idInput = document.getElementById('condicao-id-input');
@@ -1985,32 +2072,7 @@
                  document.getElementById('fieldset-lista-produtos').disabled = false;
             });
 
-            document.getElementById('form-venda').addEventListener('submit', function(e) {
 
-                if (modo === "Criar") {
-                    this.querySelectorAll('fieldset:disabled')
-                        .forEach(fs => fs.disabled = false);
-
-                    this.querySelectorAll('[disabled]')
-                        .forEach(el => el.disabled = false);
-                }
-
-
-                const itens = [];
-                document.querySelectorAll('#tabela-produtos tr').forEach(tr => {
-                    itens.push({
-                        ProdutoId: parseInt(tr.dataset.id),
-                        Quantidade: parseFloat(tr.dataset.qtd),
-                        ValorUnitario: parseFloat(tr.dataset.valor)
-                    });
-                });
-
-                if(itens.length === 0) {
-                    alert("Adicione produtos à venda.");
-                    e.preventDefault(); return;
-                }
-                document.getElementById('itens-json').value = JSON.stringify(itens);
-            });
         }
 
         function formatarMoeda(val) {
@@ -2066,12 +2128,40 @@
         }
 
         if (modo === "Cancelar") {
-             document.getElementById('btn-confirmar-envio-cancelamento').addEventListener('click', function() {
-                 if(!document.getElementById('motivoCancelamentoInput').value.trim()) {
-                     alert("Informe o motivo."); return;
-                 }
-                 document.getElementById('form-venda').submit();
-             });
+            document.addEventListener('DOMContentLoaded', function() {
+                const form = document.getElementById('form-venda');
+                const btnConfirmarModal = document.getElementById('btn-confirmar-envio-cancelamento');
+                const motivoInput = document.getElementById('motivoCancelamentoInput');
+                const contadorEl = document.getElementById('contador-caracteres');   
+
+                if (btnConfirmarModal && form && motivoInput) {
+
+                    motivoInput.addEventListener('input', function() {
+                        const texto = this.value.trim();
+                        const qtdCaracteres = texto.length;
+
+                        if (contadorEl) contadorEl.textContent = qtdCaracteres;
+
+                        if (qtdCaracteres >= 20) {
+                            btnConfirmarModal.disabled = false;
+                        } else {
+                            btnConfirmarModal.disabled = true;
+                        }
+                    });
+
+                    btnConfirmarModal.addEventListener('click', function() {
+                        const motivo = motivoInput.value.trim();
+
+                        if (motivo.length < 20) {
+                            alert("O motivo deve ter pelo menos 20 caracteres.");
+                            motivoInput.focus();
+                            return;
+                        }
+
+                        form.submit();
+                    });
+                }
+            });
         }
     </script>
 }

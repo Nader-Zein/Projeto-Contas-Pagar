@@ -12,73 +12,76 @@
     <div class="d-flex justify-content-end mt-3">
         <div class="form-check">
             <input class="form-check-input" type="checkbox" asp-for="Status" />
-            <label class="form-check-label" asp-for="Status">Ativo</label>
+            <label class="form-check-label" asp-for="Status">Ativo*</label>
         </div>
     </div>
+    <div class="row g-3">
+        <div class="col-md-2">
+            <label asp-for="Descricao" class="form-label">Descrição*</label>
+            <input asp-for="Descricao" class="form-control" required />
+        </div>
 
-    <div class="col-md-3">
-        <label asp-for="Descricao" class="form-label">Descrição</label>
-        <input asp-for="Descricao" class="form-control" required />
-        <span asp-validation-for="Descricao" class="text-danger"></span>
-
+        <div class="col-md-2">
+            <label asp-for="QuantidadeParcelas" class="form-label text-nowrap">Quantidade de Parcelas*</label>
+            <input asp-for="QuantidadeParcelas" type="number" class="form-control" required />
+        </div>
     </div>
-
-    <div class="col-md-3">
-        <label asp-for="QuantidadeParcelas" class="form-label">Quantidade de Parcelas</label>
-        <input asp-for="QuantidadeParcelas" type="number" class="form-control" required />
-        <span asp-validation-for="QuantidadeParcelas" class="text-danger"></span>
-    </div>
-
     <div class="row">
-        <div class="col-md-3 mb-3">
-            <label asp-for="Juros" class="form-label">Juros (%)</label>
+        <div class="col-md-2 mb-2">
+            <label asp-for="Juros" class="form-label">Juros (%)*</label>
             <input asp-for="Juros" type="number" step="0.01" class="form-control" />
             <span asp-validation-for="Juros" class="text-danger"></span>
         </div>
-        <div class="col-md-3 mb-3">
-            <label asp-for="Multa" class="form-label">Multa (%)</label>
+        <div class="col-md-2 mb-2">
+            <label asp-for="Multa" class="form-label">Multa (%)*</label>
             <input asp-for="Multa" type="number" step="0.01" class="form-control" />
             <span asp-validation-for="Multa" class="text-danger"></span>
         </div>
-        <div class="col-md-3 mb-3">
-            <label asp-for="Desconto" class="form-label">Desconto (%)</label>
+        <div class="col-md-2 mb-2">
+            <label asp-for="Desconto" class="form-label">Desconto (%)*</label>
             <input asp-for="Desconto" type="number" step="0.01" class="form-control" />
             <span asp-validation-for="Desconto" class="text-danger"></span>
         </div>
     </div>
 
 
-    <div class="col-md-3">
-        <label for="NumeroParcela">Número da Parcela</label>
-        <input type="number" id="NumeroParcela" class="form-control" min="1" />
-    </div>
+    
 
     <h3>Parcelas</h3>
 
-    <div class="row">
-        <div class="col-md-3">
-            <label class="form-label">Forma de Pagamento</label>
+    <div class="row mb-3 align-items-end g-3">
+        <div class="col-12 col-md-2">
+            <label for="NumeroParcela">Número da Parcela*</label>
+            <input type="number" id="NumeroParcela" class="form-control" min="1" />
+        </div>
+
+        <div class="col-12 col-md-4">
+            <label class="form-label">Forma de Pagamento*</label>
             <div class="input-group">
-                <input type="text" id="NomeFormaSelecionada" class="form-control" placeholder="Nenhuma forma selecionada" readonly />
+                <input type="text" id="NomeFormaSelecionada" class="form-control"
+                       placeholder="Nenhuma forma selecionada" readonly />
                 <input type="hidden" id="IdFormaPgto" name="IdFormaPgto" />
-                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#modalFormaPgto">
+                <button type="button" class="btn btn-outline-secondary"
+                        data-bs-toggle="modal" data-bs-target="#modalFormaPgto">
                     Selecionar
                 </button>
             </div>
         </div>
 
-        <div class="col-md-3">
-            <label for="ValorPercentual">Valor %</label>
+        <div class="col-12 col-md-2">
+            <label for="ValorPercentual">Valor %*</label>
             <input type="number" id="ValorPercentual" class="form-control" step="0.01" />
         </div>
 
-        <div class="col-md-3">
-            <label for="DiasAposVenda">Dias Após Venda</label>
+        <div class="col-12 col-md-2">
+            <label for="DiasAposVenda">Dias Após Venda*</label>
             <input type="number" id="DiasAposVenda" class="form-control" />
         </div>
 
-        <div class="col-md-3 d-flex align-items-end">
-            <button type="button" class="btn btn-primary" id="btnAdicionarParcela">Adicionar Parcela</button>
+        <div class="col-12 col-md-2 d-grid">
+            <button type="button" class="btn btn-primary" id="btnAdicionarParcela">
+                Adicionar Parcela
+            </button>
         </div>
     </div>
 

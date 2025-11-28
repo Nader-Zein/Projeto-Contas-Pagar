@@ -439,9 +439,6 @@
 
 
             
-
-
-
         let ultimoModalPaiFechado = null;
 
         function fecharModalPaiAtual() {
@@ -461,8 +458,6 @@
           ultimoModalPaiFechado = null;
         }
 
-       
-
 
 
         function abrirSelecaoCidadeDesdeFornecedor() {
@@ -476,8 +471,6 @@
           }
           bootstrap.Modal.getOrCreateInstance(filho).show();
         }
-        
-
 
         function abrirSelecaoCondicaoDesdeFornecedor() {
           const filho = document.getElementById('modalCondicaoPgtoFornecedor');
@@ -496,10 +489,10 @@
           if (!el) return;
           el.addEventListener('hidden.bs.modal', function () {
             const parentId = el.dataset.parentModalId;
-            if (!parentId) return; 
+            if (!parentId) return;       
             const pai = document.getElementById(parentId);
             if (pai) bootstrap.Modal.getOrCreateInstance(pai).show();
-            el.dataset.parentModalId = ''; 
+            el.dataset.parentModalId = '';                 
           });
         });
 

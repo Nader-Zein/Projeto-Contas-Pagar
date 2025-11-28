@@ -38,12 +38,12 @@
         </div>
 
         <div class="col-md-4 mb-3">
-            <label class="form-label">Endereço</label>
+            <label class="form-label">Endereço*</label>
             <input class="form-control" value="@Model.Endereco" disabled />
         </div>
 
         <div class="col-md-4 mb-3">
-            <label class="form-label">Número</label>
+            <label class="form-label">Número*</label>
             <input type="text" class="form-control" value="@Model.Numero" readonly />
         </div>
 
@@ -53,17 +53,17 @@
         </div>
 
         <div class="col-md-4 mb-3">
-            <label class="form-label">Bairro</label>
+            <label class="form-label">Bairro*</label>
             <input class="form-control" value="@Model.Bairro" disabled />
         </div>
 
         <div class="col-md-4 mb-3">
-            <label class="form-label">CEP</label>
+            <label class="form-label">CEP*</label>
             <input class="form-control" value="@Model.Cep" disabled />
         </div>
 
         <div class="col-md-4 mb-3">
-            <label class="form-label">Cidade</label>
+            <label class="form-label">Cidade*</label>
             <input class="form-control" value="@ViewBag.NomeCidade" disabled />
         </div>
 
@@ -83,17 +83,17 @@
         </div>
 
         <div class="col-md-4 mb-3">
-            <label class="form-label">Email</label>
+            <label class="form-label">Email*</label>
             <input class="form-control" value="@Model.Email" disabled />
         </div>
 
         <div class="col-md-4 mb-3">
-            <label class="form-label">Telefone</label>
+            <label class="form-label">Telefone*</label>
             <input class="form-control" value="@Model.Telefone" disabled />
         </div>
 
         <div class="col-md-4 mb-3">
-            <label class="form-label">Condição de Pagamento</label>
+            <label class="form-label">Condição de Pagamento*</label>
             <input class="form-control" value="@ViewBag.NomeCondicao" disabled />
         </div>
 
@@ -125,17 +125,17 @@
             const t = (tipo || '').toLowerCase();   
 
             if (t === 'física' || t === 'física') { 
-                $('#labelNomeRazao').text("Nome");
-                $('#labelApelidoFantasia').text("Apelido");
-                $('#labelCpfCnpj').text("CPF");
-                $('#labelNascimentoFundacao').text("Data de Nascimento");
-                $('#labelRgIe').text("RG");
+                $('#labelNomeRazao').text("Nome*");
+                $('#labelApelidoFantasia').text("Apelido*");
+                $('#labelCpfCnpj').text("CPF*");
+                $('#labelNascimentoFundacao').text("Data de Nascimento*");
+                $('#labelRgIe').text("RG*");
             } else {
-                $('#labelNomeRazao').text("Razão Social");
-                $('#labelApelidoFantasia').text("Nome Fantasia");
-                $('#labelCpfCnpj').text("CNPJ");
-                $('#labelNascimentoFundacao').text("Fundação");
-                $('#labelRgIe').text("Inscrição Estadual");
+                $('#labelNomeRazao').text("Razão Social*");
+                $('#labelApelidoFantasia').text("Nome Fantasia*");
+                $('#labelCpfCnpj').text("CNPJ*");
+                $('#labelNascimentoFundacao').text("Data de Fundação*");
+                $('#labelRgIe').text("Inscrição Estadual*");
             }
         }
 

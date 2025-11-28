@@ -72,6 +72,7 @@ namespace Pagamento.Models
         public decimal ValMulta { get; set; }
         public decimal ValDesconto { get; set; }
 
+        [Required(ErrorMessage = "Selecione uma forma de pagamento.")]
         public int? IdFormaPgto { get; set; }   
 
         public string? NomeFormaPgto { get; set; }

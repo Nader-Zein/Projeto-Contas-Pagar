@@ -101,6 +101,7 @@ namespace Pagamento.Controllers
                 {
                     _compraDAO.Inserir(compra);
 
+                    TempData["SuccessMessage"] = "Compra salva com sucesso!";     
                     return RedirectToAction("Index");
                 }
             }

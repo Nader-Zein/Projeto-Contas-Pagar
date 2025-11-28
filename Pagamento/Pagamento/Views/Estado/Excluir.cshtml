@@ -22,15 +22,19 @@
     </div>
 
     <div class="col-md-2">
-        <label class="form-label">Nome</label>
+        <label asp-for="IdEstado" class="form-label">ID</label>
+        <input asp-for="IdEstado" class="form-control" disabled />
+    </div>
+    <div class="col-md-2">
+        <label class="form-label">Nome*</label>
         <input class="form-control" value="@Model.NomeEstado" disabled />
     </div>
     <div class="col-md-1">
-        <label class="form-label">UF</label>
+        <label class="form-label">UF*</label>
         <input class="form-control" value="@Model.Uf" disabled />
     </div>
     <div class="col-md-2">
-        <label class="form-label">País</label>
+        <label class="form-label">País*</label>
         <input class="form-control" value="@ViewBag.NomePais" disabled />
     </div>
 

@@ -83,8 +83,9 @@
                            asp-route-numeroNota="@compra.NumeroNota"
                            asp-route-fornecedorId="@compra.FornecedorId"
                            class="btn btn-sm btn-danger @cancelarDisabled"
-                           aria-disabled="@( !compra.Status ? "true" : "false")"
-                           class="btn btn-sm btn-danger">Cancelar</a>
+                           aria-disabled="@( !compra.Status ? "true" : "false")">
+                            Cancelar
+                        </a>
                     </td>
                 </tr>
             }

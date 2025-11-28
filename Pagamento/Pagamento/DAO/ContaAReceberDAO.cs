@@ -33,7 +33,6 @@ namespace Pagamento.DAO
                 cmd.Parameters.AddWithValue("@DataVencimento", conta.DataVencimento);
                 cmd.Parameters.AddWithValue("@DataEmissao", conta.DataEmissao);
 
-                // Campos nulos permitidos
                 cmd.Parameters.AddWithValue("@Juros", conta.Juros ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@Multa", conta.Multa ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@Desconto", conta.Desconto ?? (object)DBNull.Value);
@@ -43,14 +42,12 @@ namespace Pagamento.DAO
             }
         }
 
-        // 2. Listar todas as contas (Para o Index Principal)
         public List<ContaAReceber> Listar()
         {
             var lista = new List<ContaAReceber>();
             using (var conexao = new MySqlConnection(connectionString))
             {
                 conexao.Open();
-                // JOIN com Cliente para mostrar o nome na lista principal
                 string sql = @"SELECT cr.*, c.Nome_RazaoSocial as NomeCliente, fp.Descricao as NomeFormaPgto
                                FROM Conta_a_Receber cr
                                LEFT JOIN Cliente c ON cr.ClienteId = c.IdCliente
@@ -63,7 +60,6 @@ namespace Pagamento.DAO
                 while (reader.Read())
                 {
                     var conta = Mapear(reader);
-                    // Preenche nomes auxiliares
                     if (!reader.IsDBNull(reader.GetOrdinal("NomeCliente")))
                         conta.NomeCliente = reader.GetString("NomeCliente");
 
@@ -83,7 +79,6 @@ namespace Pagamento.DAO
             using (var conexao = new MySqlConnection(connectionString))
             {
                 conexao.Open();
-                // Traz o nome da Forma de Pagamento através de um JOIN
                 string sql = @"SELECT cr.*, fp.Descricao as NomeFormaPgto
                                FROM Conta_a_Receber cr
                                JOIN FormaPagamento fp ON cr.IdFormaPgto = fp.IdFormaPgto
@@ -108,7 +103,6 @@ namespace Pagamento.DAO
             return lista;
         }
 
-        // Verifica se alguma parcela desta venda já foi recebida (baixada)
         public bool VerificarParcelasPagas(string modelo, string serie, int numeroNota, int clienteId)
         {
             using (var conexao = new MySqlConnection(connectionString))
@@ -132,15 +126,11 @@ namespace Pagamento.DAO
             }
         }
 
-        // Cancela (exclui) todas as parcelas pendentes de uma venda (usado ao cancelar a venda inteira)
         public void CancelarPorVenda(string modelo, string serie, int numeroNota, int clienteId, string motivo)
         {
             using (var conexao = new MySqlConnection(connectionString))
             {
                 conexao.Open();
-
-                // Opcional: Se você quiser manter o histórico das parcelas canceladas, use UPDATE em vez de DELETE
-                // Aqui vamos seguir a lógica de marcar como cancelado na tabela (UPDATE)
 
                 string sql = @"UPDATE Conta_a_Receber 
                                SET Situacao = 'CANCELADA', 
@@ -162,7 +152,6 @@ namespace Pagamento.DAO
             }
         }
 
-        // Método para realizar o Recebimento (Baixa) de uma parcela específica
         public void ReceberParcela(string modelo, string serie, int numeroNota, int clienteId, int numeroParcela,
                                    DateTime dataPagamento, decimal valorPago, decimal juros, decimal multa, decimal desconto)
         {
@@ -190,7 +179,6 @@ namespace Pagamento.DAO
                 cmd.Parameters.AddWithValue("@Multa", multa);
                 cmd.Parameters.AddWithValue("@Desconto", desconto);
 
-                // Chaves
                 cmd.Parameters.AddWithValue("@Modelo", modelo);
                 cmd.Parameters.AddWithValue("@Serie", serie);
                 cmd.Parameters.AddWithValue("@NumeroNota", numeroNota);
@@ -201,7 +189,6 @@ namespace Pagamento.DAO
             }
         }
 
-        // Método auxiliar para mapear o DataReader para o Objeto
         private ContaAReceber Mapear(MySqlDataReader reader)
         {
             var conta = new ContaAReceber
@@ -218,7 +205,6 @@ namespace Pagamento.DAO
                 DataEmissao = Convert.ToDateTime(reader["DataEmissao"]),
                 IdFormaPgto = Convert.ToInt32(reader["IdFormaPgto"]),
 
-                // Tratamento de nulos para campos opcionais
                 DataPagamento = reader.IsDBNull(reader.GetOrdinal("DataPagamento")) ? (DateTime?)null : reader.GetDateTime("DataPagamento"),
                 ValorPago = reader.IsDBNull(reader.GetOrdinal("ValorPago")) ? (decimal?)null : reader.GetDecimal("ValorPago"),
                 Juros = reader.IsDBNull(reader.GetOrdinal("Juros")) ? (decimal?)null : reader.GetDecimal("Juros"),
@@ -230,13 +216,11 @@ namespace Pagamento.DAO
                 MotivoCancelamento = reader.IsDBNull(reader.GetOrdinal("MotivoCancelamento")) ? null : reader.GetString("MotivoCancelamento")
             };
 
-            // Tenta mapear o nome da forma de pagamento se veio no SELECT
             try { conta.NomeFormaPgto = reader["NomeFormaPgto"].ToString(); } catch { }
 
             return conta;
         }
 
-        // Buscar uma conta específica para a tela de Recebimento
         public ContaAReceber BuscarParcela(string modelo, string serie, int numeroNota, int clienteId, int numeroParcela)
         {
             using (var conexao = new MySqlConnection(connectionString))
@@ -262,7 +246,6 @@ namespace Pagamento.DAO
                 if (reader.Read())
                 {
                     var conta = Mapear(reader);
-                    // Mapeia o nome do cliente para exibir na tela de baixa
                     try { conta.NomeCliente = reader["NomeCliente"].ToString(); } catch { }
                     return conta;
                 }
@@ -270,7 +253,6 @@ namespace Pagamento.DAO
             return null;
         }
 
-        // 1. Cancelar uma Parcela Específica (Faltando)
         public void CancelarParcela(string modelo, string serie, int numeroNota, int clienteId, int numeroParcela, string motivo)
         {
             using (var conexao = new MySqlConnection(connectionString))
@@ -288,7 +270,6 @@ namespace Pagamento.DAO
 
                 var cmd = new MySqlCommand(sql, conexao);
                 cmd.Parameters.AddWithValue("@Motivo", motivo);
-                // Chaves para identificar a parcela única
                 cmd.Parameters.AddWithValue("@Modelo", modelo);
                 cmd.Parameters.AddWithValue("@Serie", serie);
                 cmd.Parameters.AddWithValue("@NumeroNota", numeroNota);
@@ -299,18 +280,13 @@ namespace Pagamento.DAO
             }
         }
 
-        // 2. Verificar Parcelas Anteriores Pendentes (Faltando)
-        // Usado pelo JavaScript/Controller antes de abrir a tela de baixa
         public bool TemParcelaAnteriorPendente(string modelo, string serie, int numeroNota, int clienteId, int numeroParcela)
         {
-            // Se for a primeira parcela, não tem anterior, retorna false
             if (numeroParcela <= 1) return false;
 
             using (var conexao = new MySqlConnection(connectionString))
             {
                 conexao.Open();
-                // Verifica se existe alguma parcela com número MENOR (<) 
-                // que NÃO esteja "RECEBIDO" e NÃO esteja Cancelada (Status = true)
                 string sql = @"SELECT COUNT(*) FROM Conta_a_Receber 
                                WHERE Modelo = @Modelo 
                                  AND Serie = @Serie 
@@ -329,7 +305,6 @@ namespace Pagamento.DAO
 
                 long count = Convert.ToInt64(cmd.ExecuteScalar());
 
-                // Se count > 0, significa que existem parcelas anteriores não pagas
                 return count > 0;
             }
         }

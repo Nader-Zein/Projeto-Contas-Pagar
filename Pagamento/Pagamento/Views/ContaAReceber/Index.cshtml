@@ -7,6 +7,7 @@
 <h1>@ViewData["Title"]</h1>
 
 
+
 @if (TempData["SuccessMessage"] != null)
 {
     <div class="alert alert-success">@TempData["SuccessMessage"]</div>
@@ -17,12 +18,12 @@
         <table class="table table-hover">
             <thead>
                 <tr>
+                    <th>Origem (Nº Nota)</th>
                     <th>Cliente</th>
                     <th>Vencimento</th>
-                    <th>Valor</th>
-                    <th>Situação</th>
-                    <th>Origem (Nº Nota)</th>
+                    <th>Valor da Parcela</th>
                     <th>Nº Parcela</th>
+                    <th>Situação</th>                   
                     <th>Status</th>
                     <th>Ações</th>
                 </tr>
@@ -42,10 +43,8 @@
                     }
                     else
                     {
-                                 
                         bool vencidaEmAberto = aReceber && item.DataVencimento.Date < DateTime.Today;
 
-                                          
                         bool recebidaAtrasada = recebido
                                                 && item.DataPagamento.HasValue
                                                 && item.DataPagamento.Value.Date > item.DataVencimento.Date;
@@ -62,21 +61,6 @@
 
 
                     <tr class="@trClass">
-                        <td>@item.NomeCliente</td>
-                        <td>@item.DataVencimento.ToString("dd/MM/yyyy")</td>
-                        <td title="@(item.ValorPago.HasValue ? "Valor recebido" : "Valor da parcela")">
-                            @{
-                                                
-                                decimal valor = item.ValorPago.GetValueOrDefault(item.ValorParcela);
-                            }
-                            @valor.ToString("C2")
-                        </td>
-                        <td>
-                            <span class="badge
-                                    @(item.Situacao == "RECEBIDO" ? "bg-success" : (item.Situacao == "A RECEBER" ? "bg-warning text-dark" : "bg-secondary"))">
-                                @item.Situacao
-                            </span>
-                        </td>
                         <td>
                             @if (!string.IsNullOrEmpty(item.Modelo))
                             {
@@ -87,7 +71,29 @@
                                 <small>Avulsa</small>
                             }
                         </td>
+
+                        <td>@item.NomeCliente</td>
+                        <td>@item.DataVencimento.ToString("dd/MM/yyyy")</td>
+
+                        <td title="@(item.ValorPago.HasValue ? "Valor recebido" : "Valor da parcela")">
+                            @{
+                                decimal valor = item.ValorPago.GetValueOrDefault(item.ValorParcela);
+                            }
+                            @valor.ToString("C2")
+                        </td>
+
                         <td>@item.NumeroParcela</td>
+
+                        <td>
+                            <span class="badge
+                                @(item.Situacao == "RECEBIDO" ? "bg-success" :
+                                  (item.Situacao == "A RECEBER" ? "bg-warning text-dark" : "bg-secondary"))">
+                                @item.Situacao
+                            </span>
+                        </td>
+
+                        
+
                         <td>
                             <span class="badge @(item.Status ? "bg-success" : "bg-danger")">
                                 @(item.Status ? "Ativo" : "Cancelado")
@@ -95,8 +101,6 @@
                         </td>
                         <td>
                             @{
-                                          
-                                        
                                 string baixarDisabled = (item.Situacao != "A RECEBER" || item.Status == false) ? "disabled" : "";
                                 bool cancelarDisabled =
                                                         (item.Situacao ?? "").Trim().Equals("RECEBIDA", StringComparison.OrdinalIgnoreCase)
@@ -133,12 +137,10 @@
                                         clienteId = item.ClienteId, 
                                         numeroParcela = item.NumeroParcela 
                                     })">
-                                Receber
+                                Dar Baixa
                             </button>
+
                             @*   
-                                            
-                               
-                                            
                             *@
                             <button type="button" 
                             class="btn btn-sm btn-danger"

@@ -6,21 +6,6 @@ namespace Pagamento.DAO
     {
         private readonly string connectionString = "server=localhost;database=pagamento;user=User;password=Na@der!1234";
 
-        //public void Inserir(int idProduto, int idFornecedor, string? observacao)
-        //{
-        //    using (var conexao = new MySqlConnection(connectionString))
-        //    {
-        //        conexao.Open();
-        //        string sql = @"INSERT INTO ProdutoFornecedor (IdProduto, IdFornecedor,Observacao)
-        //                       VALUES (@IdProduto, @IdFornecedor,@Observacao)";
-        //        var cmd = new MySqlCommand(sql, conexao);
-        //        cmd.Parameters.AddWithValue("@IdProduto", idProduto);
-        //        cmd.Parameters.AddWithValue("@IdFornecedor", idFornecedor);
-        //        cmd.Parameters.AddWithValue("@Observacao", observacao);
-        //        cmd.ExecuteNonQuery();
-        //    }
-        //}
-
         public void InserirOuAtualizarAssociacao(int idProduto, int idFornecedor, string? observacao)
         {
             using var conexao = new MySqlConnection(connectionString);
@@ -57,7 +42,6 @@ namespace Pagamento.DAO
             using var conexao = new MySqlConnection(connectionString);
             conexao.Open();
 
-            // Se lista vazia, remove todos; se não, remove quem não está na lista
             if (idsFornecedoresMantidos == null || !idsFornecedoresMantidos.Any())
             {
                 using var delAll = new MySqlCommand("DELETE FROM ProdutoFornecedor WHERE IdProduto=@IdProduto", conexao);
@@ -66,7 +50,6 @@ namespace Pagamento.DAO
                 return;
             }
 
-            // Monta IN parametrizado
             var ids = idsFornecedoresMantidos.Distinct().ToList();
             var inParams = string.Join(",", ids.Select((_, i) => $"@f{i}"));
             var sql = $@"DELETE FROM ProdutoFornecedor 
@@ -99,11 +82,8 @@ namespace Pagamento.DAO
             return lista;
         }
 
-        // MÉTODO 2: Para usar na tela de CADASTRO DE COMPRA
         public void AtualizarDadosCompra(int idProduto, int idFornecedor, decimal precoRateado, DateTime dataCompra)
         {
-            // Este método ATUALIZA um vínculo que já existe, preenchendo os dados da última compra.
-
             using (var conexao = new MySqlConnection(connectionString))
             {
                 conexao.Open();
@@ -124,15 +104,6 @@ namespace Pagamento.DAO
         }
 
 
-        // ======================================================================
-        // ✅ NOVO MÉTODO PARA GARANTIR A ASSOCIAÇÃO
-        // ======================================================================
-        /// <summary>
-        /// Garante que exista uma associação na tabela ProdutoFornecedor.
-        /// Se a associação não existir, ela é criada. Se já existir, nada acontece.
-        /// </summary>
-        /// <param name="produtoId">ID do Produto</param>
-        /// <param name="fornecedorId">ID do Fornecedor</param>
         public void GarantirAssociacao(int produtoId, int fornecedorId)
         {
             using (var conexao = new MySqlConnection(connectionString))
@@ -140,9 +111,6 @@ namespace Pagamento.DAO
                 try
                 {
                     conexao.Open();
-                    // O comando "INSERT IGNORE" tenta inserir. Se a chave primária 
-                    // (IdProduto, IdFornecedor) já existir, ele simplesmente ignora o comando
-                    // sem causar um erro. É extremamente eficiente para este caso de uso.
                     string sql = @"INSERT IGNORE INTO ProdutoFornecedor 
                                    (IdProduto, IdFornecedor) 
                                    VALUES 
@@ -156,7 +124,6 @@ namespace Pagamento.DAO
                 }
                 catch (Exception ex)
                 {
-                    // Lança uma exceção mais específica se algo der errado
                     throw new Exception($"Erro ao garantir a associação produto-fornecedor. Detalhes: {ex.Message}");
                 }
             }

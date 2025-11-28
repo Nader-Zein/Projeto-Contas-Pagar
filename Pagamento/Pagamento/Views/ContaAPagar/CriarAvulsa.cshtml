@@ -19,14 +19,17 @@
 
 <div class="row">
     <div class="col-md-10">
+       
         <form asp-action="@(isCriar ? "CriarAvulsa" : (isBaixar ? "Baixar" : "Cancelar"))" method="post" id="form-conta-pagar">
             @Html.AntiForgeryToken()
 
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
+           
             <input type="hidden" asp-for="FornecedorId" id="FornecedorId" />
             <input type="hidden" asp-for="IdFormaPgto" id="IdFormaPgto" />
 
+           
             @if (isBaixar || isCancelar || isDetalhes)
             {
                 <input type="hidden" asp-for="Modelo" />
@@ -47,20 +50,20 @@
 
                     <div class="row mb-3">
                         <div class="col-md-2">
-                            <label asp-for="Modelo" class="form-label">Modelo</label>
+                            <label asp-for="Modelo" class="form-label">Modelo*</label>
                             <input asp-for="Modelo" class="form-control" readonly="@isReadOnly" />
                         </div>
                         <div class="col-md-2">
-                            <label asp-for="Serie" class="form-label">Série</label>
+                            <label asp-for="Serie" class="form-label">Série*</label>
                             <input asp-for="Serie" class="form-control" readonly="@isReadOnly" />
                         </div>
                         <div class="col-md-2">
-                            <label asp-for="NumeroNota" class="form-label">Nº Nota</label>
+                            <label asp-for="NumeroNota" class="form-label">Nº Nota*</label>
                             <input asp-for="NumeroNota" class="form-control" type="number" readonly="@isReadOnly" />
                         </div>
                         
                         <div class="col-md-6">
-                            <label asp-for="FornecedorId" class="form-label">Fornecedor</label>
+                            <label asp-for="FornecedorId" class="form-label">Fornecedor*</label>
                             <div class="input-group">
 
                                 <input type="number" id="FornecedorIdInput" class="form-control" placeholder="ID" style="max-width: 80px;" disabled="@isReadOnly" />
@@ -74,27 +77,39 @@
                                 
                             </div>
                             <span asp-validation-for="FornecedorId" class="text-danger"></span>
+                        
+                        
+                            <table class="table table-sm table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Fornecedor</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabela-fornecedor-selecionado">
+                                </tbody>
+                            </table>
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         
                         <div class="col-md-2">
-                            <label asp-for="NumeroParcela" class="form-label text-nowrap ">Número da Parcela</label>
+                            <label asp-for="NumeroParcela" class="form-label text-nowrap ">Número da Parcela*</label>
                             <input asp-for="NumeroParcela" class="form-control" type="number" readonly="@isReadOnly" />
                             <span asp-validation-for="NumeroParcela" class="text-danger"></span>
                         </div>
                         <div class="col-md-2">
-                            <label asp-for="DataEmissao" class="form-label">Data de Emissão</label>
+                            <label asp-for="DataEmissao" class="form-label">Data de Emissão*</label>
                             <input asp-for="DataEmissao" type="date" class="form-control" readonly="@isReadOnly" />
                         </div>
                         <div class="col-md-2">
-                            <label asp-for="DataVencimento" class="form-label text-nowrap">Data de Vencimento</label>
+                            <label asp-for="DataVencimento" class="form-label text-nowrap">Data de Vencimento*</label>
                             <input asp-for="DataVencimento" type="date" class="form-control" id="DataVencimento" readonly="@isReadOnly" />
                         </div>
 
                         <div class="col-md-2">
-                            <label asp-for="ValorParcela" class="form-label">Valor da Parcela</label>
+                            <label asp-for="ValorParcela" class="form-label">Valor da Parcela*</label>
                             <input asp-for="ValorParcela" class="form-control" type="text" id="ValorParcela" readonly="@isReadOnly" />
                             <span asp-validation-for="ValorParcela" class="text-danger"></span>
                         </div>
@@ -109,14 +124,12 @@
 
             
 
-            @* 8. O card de "Termos" (Juros, Multa, etc.) é separado *@
             <div class="card mt-3">
                 <div class="card-header">
                     Termos e Forma de Pagamento
                 </div>
                 <div class="card-body">
 
-                    @* --- LINHA 1: PORCENTAGENS (Bloqueadas na Baixa) --- *@
                     <div class="row mb-1">
                         <div class="col-md-12">
                             <h6 class="text-muted">Taxas Configuradas (%)</h6>
@@ -125,7 +138,6 @@
                     <div class="row mb-3">
                         <div class="col-md-2">
                             <label asp-for="Juros" class="form-label small">Juros (%)</label>
-                            @* Note que adicionamos readonly="@isBaixar" aqui *@
                             <input asp-for="Juros" class="form-control bg-light" type="text"  placeholder="0,00" id="JurosPercentual"
                                    readonly="@(isBaixar || isCancelar || isDetalhes)" />
                         </div>
@@ -189,7 +201,7 @@
                             }
 
                             <div class="col-md-6">
-                            <label asp-for="IdFormaPgto" class="form-label">Forma de Pagamento</label>
+                            <label asp-for="IdFormaPgto" class="form-label">Forma de Pagamento*</label>
                             <div class="input-group">
                                 
                             
@@ -198,7 +210,7 @@
 
                                 <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#modalFormaPagamento" disabled="@(isCancelar || isDetalhes)">Buscar</button>
                                 <input type="text" id="NomeFormaPgto" asp-for="NomeFormaPgto" class="form-control" placeholder="Nenhuma forma de pagamento selecionada" readonly />
-                                
+                                <span asp-validation-for="IdFormaPgto" class="text-danger"></span>
                                 
                             </div>
                             </div>
@@ -247,6 +259,8 @@
 
 
 
+            @* --- ADICIONE ESTE NOVO BLOCO --- *@
+            @* 8. BLOCO DE CANCELAMENTO (Aparece no "Detalhes" se estiver Cancelada) *@
             @if (isDetalhes && Model.Status == false)
             {
                 <div class="card mt-3">
@@ -263,8 +277,7 @@
                     </div>
                 </div>
             }
-
-
+           
             <div class="card mt-3">
                 <div class="card-footer text-end">
                     <a asp-action="Index" class="btn btn-secondary">Voltar</a>
@@ -1219,6 +1232,15 @@
             function selecionarFornecedor(id, nome) {
                 document.getElementById('FornecedorId').value = id;
                 document.getElementById('NomeFornecedor').value = nome;
+                const tbody = document.getElementById('tabela-fornecedor-selecionado');
+                if (tbody) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td>${id}</td>
+                            <td>${nome}</td>
+                        </tr>
+                    `;
+                }
                 hideModalById('modalFornecedor');
 
                 verificarChaveDuplicada();

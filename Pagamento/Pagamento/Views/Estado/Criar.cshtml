@@ -15,20 +15,20 @@
     </div>
 
     <div class="col-md-3">
-        <label asp-for="NomeEstado" class="form-label">Nome</label>
+        <label asp-for="NomeEstado" class="form-label">Nome*</label>
         <input asp-for="NomeEstado" class="form-control" required maxlength="40" />
         <span asp-validation-for="NomeEstado" class="text-danger"></span>
     </div>
 
     <div class="col-md-1">
-        <label asp-for="Uf" class="form-label">UF</label>
+        <label asp-for="Uf" class="form-label">UF*</label>
         <input asp-for="Uf" class="form-control" required />
         <span asp-validation-for="Uf" class="text-danger"></span>
 
     </div>
 
     <div class="col-md-3">
-        <label class="form-label">País</label>
+        <label class="form-label">País*</label>
         <div class="input-group">
             <input type="text" id="NomePaisSelecionado" class="form-control" placeholder="Nenhum país selecionado" readonly />
             <input type="hidden" asp-for="IdPais" id="IdPais" />

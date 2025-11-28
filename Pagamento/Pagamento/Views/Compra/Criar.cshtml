@@ -27,24 +27,24 @@
         <div class="card-body">
           <fieldset id="fieldset-dados-nota">
             <div class="row">
-                <div class="col-md-2"><label asp-for="Modelo" class="form-label"></label>
+                <div class="col-md-2"><label asp-for="Modelo" class="form-label">Modelo*</label>
                     <input asp-for="Modelo" class="form-control" />
                     <span asp-validation-for="Modelo" class="text-danger"></span>
                     </div>
-                <div class="col-md-2"><label asp-for="Serie" class="form-label"></label>
+                <div class="col-md-2"><label asp-for="Serie" class="form-label">Serie*</label>
                     <input asp-for="Serie" class="form-control" />
                     <span asp-validation-for="Serie" class="text-danger"></span>
                     </div>
-                <div class="col-md-2"><label asp-for="NumeroNota" class="form-label">Número da Nota</label>
+                <div class="col-md-2"><label asp-for="NumeroNota" class="form-label">Número da Nota*</label>
                     <input asp-for="NumeroNota" class="form-control" />
                      <span asp-validation-for="NumeroNota" class="text-danger"></span>
                     </div>
-               
-                <div class="col-md-6">
-                    <label class="form-label">Fornecedor</label>
+
+                  <div class="@(modo == "Criar" ? "col-md-5" : "col-md-3 col-lg-3")">
+                    <label class="form-label">Fornecedor*</label>
                     @if (modo == "Criar")
                         {
-                    <div class="input-group">
+                    <div class="input-group flex-nowrap">
                         <input type="number" id="fornecedor-id-input" class="form-control" placeholder="Digitar ID" style="max-width: 120px;" />
 
                         <button type="button" id="btn-buscar-por-id" class="btn btn-primary">Buscar por ID</button>
@@ -70,16 +70,16 @@
                         }
                 </div>
 
-                
+               
 
             </div>
             <div class="row mt-3">
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <label asp-for="DataEmissao" class="form-label"> Data de Emissao*</label>
                     <input asp-for="DataEmissao" type="date" class="form-control" id="DataEmissao" /> 
                 </div>
-                <div class="col-md-3">
-                    <label asp-for="DataChegada" class="form-label">Data de Chegada</label>
+                <div class="col-md-2">
+                    <label asp-for="DataChegada" class="form-label">Data de Chegada*</label>
                     <input asp-for="DataChegada" type="date" class="form-control" id="DataChegada" /> 
                 </div>
             </div>
@@ -95,7 +95,7 @@
                 {
                     <div class="row align-items-end gx-2">
                         <div class="col-md-auto">
-                    <label class="form-label">Produto</label>
+                    <label class="form-label">Produto*</label>
                     <div class="input-group">
                         <input type="number" id="produto-id-input" class="form-control" placeholder="Digitar ID..." style="max-width: 120px;" />
                         <button type="button" id="btn-buscar-produto-por-id" class="btn btn-primary">Buscar ID</button>
@@ -116,12 +116,12 @@
                 </div>
 
                 <div class="col-md-1">
-                    <label class="form-label">Quantidade</label>
+                    <label class="form-label">Quantidade*</label>
                     <input id="produto-quantidade" type="number" class="form-control" value="1" />
                 </div>
 
                 <div class="col-md-1">
-                    <label class="form-label">Valor Unitário</label>
+                    <label class="form-label">Valor Unitário*</label>
                     <input id="produto-valor" type="text" class="form-control" />
                 </div>
 
@@ -191,9 +191,9 @@
                 </div>
             <div>
                 <h5>Pagamento</h5><hr />
-                <label class="form-label">Condição de Pagamento</label>
+                <label class="form-label">Condição de Pagamento*</label>
                 <div class="row">
-                    <div class="col-md-8">
+                            <div class="@(modo == "Criar" ? "col-12 col-md-8" : "col-12 col-md-3 col-lg-2")">
                              <div class="input-group flex-grow-1">
                             <input type="text" id="NomeCondicaoCompra" class="form-control" readonly
                                        placeholder="@(isReadOnly ? "" : "Nenhuma condição selecionada")"
@@ -255,7 +255,23 @@
     </div>
 
    </fieldset>
-
+   
+    @if (modo == "Detalhes" && Model.Status == false)
+    {
+        <div class="card mt-3">
+            <div class="card-header bg-danger text-white">
+                Motivo do Cancelamento
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <label asp-for="Motivo_Cancelamento" class="form-label fw-bold"> Motivo</label>
+                        <textarea asp-for="Motivo_Cancelamento" class="form-control" rows="3" readonly></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
 
     @if (modo == "Cancelar")
     {
@@ -278,7 +294,7 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Voltar</button>
 
-                        <button type="button" class="btn btn-danger" id="btn-confirmar-envio-cancelamento">Confirmar Cancelamento</button>
+                        <button type="button" class="btn btn-danger" id="btn-confirmar-envio-cancelamento" disabled>Confirmar Cancelamento</button>
                     </div>
                 </div>
             </div>
@@ -289,7 +305,7 @@
    <div class="mt-4 text-end">
         @if (modo == "Criar")
         {
-            <button type="submit" class="btn btn-success">Salvar Compra</button>
+            <button type="button" class="btn btn-success" onclick="verificarParcelasAntesDeSalvar()">Salvar Compra</button>
             <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
         }
  else if (modo == "Detalhes") {
@@ -714,7 +730,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title text-danger" id="modalContaAvulsaExistenteLabel">
-                        <i class="bi bi-exclamation-triangle-fill"></i> Erro: Conflito de Chave Encontrado
+                        <i class="bi bi-exclamation-triangle-fill"></i> Conta a pagar encontrada
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
                 </div>
@@ -775,12 +791,35 @@
         </div>
     </div>
 </div>
+
 <div class="modal fade" id="modalNovaCondicaoCompra" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content" id="modalNovaCondicaoContentCompra">
         </div>
     </div>
 </div>
+
+    <div class="modal fade" id="modalAvisoParcelas" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title">
+                        <i class="bi bi-exclamation-triangle-fill"></i> Atenção
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="fw-bold">Não é possível salvar a compra.</p>
+                    <p>Você informou os dados financeiros, mas ainda não gerou as parcelas.</p>
+                    <p class="text-muted small">Clique no botão <b>"Gerar Parcelas"</b> na seção Financeiro antes de finalizar.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Entendi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 }
 
@@ -809,6 +848,52 @@
 
       if (modo == "Criar")
       {
+
+
+        function verificarParcelasAntesDeSalvar() {
+            var formJQuery = $('#form-compra');
+            var formNativo = document.getElementById('form-compra');
+
+            if (!formJQuery.valid()) {
+                return;
+            }
+
+            var qtdParcelas = document.getElementById('tabela-parcelas').children.length;
+
+            if (qtdParcelas === 0) {
+                var modalAviso = new bootstrap.Modal(document.getElementById('modalAvisoParcelas'));
+                modalAviso.show();
+            } else {
+                if (modo === "Criar") {
+                    formNativo.querySelectorAll('fieldset:disabled').forEach(fs => fs.disabled = false);
+                    formNativo.querySelectorAll('[disabled]').forEach(el => el.disabled = false);
+                }
+
+                const itens = [];
+                const linhas = document.getElementById('tabela-produtos')?.querySelectorAll('tr') || [];
+                linhas.forEach(l => {
+                    itens.push({
+                        ProdutoId: parseInt(l.dataset.produtoId),
+                        Quantidade: parseFloat(l.dataset.quantidade),
+                        ValorUnitario: parseFloat(l.dataset.valorUnitario)
+                    });
+                });
+
+                if (itens.length === 0) {
+                    alert('É necessário adicionar pelo menos um produto à nota.');
+                    return;
+                }
+
+                const hidden = document.getElementById('itens-json');
+                if (hidden) hidden.value = JSON.stringify(itens);
+
+                formNativo.submit();
+            }
+        }
+
+
+
+
 
             async function buscarEselecionarCondicaoPorId() {
                 const idInput = document.getElementById('condicao-id-input');
@@ -2267,73 +2352,56 @@
                 const el = document.getElementById(id);
                 if (el) el.addEventListener('input', atualizarTotais);
             });
-
-                          
-            const form = document.getElementById('form-compra');
-            if (form) {
-                form.addEventListener('submit', function (e) {
-
-                    if (modo === "Criar") {
-
-                        form.querySelectorAll('fieldset:disabled')
-                            .forEach(fs => fs.disabled = false);
-
-                                  
-                        form.querySelectorAll('[disabled]')
-                            .forEach(el => el.disabled = false);
-                    }
-
-
-
-                    const itens = [];
-                    const linhas = document.getElementById('tabela-produtos')?.querySelectorAll('tr') || [];
-                    linhas.forEach(l => {
-                        itens.push({
-                            ProdutoId: parseInt(l.dataset.produtoId),
-                            Quantidade: parseFloat(l.dataset.quantidade),
-                            ValorUnitario: parseFloat(l.dataset.valorUnitario)
-                        });
-                    });
-
-                    if (itens.length === 0) {
-                        alert('É necessário adicionar pelo menos um produto à nota.');
-                        e.preventDefault();
-                        return;
-                    }
-
-                    const hidden = document.getElementById('itens-json');
-                    if (hidden) hidden.value = JSON.stringify(itens);
-                });
-            }
+                    
+                                      
+                                                      
+                                      
+                      
+              
         });
 
       }
 
-
          if (modo === "Cancelar") {
 
-               document.addEventListener('DOMContentLoaded', function() {
-                   const form = document.getElementById('form-compra');
-                   const btnConfirmarModal = document.getElementById('btn-confirmar-envio-cancelamento');
-                   const motivoInput = document.getElementById('motivoCancelamentoInput');
+                       document.addEventListener('DOMContentLoaded', function() {
+                                      
+                    const form = document.getElementById('form-compra');
+                    const btnConfirmarModal = document.getElementById('btn-confirmar-envio-cancelamento');
+                    const motivoInput = document.getElementById('motivoCancelamentoInput');
+                    const contadorEl = document.getElementById('contador-caracteres');
 
-                   if (btnConfirmarModal && form && motivoInput) {
-                       btnConfirmarModal.addEventListener('click', function() {
-                           const motivo = motivoInput.value.trim();
+                    if (btnConfirmarModal && form && motivoInput) {
 
-                               
-                           if (motivo === "") {
-                               alert("Por favor, preencha o motivo do cancelamento.");
-                               motivoInput.focus();
-                               return;
-                           }
+                                      
+                        motivoInput.addEventListener('input', function() {
+                            const texto = this.value.trim();
+                            const qtdCaracteres = texto.length;
+                            if (contadorEl) contadorEl.textContent = qtdCaracteres;
 
-                                         
-                                               
-                           form.submit();
-                       });
-                   }
-               });
+                                            
+                            if (qtdCaracteres >= 20) {
+                                btnConfirmarModal.disabled = false;
+                            } else {
+                                btnConfirmarModal.disabled = true;
+                            }
+                        });
+
+                        btnConfirmarModal.addEventListener('click', function() {
+                            const motivo = motivoInput.value.trim();
+
+                                    
+                            if (motivo.length < 20) {
+                                alert("O motivo deve ter pelo menos 20 caracteres.");
+                                motivoInput.focus();
+                                return;
+                            }
+
+                                  
+                            form.submit();
+                        });
+                    }
+                });
 
            }             
     </script>

@@ -36,14 +36,14 @@
         </div>
 
         <div class="col-md-4 mb-3">
-            <label asp-for="Endereco" class="form-label">Endereço</label>
+            <label asp-for="Endereco" class="form-label">Endereço*</label>
             <input asp-for="Endereco" class="form-control" maxlength="40" />
             <span asp-validation-for="Endereco" class="text-danger"></span>
 
         </div>
 
         <div class="col-md-4 mb-3">
-            <label asp-for="Numero" class="form-label">Número</label>
+            <label asp-for="Numero" class="form-label">Número*</label>
             <input asp-for="Numero" class="form-control" />
             <span asp-validation-for="Numero" class="text-danger"></span>
         </div>
@@ -54,20 +54,20 @@
         </div>
 
         <div class="col-md-4 mb-3">
-            <label asp-for="Bairro" class="form-label">Bairro</label>
+            <label asp-for="Bairro" class="form-label">Bairro*</label>
             <input asp-for="Bairro" class="form-control" maxlength="40" />
             <span asp-validation-for="Bairro" class="text-danger"></span>
 
         </div>
 
         <div class="col-md-4 mb-3">
-            <label asp-for="Cep" class="form-label">CEP</label>
+            <label asp-for="Cep" class="form-label">CEP*</label>
             <input asp-for="Cep" class="form-control" />
             <span asp-validation-for="Cep" class="text-danger"></span>
         </div>
 
         <div class="col-md-4 mb-3">
-            <label class="form-label">Cidade</label>
+            <label class="form-label">Cidade*</label>
             <div class="input-group">
                 <input type="text" id="NomeCidadeSelecionada" class="form-control" placeholder="Nenhuma cidade selecionada" readonly />
                 <input type="hidden" asp-for="IdCidade" id="IdCidade" />
@@ -79,7 +79,7 @@
         </div>
 
         <div class="col-md-4 mb-3">
-            <label asp-for="DataNascimento_Fundacao" class="form-label">Data de Nascimento</label>
+            <label asp-for="DataNascimento_Fundacao" id="labelNascimentoFundacao" class="form-label">Data de Nascimento / Data de Fundação</label>
             <input asp-for="DataNascimento_Fundacao" type="date" class="form-control" />
             <span asp-validation-for="DataNascimento_Fundacao" class="text-danger"></span>
 
@@ -98,20 +98,20 @@
         </div>
 
         <div class="col-md-4 mb-3">
-            <label asp-for="Email" class="form-label">Email</label>
+            <label asp-for="Email" class="form-label">Email*</label>
             <input asp-for="Email" class="form-control" />
             <span asp-validation-for="Email" class="text-danger"></span>
         </div>
 
         <div class="col-md-4 mb-3">
-            <label asp-for="Telefone" class="form-label">Telefone</label>
+            <label asp-for="Telefone" class="form-label">Telefone*</label>
             <input asp-for="Telefone" class="form-control" />
             <span asp-validation-for="Telefone" class="text-danger"></span>
 
         </div>
 
         <div class="col-md-4 mb-3">
-            <label class="form-label">Condição de Pagamento</label>
+            <label class="form-label">Condição de Pagamento*</label>
             <div class="input-group">
                 <input type="text" id="NomeCondicaoSelecionada" class="form-control" placeholder="Nenhuma condição selecionada" readonly />
                 <input type="hidden" asp-for="IdCondPgto" id="IdCondPgto" />
@@ -294,17 +294,17 @@
 
         function atualizarLabels(tipo) {
             if (tipo === "Física") {
-                $('#labelNomeRazao').text("Nome");
-                $('#labelApelidoFantasia').text("Apelido");
-                $('#labelCpfCnpj').text("CPF");
-                $('#labelNascimentoFundacao').text("Data Nascimento");
-                $('#labelRgIe').text("RG");
+                $('#labelNomeRazao').text("Nome*");
+                $('#labelApelidoFantasia').text("Apelido*");
+                $('#labelCpfCnpj').text("CPF*");
+                $('#labelNascimentoFundacao').text("Data Nascimento*");
+                $('#labelRgIe').text("RG*");
             } else if (tipo === "Jurídica") {
-                $('#labelNomeRazao').text("Razão Social");
-                $('#labelApelidoFantasia').text("Nome Fantasia");
-                $('#labelCpfCnpj').text("CNPJ");
-                $('#labelNascimentoFundacao').text("Fundação");
-                $('#labelRgIe').text("Inscrição Estadual");
+                $('#labelNomeRazao').text("Razão Social*");
+                $('#labelApelidoFantasia').text("Nome Fantasia*");
+                $('#labelCpfCnpj').text("CNPJ*");
+                $('#labelNascimentoFundacao').text("Data de Fundação*");
+                $('#labelRgIe').text("Inscrição Estadual*");
             } 
         }
 
