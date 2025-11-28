@@ -3,12 +3,32 @@
   "WorkspaceRootPath": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|c:\\users\\user\\documents\\pratica profissional 2\\projeto-final\\pagamento\\pagamento\\views\\condicaopagamento\\criar.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|solutionrelative:pagamento\\views\\condicaopagamento\\criar.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|c:\\users\\user\\documents\\pratica profissional 2\\projeto-final\\pagamento\\pagamento\\views\\unidademedida\\criar.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|solutionrelative:pagamento\\views\\unidademedida\\criar.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|c:\\users\\user\\documents\\pratica profissional 2\\projeto-final\\pagamento\\pagamento\\views\\compra\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|solutionrelative:pagamento\\views\\compra\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|c:\\users\\user\\documents\\pratica profissional 2\\projeto-final\\pagamento\\pagamento\\views\\shared\\_validationscriptspartial.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|solutionrelative:pagamento\\views\\shared\\_validationscriptspartial.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|c:\\users\\user\\documents\\pratica profissional 2\\projeto-final\\pagamento\\pagamento\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|solutionrelative:pagamento\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|c:\\users\\user\\documents\\pratica profissional 2\\projeto-final\\pagamento\\pagamento\\views\\produto\\criar.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|solutionrelative:pagamento\\views\\produto\\criar.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|c:\\users\\user\\documents\\pratica profissional 2\\projeto-final\\pagamento\\pagamento\\views\\contaapagar\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|solutionrelative:pagamento\\views\\contaapagar\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|c:\\users\\user\\documents\\pratica profissional 2\\projeto-final\\pagamento\\pagamento\\views\\contaapagar\\criaravulsa.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|solutionrelative:pagamento\\views\\contaapagar\\criaravulsa.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|c:\\users\\user\\documents\\pratica profissional 2\\projeto-final\\pagamento\\pagamento\\views\\condicaopagamento\\criar.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|solutionrelative:pagamento\\views\\condicaopagamento\\criar.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|c:\\users\\user\\documents\\pratica profissional 2\\projeto-final\\pagamento\\pagamento\\views\\compra\\criar.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
@@ -31,22 +51,6 @@
       "RelativeMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|solutionrelative:pagamento\\models\\compra.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|c:\\users\\user\\documents\\pratica profissional 2\\projeto-final\\pagamento\\pagamento\\models\\cliente.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|solutionrelative:pagamento\\models\\cliente.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|c:\\users\\user\\documents\\pratica profissional 2\\projeto-final\\pagamento\\pagamento\\models\\cidade.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|solutionrelative:pagamento\\models\\cidade.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|c:\\users\\user\\documents\\pratica profissional 2\\projeto-final\\pagamento\\pagamento\\models\\categoria.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|solutionrelative:pagamento\\models\\categoria.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|c:\\users\\user\\documents\\pratica profissional 2\\projeto-final\\pagamento\\pagamento\\dao\\unidademedidadao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|solutionrelative:pagamento\\dao\\unidademedidadao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|c:\\users\\user\\documents\\pratica profissional 2\\projeto-final\\pagamento\\pagamento\\dao\\produtofornecedordao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|solutionrelative:pagamento\\dao\\produtofornecedordao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -55,8 +59,8 @@
       "RelativeMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|solutionrelative:pagamento\\dao\\produtodao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|c:\\users\\user\\documents\\pratica profissional 2\\projeto-final\\pagamento\\pagamento\\dao\\estadodao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|solutionrelative:pagamento\\dao\\estadodao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|c:\\users\\user\\documents\\pratica profissional 2\\projeto-final\\pagamento\\pagamento\\dao\\funcionariodao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|solutionrelative:pagamento\\dao\\funcionariodao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|c:\\users\\user\\documents\\pratica profissional 2\\projeto-final\\pagamento\\pagamento\\dao\\contaapagardao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -71,28 +75,20 @@
       "RelativeMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|solutionrelative:pagamento\\dao\\compradao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|c:\\users\\user\\documents\\pratica profissional 2\\projeto-final\\pagamento\\pagamento\\dao\\clientedao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|solutionrelative:pagamento\\dao\\clientedao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|c:\\users\\user\\documents\\pratica profissional 2\\projeto-final\\pagamento\\pagamento\\dao\\cidadedao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|solutionrelative:pagamento\\dao\\cidadedao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|c:\\users\\user\\documents\\pratica profissional 2\\projeto-final\\pagamento\\pagamento\\dao\\categoriadao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|solutionrelative:pagamento\\dao\\categoriadao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|c:\\users\\user\\documents\\pratica profissional 2\\projeto-final\\pagamento\\pagamento\\controllers\\produtocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|solutionrelative:pagamento\\controllers\\produtocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|c:\\users\\user\\documents\\pratica profissional 2\\projeto-final\\pagamento\\pagamento\\controllers\\paiscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|solutionrelative:pagamento\\controllers\\paiscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|c:\\users\\user\\documents\\pratica profissional 2\\projeto-final\\pagamento\\pagamento\\controllers\\marcacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|solutionrelative:pagamento\\controllers\\marcacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|c:\\users\\user\\documents\\pratica profissional 2\\projeto-final\\pagamento\\pagamento\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|solutionrelative:pagamento\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|c:\\users\\user\\documents\\pratica profissional 2\\projeto-final\\pagamento\\pagamento\\controllers\\funcionariocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|solutionrelative:pagamento\\controllers\\funcionariocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|c:\\users\\user\\documents\\pratica profissional 2\\projeto-final\\pagamento\\pagamento\\controllers\\fornecedorcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -107,20 +103,16 @@
       "RelativeMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|solutionrelative:pagamento\\controllers\\estadocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|c:\\users\\user\\documents\\pratica profissional 2\\projeto-final\\pagamento\\pagamento\\controllers\\contaapagarcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|solutionrelative:pagamento\\controllers\\contaapagarcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|c:\\users\\user\\documents\\pratica profissional 2\\projeto-final\\pagamento\\pagamento\\controllers\\condicaopagamentocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|solutionrelative:pagamento\\controllers\\condicaopagamentocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|c:\\users\\user\\documents\\pratica profissional 2\\projeto-final\\pagamento\\pagamento\\controllers\\compracontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|solutionrelative:pagamento\\controllers\\compracontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|c:\\users\\user\\documents\\pratica profissional 2\\projeto-final\\pagamento\\pagamento\\controllers\\clientecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|solutionrelative:pagamento\\controllers\\clientecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|c:\\users\\user\\documents\\pratica profissional 2\\projeto-final\\pagamento\\pagamento\\controllers\\cidadecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|solutionrelative:pagamento\\controllers\\cidadecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{E0BDF8DE-49F1-4A5A-973F-21DBB111A31D}|Pagamento\\Pagamento.csproj|c:\\users\\user\\documents\\pratica profissional 2\\projeto-final\\pagamento\\pagamento\\controllers\\categoriacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -140,57 +132,122 @@
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "Criar.cshtml",
-              "DocumentMoniker": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Views\\CondicaoPagamento\\Criar.cshtml",
-              "RelativeDocumentMoniker": "Pagamento\\Views\\CondicaoPagamento\\Criar.cshtml",
-              "ToolTip": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Views\\CondicaoPagamento\\Criar.cshtml",
-              "RelativeToolTip": "Pagamento\\Views\\CondicaoPagamento\\Criar.cshtml",
-              "ViewState": "AgIAAA4BAAAAAAAAAAAAADkAAAAEAAAAAAAAAA==",
+              "DocumentMoniker": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Views\\UnidadeMedida\\Criar.cshtml",
+              "RelativeDocumentMoniker": "Pagamento\\Views\\UnidadeMedida\\Criar.cshtml",
+              "ToolTip": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Views\\UnidadeMedida\\Criar.cshtml",
+              "RelativeToolTip": "Pagamento\\Views\\UnidadeMedida\\Criar.cshtml",
+              "ViewState": "AgIAACoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-28T20:31:10.798Z",
+              "WhenOpened": "2025-11-28T20:41:30.634Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "Index.cshtml",
-              "DocumentMoniker": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Views\\Compra\\Index.cshtml",
-              "RelativeDocumentMoniker": "Pagamento\\Views\\Compra\\Index.cshtml",
-              "ToolTip": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Views\\Compra\\Index.cshtml",
-              "RelativeToolTip": "Pagamento\\Views\\Compra\\Index.cshtml",
-              "ViewState": "AgIAAFQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Title": "_ValidationScriptsPartial.cshtml",
+              "DocumentMoniker": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Views\\Shared\\_ValidationScriptsPartial.cshtml",
+              "RelativeDocumentMoniker": "Pagamento\\Views\\Shared\\_ValidationScriptsPartial.cshtml",
+              "ToolTip": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Views\\Shared\\_ValidationScriptsPartial.cshtml",
+              "RelativeToolTip": "Pagamento\\Views\\Shared\\_ValidationScriptsPartial.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-28T20:31:05.657Z",
+              "WhenOpened": "2025-11-28T20:41:10.486Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "Criar.cshtml",
-              "DocumentMoniker": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Views\\Compra\\Criar.cshtml",
-              "RelativeDocumentMoniker": "Pagamento\\Views\\Compra\\Criar.cshtml",
-              "ToolTip": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Views\\Compra\\Criar.cshtml",
-              "RelativeToolTip": "Pagamento\\Views\\Compra\\Criar.cshtml",
-              "ViewState": "AgIAAAoCAAAAAAAAAAAewLMCAAAAAAAAAAAAAA==",
+              "Title": "_Layout.cshtml",
+              "DocumentMoniker": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Views\\Shared\\_Layout.cshtml",
+              "RelativeDocumentMoniker": "Pagamento\\Views\\Shared\\_Layout.cshtml",
+              "ToolTip": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Views\\Shared\\_Layout.cshtml",
+              "RelativeToolTip": "Pagamento\\Views\\Shared\\_Layout.cshtml",
+              "ViewState": "AgIAAFYAAAAAAAAAAAAAAFYAAAAEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-28T20:29:24.931Z",
+              "WhenOpened": "2025-11-28T20:41:02.795Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "_ModalCondicaoPagamento.cshtml",
-              "DocumentMoniker": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Views\\Compra\\_ModalCondicaoPagamento.cshtml",
-              "RelativeDocumentMoniker": "Pagamento\\Views\\Compra\\_ModalCondicaoPagamento.cshtml",
-              "ToolTip": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Views\\Compra\\_ModalCondicaoPagamento.cshtml",
-              "RelativeToolTip": "Pagamento\\Views\\Compra\\_ModalCondicaoPagamento.cshtml",
-              "ViewState": "AgIAAB4AAAAAAAAAAAAAAB0AAAAeAAAAAAAAAA==",
+              "Title": "Criar.cshtml",
+              "DocumentMoniker": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Views\\Produto\\Criar.cshtml",
+              "RelativeDocumentMoniker": "Pagamento\\Views\\Produto\\Criar.cshtml",
+              "ToolTip": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Views\\Produto\\Criar.cshtml",
+              "RelativeToolTip": "Pagamento\\Views\\Produto\\Criar.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-28T20:28:57.874Z",
+              "WhenOpened": "2025-11-28T20:41:00.075Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 4,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Views\\ContaAPagar\\Index.cshtml",
+              "RelativeDocumentMoniker": "Pagamento\\Views\\ContaAPagar\\Index.cshtml",
+              "ToolTip": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Views\\ContaAPagar\\Index.cshtml",
+              "RelativeToolTip": "Pagamento\\Views\\ContaAPagar\\Index.cshtml",
+              "ViewState": "AgIAAG8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-28T20:40:42.042Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "CriarAvulsa.cshtml",
+              "DocumentMoniker": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Views\\ContaAPagar\\CriarAvulsa.cshtml",
+              "RelativeDocumentMoniker": "Pagamento\\Views\\ContaAPagar\\CriarAvulsa.cshtml",
+              "ToolTip": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Views\\ContaAPagar\\CriarAvulsa.cshtml",
+              "RelativeToolTip": "Pagamento\\Views\\ContaAPagar\\CriarAvulsa.cshtml",
+              "ViewState": "AgIAAM0CAAAAAAAAAAAAAOsAAAALAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-28T20:40:06.955Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Criar.cshtml",
+              "DocumentMoniker": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Views\\CondicaoPagamento\\Criar.cshtml",
+              "RelativeDocumentMoniker": "Pagamento\\Views\\CondicaoPagamento\\Criar.cshtml",
+              "ToolTip": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Views\\CondicaoPagamento\\Criar.cshtml",
+              "RelativeToolTip": "Pagamento\\Views\\CondicaoPagamento\\Criar.cshtml",
+              "ViewState": "AgIAAAIBAAAAAAAAAAAAADkAAAADAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-28T20:39:56.051Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Criar.cshtml",
+              "DocumentMoniker": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Views\\Compra\\Criar.cshtml",
+              "RelativeDocumentMoniker": "Pagamento\\Views\\Compra\\Criar.cshtml",
+              "ToolTip": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Views\\Compra\\Criar.cshtml",
+              "RelativeToolTip": "Pagamento\\Views\\Compra\\Criar.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAGUAAAATAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-28T20:38:27.497Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "_ModalCondicaoPagamento.cshtml",
+              "DocumentMoniker": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Views\\Compra\\_ModalCondicaoPagamento.cshtml",
+              "RelativeDocumentMoniker": "Pagamento\\Views\\Compra\\_ModalCondicaoPagamento.cshtml",
+              "ToolTip": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Views\\Compra\\_ModalCondicaoPagamento.cshtml",
+              "RelativeToolTip": "Pagamento\\Views\\Compra\\_ModalCondicaoPagamento.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-28T20:38:04.225Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
               "Title": "ItemCompra.cs",
               "DocumentMoniker": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Models\\ItemCompra.cs",
               "RelativeDocumentMoniker": "Pagamento\\Models\\ItemCompra.cs",
@@ -198,280 +255,215 @@
               "RelativeToolTip": "Pagamento\\Models\\ItemCompra.cs",
               "ViewState": "AgIAAAsAAAAAAAAAAAAuwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-28T20:28:42.893Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "ContaAPagar.cs",
-              "DocumentMoniker": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Models\\ContaAPagar.cs",
-              "RelativeDocumentMoniker": "Pagamento\\Models\\ContaAPagar.cs",
-              "ToolTip": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Models\\ContaAPagar.cs",
-              "RelativeToolTip": "Pagamento\\Models\\ContaAPagar.cs",
-              "ViewState": "AgIAAEEAAAAAAAAAAAA6wBgAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-28T20:28:26.467Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "Compra.cs",
-              "DocumentMoniker": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Models\\Compra.cs",
-              "RelativeDocumentMoniker": "Pagamento\\Models\\Compra.cs",
-              "ToolTip": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Models\\Compra.cs",
-              "RelativeToolTip": "Pagamento\\Models\\Compra.cs",
-              "ViewState": "AgIAABEAAAAAAAAAAAAwwAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-28T20:28:15.536Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "Cliente.cs",
-              "DocumentMoniker": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Models\\Cliente.cs",
-              "RelativeDocumentMoniker": "Pagamento\\Models\\Cliente.cs",
-              "ToolTip": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Models\\Cliente.cs",
-              "RelativeToolTip": "Pagamento\\Models\\Cliente.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-28T20:28:14.658Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "Cidade.cs",
-              "DocumentMoniker": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Models\\Cidade.cs",
-              "RelativeDocumentMoniker": "Pagamento\\Models\\Cidade.cs",
-              "ToolTip": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Models\\Cidade.cs",
-              "RelativeToolTip": "Pagamento\\Models\\Cidade.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-28T20:28:13.93Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "Categoria.cs",
-              "DocumentMoniker": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Models\\Categoria.cs",
-              "RelativeDocumentMoniker": "Pagamento\\Models\\Categoria.cs",
-              "ToolTip": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Models\\Categoria.cs",
-              "RelativeToolTip": "Pagamento\\Models\\Categoria.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-28T20:28:13.163Z",
+              "WhenOpened": "2025-11-28T20:37:50.304Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 10,
-              "Title": "UnidadeMedidaDAO.cs",
-              "DocumentMoniker": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\DAO\\UnidadeMedidaDAO.cs",
-              "RelativeDocumentMoniker": "Pagamento\\DAO\\UnidadeMedidaDAO.cs",
-              "ToolTip": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\DAO\\UnidadeMedidaDAO.cs",
-              "RelativeToolTip": "Pagamento\\DAO\\UnidadeMedidaDAO.cs",
-              "ViewState": "AgIAACUAAAAAAAAAAAAgwAAAAAAAAAAAAAAAAA==",
+              "Title": "ContaAPagar.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Models\\ContaAPagar.cs",
+              "RelativeDocumentMoniker": "Pagamento\\Models\\ContaAPagar.cs",
+              "ToolTip": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Models\\ContaAPagar.cs",
+              "RelativeToolTip": "Pagamento\\Models\\ContaAPagar.cs",
+              "ViewState": "AgIAADoAAAAAAAAAAAAUwBsAAAAHAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-28T20:28:08.266Z",
+              "WhenOpened": "2025-11-28T20:37:29.219Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 11,
-              "Title": "ProdutoFornecedorDAO.cs",
-              "DocumentMoniker": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\DAO\\ProdutoFornecedorDAO.cs",
-              "RelativeDocumentMoniker": "Pagamento\\DAO\\ProdutoFornecedorDAO.cs",
-              "ToolTip": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\DAO\\ProdutoFornecedorDAO.cs",
-              "RelativeToolTip": "Pagamento\\DAO\\ProdutoFornecedorDAO.cs",
-              "ViewState": "AgIAAH8AAAAAuLS0tLTwvwAAAAAAAAAAAAAAAA==",
+              "Title": "Compra.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Models\\Compra.cs",
+              "RelativeDocumentMoniker": "Pagamento\\Models\\Compra.cs",
+              "ToolTip": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Models\\Compra.cs",
+              "RelativeToolTip": "Pagamento\\Models\\Compra.cs",
+              "ViewState": "AgIAAC8AAAAAAAAAAAAqwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-28T20:27:56.898Z",
+              "WhenOpened": "2025-11-28T20:37:21.866Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 12,
-              "Title": "ProdutoDAO.cs",
-              "DocumentMoniker": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\DAO\\ProdutoDAO.cs",
-              "RelativeDocumentMoniker": "Pagamento\\DAO\\ProdutoDAO.cs",
-              "ToolTip": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\DAO\\ProdutoDAO.cs",
-              "RelativeToolTip": "Pagamento\\DAO\\ProdutoDAO.cs",
-              "ViewState": "AgIAAA8BAAAAAAAAAAAMwAAAAAAAAAAAAAAAAA==",
+              "Title": "ProdutoFornecedorDAO.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\DAO\\ProdutoFornecedorDAO.cs",
+              "RelativeDocumentMoniker": "Pagamento\\DAO\\ProdutoFornecedorDAO.cs",
+              "ToolTip": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\DAO\\ProdutoFornecedorDAO.cs",
+              "RelativeToolTip": "Pagamento\\DAO\\ProdutoFornecedorDAO.cs",
+              "ViewState": "AgIAAGsAAAAAAAAAAAAewAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-28T20:27:46.17Z",
+              "WhenOpened": "2025-11-28T20:37:08.833Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 13,
-              "Title": "EstadoDAO.cs",
-              "DocumentMoniker": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\DAO\\EstadoDAO.cs",
-              "RelativeDocumentMoniker": "Pagamento\\DAO\\EstadoDAO.cs",
-              "ToolTip": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\DAO\\EstadoDAO.cs",
-              "RelativeToolTip": "Pagamento\\DAO\\EstadoDAO.cs",
-              "ViewState": "AgIAADQAAAAAAAAAAAAgwAAAAAAAAAAAAAAAAA==",
+              "Title": "ProdutoDAO.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\DAO\\ProdutoDAO.cs",
+              "RelativeDocumentMoniker": "Pagamento\\DAO\\ProdutoDAO.cs",
+              "ToolTip": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\DAO\\ProdutoDAO.cs",
+              "RelativeToolTip": "Pagamento\\DAO\\ProdutoDAO.cs",
+              "ViewState": "AgIAAPkAAAAAAAAAAAAMwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-28T20:27:40.929Z",
+              "WhenOpened": "2025-11-28T20:37:00.577Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 14,
-              "Title": "ContaAPagarDAO.cs",
-              "DocumentMoniker": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\DAO\\ContaAPagarDAO.cs",
-              "RelativeDocumentMoniker": "Pagamento\\DAO\\ContaAPagarDAO.cs",
-              "ToolTip": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\DAO\\ContaAPagarDAO.cs",
-              "RelativeToolTip": "Pagamento\\DAO\\ContaAPagarDAO.cs",
-              "ViewState": "AgIAAGsAAAAAKioqKmovwAAAAAAAAAAAAAAAAA==",
+              "Title": "FuncionarioDAO.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\DAO\\FuncionarioDAO.cs",
+              "RelativeDocumentMoniker": "Pagamento\\DAO\\FuncionarioDAO.cs",
+              "ToolTip": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\DAO\\FuncionarioDAO.cs",
+              "RelativeToolTip": "Pagamento\\DAO\\FuncionarioDAO.cs",
+              "ViewState": "AgIAADoAAAAAAAAAAAAgwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-28T20:27:29.234Z",
+              "WhenOpened": "2025-11-28T20:36:58.117Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 15,
-              "Title": "CondicaoPagamentoDAO.cs",
-              "DocumentMoniker": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\DAO\\CondicaoPagamentoDAO.cs",
-              "RelativeDocumentMoniker": "Pagamento\\DAO\\CondicaoPagamentoDAO.cs",
-              "ToolTip": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\DAO\\CondicaoPagamentoDAO.cs",
-              "RelativeToolTip": "Pagamento\\DAO\\CondicaoPagamentoDAO.cs",
-              "ViewState": "AgIAAIQAAAAAAAAAAAAMwAAAAAAAAAAAAAAAAA==",
+              "Title": "ContaAPagarDAO.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\DAO\\ContaAPagarDAO.cs",
+              "RelativeDocumentMoniker": "Pagamento\\DAO\\ContaAPagarDAO.cs",
+              "ToolTip": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\DAO\\ContaAPagarDAO.cs",
+              "RelativeToolTip": "Pagamento\\DAO\\ContaAPagarDAO.cs",
+              "ViewState": "AgIAAEABAAAAAAAAAAAuwA0AAAAqAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-28T20:27:25.275Z",
+              "WhenOpened": "2025-11-28T20:36:36.584Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 16,
-              "Title": "CompraDAO.cs",
-              "DocumentMoniker": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\DAO\\CompraDAO.cs",
-              "RelativeDocumentMoniker": "Pagamento\\DAO\\CompraDAO.cs",
-              "ToolTip": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\DAO\\CompraDAO.cs",
-              "RelativeToolTip": "Pagamento\\DAO\\CompraDAO.cs",
-              "ViewState": "AgIAALMBAAAAtLS0tLQrwAAAAAAAAAAAAAAAAA==",
+              "Title": "CondicaoPagamentoDAO.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\DAO\\CondicaoPagamentoDAO.cs",
+              "RelativeDocumentMoniker": "Pagamento\\DAO\\CondicaoPagamentoDAO.cs",
+              "ToolTip": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\DAO\\CondicaoPagamentoDAO.cs",
+              "RelativeToolTip": "Pagamento\\DAO\\CondicaoPagamentoDAO.cs",
+              "ViewState": "AgIAAHwAAAAAAAAAAAAMwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-28T20:27:17.434Z",
+              "WhenOpened": "2025-11-28T20:36:33.444Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 17,
-              "Title": "CategoriaDAO.cs",
-              "DocumentMoniker": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\DAO\\CategoriaDAO.cs",
-              "RelativeDocumentMoniker": "Pagamento\\DAO\\CategoriaDAO.cs",
-              "ToolTip": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\DAO\\CategoriaDAO.cs",
-              "RelativeToolTip": "Pagamento\\DAO\\CategoriaDAO.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Title": "CompraDAO.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\DAO\\CompraDAO.cs",
+              "RelativeDocumentMoniker": "Pagamento\\DAO\\CompraDAO.cs",
+              "ToolTip": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\DAO\\CompraDAO.cs",
+              "RelativeToolTip": "Pagamento\\DAO\\CompraDAO.cs",
+              "ViewState": "AgIAAKoBAAAAAAAAAAAvwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-28T20:27:16.528Z",
+              "WhenOpened": "2025-11-28T20:36:14.351Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 18,
-              "Title": "ProdutoController.cs",
-              "DocumentMoniker": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Controllers\\ProdutoController.cs",
-              "RelativeDocumentMoniker": "Pagamento\\Controllers\\ProdutoController.cs",
-              "ToolTip": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Controllers\\ProdutoController.cs",
-              "RelativeToolTip": "Pagamento\\Controllers\\ProdutoController.cs",
-              "ViewState": "AgIAABoBAAAAAAAAAAAAALcAAAAkAAAAAAAAAA==",
+              "Title": "ClienteDAO.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\DAO\\ClienteDAO.cs",
+              "RelativeDocumentMoniker": "Pagamento\\DAO\\ClienteDAO.cs",
+              "ToolTip": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\DAO\\ClienteDAO.cs",
+              "RelativeToolTip": "Pagamento\\DAO\\ClienteDAO.cs",
+              "ViewState": "AgIAAM4AAAAAoKCgoKALwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-28T20:26:47.706Z",
+              "WhenOpened": "2025-11-28T20:36:10.927Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 19,
-              "Title": "PaisController.cs",
-              "DocumentMoniker": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Controllers\\PaisController.cs",
-              "RelativeDocumentMoniker": "Pagamento\\Controllers\\PaisController.cs",
-              "ToolTip": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Controllers\\PaisController.cs",
-              "RelativeToolTip": "Pagamento\\Controllers\\PaisController.cs",
-              "ViewState": "AgIAAFEAAAAAr66urq4XwAAAAAAAAAAAAAAAAA==",
+              "Title": "CidadeDAO.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\DAO\\CidadeDAO.cs",
+              "RelativeDocumentMoniker": "Pagamento\\DAO\\CidadeDAO.cs",
+              "ToolTip": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\DAO\\CidadeDAO.cs",
+              "RelativeToolTip": "Pagamento\\DAO\\CidadeDAO.cs",
+              "ViewState": "AgIAAKsAAAAAAAAAAAAMwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-28T20:26:45.211Z",
+              "WhenOpened": "2025-11-28T20:36:07.727Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 20,
-              "Title": "MarcaController.cs",
-              "DocumentMoniker": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Controllers\\MarcaController.cs",
-              "RelativeDocumentMoniker": "Pagamento\\Controllers\\MarcaController.cs",
-              "ToolTip": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Controllers\\MarcaController.cs",
-              "RelativeToolTip": "Pagamento\\Controllers\\MarcaController.cs",
-              "ViewState": "AgIAAE4AAAAAXFpaWloOwAAAAAAAAAAAAAAAAA==",
+              "Title": "CategoriaDAO.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\DAO\\CategoriaDAO.cs",
+              "RelativeDocumentMoniker": "Pagamento\\DAO\\CategoriaDAO.cs",
+              "ToolTip": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\DAO\\CategoriaDAO.cs",
+              "RelativeToolTip": "Pagamento\\DAO\\CategoriaDAO.cs",
+              "ViewState": "AgIAAGEAAAAAAAAAAAAMwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-28T20:26:42.729Z",
+              "WhenOpened": "2025-11-28T20:36:04.471Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 21,
-              "Title": "HomeController.cs",
-              "DocumentMoniker": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Controllers\\HomeController.cs",
-              "RelativeDocumentMoniker": "Pagamento\\Controllers\\HomeController.cs",
-              "ToolTip": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Controllers\\HomeController.cs",
-              "RelativeToolTip": "Pagamento\\Controllers\\HomeController.cs",
-              "ViewState": "AgIAABUAAABARkZGRgY7wAAAAAAAAAAAAAAAAA==",
+              "Title": "ProdutoController.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Controllers\\ProdutoController.cs",
+              "RelativeDocumentMoniker": "Pagamento\\Controllers\\ProdutoController.cs",
+              "ToolTip": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Controllers\\ProdutoController.cs",
+              "RelativeToolTip": "Pagamento\\Controllers\\ProdutoController.cs",
+              "ViewState": "AgIAAPwAAAAAAAAAAAAMwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-28T20:26:40.593Z",
+              "WhenOpened": "2025-11-28T20:35:53.44Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 22,
-              "Title": "FuncionarioController.cs",
-              "DocumentMoniker": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Controllers\\FuncionarioController.cs",
-              "RelativeDocumentMoniker": "Pagamento\\Controllers\\FuncionarioController.cs",
-              "ToolTip": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Controllers\\FuncionarioController.cs",
-              "RelativeToolTip": "Pagamento\\Controllers\\FuncionarioController.cs",
-              "ViewState": "AgIAAIIAAAAAGBgYGJgpwAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-28T20:26:36.978Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 23,
               "Title": "FornecedorController.cs",
               "DocumentMoniker": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Controllers\\FornecedorController.cs",
               "RelativeDocumentMoniker": "Pagamento\\Controllers\\FornecedorController.cs",
               "ToolTip": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Controllers\\FornecedorController.cs",
               "RelativeToolTip": "Pagamento\\Controllers\\FornecedorController.cs",
-              "ViewState": "AgIAAPUAAAAAAAAAAAAewAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAOIAAAAAAAAAAAAMwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-28T20:26:21.106Z",
+              "WhenOpened": "2025-11-28T20:35:42.671Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 24,
+              "DocumentIndex": 23,
               "Title": "FormaPagamentoController.cs",
               "DocumentMoniker": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Controllers\\FormaPagamentoController.cs",
               "RelativeDocumentMoniker": "Pagamento\\Controllers\\FormaPagamentoController.cs",
               "ToolTip": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Controllers\\FormaPagamentoController.cs",
               "RelativeToolTip": "Pagamento\\Controllers\\FormaPagamentoController.cs",
-              "ViewState": "AgIAADIAAAAAAAAAAAAkwAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAFIAAAAAAAAAAAAYwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-28T20:26:18.291Z",
+              "WhenOpened": "2025-11-28T20:35:35.353Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 25,
+              "DocumentIndex": 24,
               "Title": "EstadoController.cs",
               "DocumentMoniker": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Controllers\\EstadoController.cs",
               "RelativeDocumentMoniker": "Pagamento\\Controllers\\EstadoController.cs",
               "ToolTip": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Controllers\\EstadoController.cs",
               "RelativeToolTip": "Pagamento\\Controllers\\EstadoController.cs",
-              "ViewState": "AgIAAHcAAAAAAAAAAAAMwAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAHgAAAAAAAAAAAAMwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-28T20:26:14.037Z",
+              "WhenOpened": "2025-11-28T20:35:31.873Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
+              "Title": "ContaAPagarController.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Controllers\\ContaAPagarController.cs",
+              "RelativeDocumentMoniker": "Pagamento\\Controllers\\ContaAPagarController.cs",
+              "ToolTip": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Controllers\\ContaAPagarController.cs",
+              "RelativeToolTip": "Pagamento\\Controllers\\ContaAPagarController.cs",
+              "ViewState": "AgIAAOAAAAAAAAAAAAAMwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-28T20:35:22.113Z",
               "EditorCaption": ""
             },
             {
@@ -482,9 +474,9 @@
               "RelativeDocumentMoniker": "Pagamento\\Controllers\\CondicaoPagamentoController.cs",
               "ToolTip": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Controllers\\CondicaoPagamentoController.cs",
               "RelativeToolTip": "Pagamento\\Controllers\\CondicaoPagamentoController.cs",
-              "ViewState": "AgIAAHoAAAAAAAAAAAAcwAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAMYAAAAAAAAAAAAewAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-28T20:25:50.899Z",
+              "WhenOpened": "2025-11-28T20:35:13.146Z",
               "EditorCaption": ""
             },
             {
@@ -495,48 +487,22 @@
               "RelativeDocumentMoniker": "Pagamento\\Controllers\\CompraController.cs",
               "ToolTip": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Controllers\\CompraController.cs",
               "RelativeToolTip": "Pagamento\\Controllers\\CompraController.cs",
-              "ViewState": "AgIAAPgAAAAAAAAAAAAAwAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAKEAAAAAAAAAAAApwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-28T20:25:38.134Z",
+              "WhenOpened": "2025-11-28T20:35:00.197Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 28,
-              "Title": "ClienteController.cs",
-              "DocumentMoniker": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Controllers\\ClienteController.cs",
-              "RelativeDocumentMoniker": "Pagamento\\Controllers\\ClienteController.cs",
-              "ToolTip": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Controllers\\ClienteController.cs",
-              "RelativeToolTip": "Pagamento\\Controllers\\ClienteController.cs",
-              "ViewState": "AgIAAJYAAAAAAAAAAIAwwAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-28T20:25:33.571Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 29,
-              "Title": "CidadeController.cs",
-              "DocumentMoniker": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Controllers\\CidadeController.cs",
-              "RelativeDocumentMoniker": "Pagamento\\Controllers\\CidadeController.cs",
-              "ToolTip": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Controllers\\CidadeController.cs",
-              "RelativeToolTip": "Pagamento\\Controllers\\CidadeController.cs",
-              "ViewState": "AgIAAIsAAAAAAAAAAAAMwAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-28T20:25:29.699Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 30,
               "Title": "CategoriaController.cs",
               "DocumentMoniker": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Controllers\\CategoriaController.cs",
               "RelativeDocumentMoniker": "Pagamento\\Controllers\\CategoriaController.cs",
               "ToolTip": "C:\\Users\\User\\Documents\\Pratica Profissional 2\\Projeto-Final\\Pagamento\\Pagamento\\Controllers\\CategoriaController.cs",
               "RelativeToolTip": "Pagamento\\Controllers\\CategoriaController.cs",
-              "ViewState": "AgIAAE0AAAAAenl5efkcwAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAEEAAAAAAAAAAAAuwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-28T20:25:25.892Z",
+              "WhenOpened": "2025-11-28T20:34:56.129Z",
               "EditorCaption": ""
             }
           ]

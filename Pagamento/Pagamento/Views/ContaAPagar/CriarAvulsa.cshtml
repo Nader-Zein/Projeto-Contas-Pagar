@@ -1,0 +1,731 @@
+﻿@model Pagamento.Models.ContaAPagar
+
+@{
+    string modo = ViewData["Modo"] as string ?? "Criar";
+    ViewData["Title"] = (modo == "Criar") ? "Cadastro de Conta a Pagar" :
+                    (modo == "Baixar") ? "Baixa de Conta a Pagar" :
+                    (modo == "Cancelar") ? "Cancelamento de Conta a Pagar" :
+                    "Detalhes da Conta";
+
+    bool isCriar = (modo == "Criar");
+    bool isBaixar = (modo == "Baixar");
+    bool isCancelar = (modo == "Cancelar");
+    bool isDetalhes = (modo == "Detalhes");
+    bool isReadOnly = (isBaixar || isCancelar || isDetalhes);
+}
+
+<h1>@ViewData["Title"]</h1>
+<hr />
+
+<div class="row">
+    <div class="col-md-10">
+        <form asp-action="@(isCriar ? "CriarAvulsa" : (isBaixar ? "Baixar" : "Cancelar"))" method="post" id="form-conta-pagar">
+            @Html.AntiForgeryToken()
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <input type="hidden" asp-for="FornecedorId" id="FornecedorId" />
+            <input type="hidden" asp-for="IdFormaPgto" id="IdFormaPgto" />
+
+            @if (isBaixar || isCancelar || isDetalhes)
+            {
+                <input type="hidden" asp-for="Modelo" />
+                <input type="hidden" asp-for="Serie" />
+                <input type="hidden" asp-for="NumeroNota" />
+                <input type="hidden" asp-for="NumeroParcela" />
+            }
+
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span>Dados da Conta</span>
+                    <div class="form-check form-switch">
+                        <input asp-for="Status" class="form-check-input" type="checkbox" role="switch" disabled="@isReadOnly">
+                        <label asp-for="Status" class="form-check-label">Ativo</label>
+                    </div>
+                </div>
+                <div class="card-body">
+
+                    <div class="row mb-3">
+                        <div class="col-md-2">
+                            <label asp-for="Modelo" class="form-label">Modelo</label>
+                            <input asp-for="Modelo" class="form-control" readonly="@isReadOnly" />
+                        </div>
+                        <div class="col-md-2">
+                            <label asp-for="Serie" class="form-label">Série</label>
+                            <input asp-for="Serie" class="form-control" readonly="@isReadOnly" />
+                        </div>
+                        <div class="col-md-2">
+                            <label asp-for="NumeroNota" class="form-label">Nº Nota</label>
+                            <input asp-for="NumeroNota" class="form-control" type="number" readonly="@isReadOnly" />
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label asp-for="FornecedorId" class="form-label">Fornecedor</label>
+                            <div class="input-group">
+
+                                <input type="number" id="FornecedorIdInput" class="form-control" placeholder="ID" style="max-width: 80px;" disabled="@isReadOnly" />
+                                <button class="btn btn-primary" type="button" id="btnBuscarFornecedorPorId" disabled="@isReadOnly">Buscar ID</button>
+                                <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#modalFornecedor" disabled="@isReadOnly">Buscar</button>
+                            
+                            
+                               <input type="text" id="NomeFornecedor" asp-for="NomeFornecedor" class="form-control" placeholder="Nenhum fornecedor selecionado" readonly />
+                                
+                                
+                                
+                            </div>
+                            <span asp-validation-for="FornecedorId" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="DataEmissao" class="form-label">Data de Emissão</label>
+                            <input asp-for="DataEmissao" type="date" class="form-control" readonly="@isReadOnly" />
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="DataVencimento" class="form-label">Data de Vencimento</label>
+                            <input asp-for="DataVencimento" type="date" class="form-control" id="DataVencimento" readonly="@isReadOnly" />
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="ValorParcela" class="form-label">Valor da Parcela</label>
+                            <input asp-for="ValorParcela" class="form-control" type="number" step="0.01" id="ValorParcela" readonly="@isReadOnly" />
+                            <span asp-validation-for="ValorParcela" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="NumeroParcela" class="form-label">Número da Parcela</label>
+                            <input asp-for="NumeroParcela" class="form-control" type="number" readonly="@isReadOnly" />
+                            <span asp-validation-for="NumeroParcela" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            
+
+            @*           *@
+            <div class="card mt-3">
+                <div class="card-header">
+                    Termos e Forma de Pagamento
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label asp-for="Juros" class="form-label">Juros (%)</label>
+                            @*         *@
+                            <input asp-for="Juros" class="form-control" type="number" step="0.01" placeholder="0,00" id="Juros" disabled="@(isCancelar || isDetalhes)" />
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="Multa" class="form-label">Multa (%)</label>
+                            <input asp-for="Multa" class="form-control" type="number" step="0.01" placeholder="0,00" id="Multa" disabled="@(isCancelar || isDetalhes)" />
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="Desconto" class="form-label">Desconto (%)</label>
+                            <input asp-for="Desconto" class="form-control" type="number" step="0.01" placeholder="0,00" id="Desconto" disabled="@(isCancelar || isDetalhes)" />
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-8">
+                            <label asp-for="IdFormaPgto" class="form-label">Forma de Pagamento</label>
+                            <div class="input-group">
+                                
+                            
+                                <input type="number" id="FormaPgtoIdInput" class="form-control" placeholder="ID" style="max-width: 80px;" disabled="@(isCancelar || isDetalhes)" />
+                                <button class="btn btn-primary" type="button" id="btnBuscarFormaPgtoPorId" disabled="@(isCancelar || isDetalhes)">Buscar ID</button>
+
+                                <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#modalFormaPagamento" disabled="@(isCancelar || isDetalhes)">Buscar</button>
+                                <input type="text" id="NomeFormaPgto" asp-for="NomeFormaPgto" class="form-control" placeholder="Nenhuma forma de pagamento selecionada" readonly />
+                                
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @if (isCancelar)
+            {
+                <input type="hidden" asp-for="Motivo_Cancelamento" id="Motivo_Cancelamento_Hidden" />
+            }
+            
+
+            @if (isCancelar)
+            {
+                <div class="modal fade" id="modalMotivoCancelamento" tabindex="-1" aria-labelledby="modalMotivoLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalMotivoLabel">Motivo do Cancelamento</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Por favor, descreva o motivo do cancelamento desta compra:</p>
+
+                                <textarea class="form-control"
+                                      id="motivoCancelamentoInput"
+                                      
+                                      rows="4"
+                                      placeholder="O motivo é obrigatório..."></textarea>
+
+                                <div id="validation-motivo-modal" class="text-danger mt-2" style="display: none;">
+                                    O motivo é obrigatório.
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Voltar</button>
+
+                                <button type="button" class="btn btn-danger" id="btn-confirmar-envio-cancelamento">Confirmar Cancelamento</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+
+
+            @*            *@
+            @if (isBaixar || (isDetalhes && Model.Situacao == "PAGO"))
+            {
+                <div class="card mt-3">
+                    <div class="card-header bg-primary text-white">
+                        Dados da Baixa (Pagamento)
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="DataPagamento" class="form-label fw-bold">Data de Pagamento</label>
+                                <input asp-for="DataPagamento" type="date" class="form-control" id="DataPagamento" readonly="@isDetalhes" />
+                                <span asp-validation-for="DataPagamento" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="ValorPago" class="form-label fw-bold">Valor Pago (Calculado)</label>
+
+                                <input class="form-control" type="text" id="ValorPagoDisplay" readonly />
+
+                                <input asp-for="ValorPago" type="hidden" id="ValorPagoHidden" />
+
+                                <span asp-validation-for="ValorPago" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+
+           
+            @if (isDetalhes && Model.Status == false)
+            {
+                <div class="card mt-3">
+                    <div class="card-header bg-danger text-white">
+                        Motivo do Cancelamento
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <label asp-for="Motivo_Cancelamento" class="form-label fw-bold"> Motivo</label>
+                                <textarea asp-for="Motivo_Cancelamento" class="form-control" rows="3" readonly></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+           
+            <div class="card mt-3">
+                <div class="card-footer text-end">
+                    <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+
+                    @if (isCriar)
+                    {
+                        <button type="submit" class="btn btn-success">Salvar Conta</button>
+                    }
+                    @if (isBaixar)
+                    {
+                        <button type="submit" class="btn btn-primary">Confirmar Baixa</button>
+                    }
+                     @if (isCancelar)
+                    {
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalMotivoCancelamento">
+                            Confirmar Cancelamento
+                        </button>
+                    }
+                    
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modalFornecedor" tabindex="-1">
+
+    <div class="modal-dialog modal-lg">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">Selecionar Fornecedor</h5>
+
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+
+            </div>
+
+            <div class="modal-body">
+
+                <input type="text" id="filtroFornecedor" class="form-control mb-3" placeholder="Digite para buscar..." onkeyup="filtrarTabelaFornecedor()" />
+
+                <table class="table table-bordered table-hover" id="tabelaFornecedores">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>ID</th>
+
+                            <th>Nome</th>
+
+                            <th>Ação</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var fornecedor in (List<Fornecedor>)ViewBag.Fornecedores)
+
+                        {
+
+                            <tr>
+
+                                <td>@fornecedor.IdPessoa</td>
+
+                                <td>@fornecedor.Nome_RazaoSocial</td>
+
+                                <td>
+
+                                    <button type="button" class="btn btn-sm btn-primary"
+                                            onclick="selecionarFornecedor(@fornecedor.IdPessoa, '@fornecedor.Nome_RazaoSocial.Replace("'", "\\'")')">
+
+                                        Selecionar
+
+                                    </button>
+
+                                </td>
+
+                            </tr>
+
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<div class="modal fade" id="modalFormaPagamento" tabindex="-1">
+
+    <div class="modal-dialog modal-lg">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">Selecionar Forma de Pagamento</h5>
+
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+
+            </div>
+
+            <div class="modal-body">
+
+                <input type="text" id="filtroFormaPgto" class="form-control mb-3" placeholder="Digite para buscar..." onkeyup="filtrarTabelaFormaPgto()" />
+
+                <table class="table table-bordered table-hover" id="tabelaFormasPagamento">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>ID</th>
+
+                            <th>Descrição</th>
+
+                            <th>Ação</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var forma in (List<FormaPagamento>)ViewBag.FormasPagamento)
+
+                        {
+
+                            <tr>
+
+                                <td>@forma.IdFormaPgto</td>
+
+                                <td>@forma.Descricao</td>
+
+                                <td>
+
+                                    <button type="button" class="btn btn-sm btn-primary"
+                                            onclick="selecionarFormaPgto(@forma.IdFormaPgto, '@forma.Descricao.Replace("'", "\\'")')">
+
+                                        Selecionar
+
+                                    </button>
+
+                                </td>
+
+                            </tr>
+
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+
+
+            function hideModalById(id) {
+          const el = document.getElementById(id);
+          if (!el) return;
+          const inst = bootstrap.Modal.getInstance(el);
+          if (inst) inst.hide();             
+        }
+
+            function selecionarFornecedor(id, nome) {
+                document.getElementById('FornecedorId').value = id;
+                document.getElementById('NomeFornecedor').value = nome;
+                hideModalById('modalFornecedor');
+            }
+
+            function filtrarTabelaFornecedor() {
+                var filtro = document.getElementById("filtroFornecedor").value.toLowerCase();
+                document.querySelectorAll("#tabelaFornecedores tbody tr").forEach(function(linha) {
+                    var nome = linha.cells[1].textContent.toLowerCase();
+                    linha.style.display = nome.includes(filtro) ? "" : "none";
+                });
+            }
+
+            function selecionarFormaPgto(id, nome) {
+                document.getElementById('IdFormaPgto').value = id;
+                document.getElementById('NomeFormaPgto').value = nome;
+                hideModalById('modalFormaPagamento');
+            }
+
+            function filtrarTabelaFormaPgto() {
+                var filtro = document.getElementById("filtroFormaPgto").value.toLowerCase();
+                document.querySelectorAll("#tabelaFormasPagamento tbody tr").forEach(function(linha) {
+                    var nome = linha.cells[1].textContent.toLowerCase();
+                    linha.style.display = nome.includes(filtro) ? "" : "none";
+                });
+            }
+
+        async function buscarFornecedorPorId() {
+            const idInput = document.getElementById('FornecedorIdInput');
+            const id = parseInt(idInput.value);
+
+            if (!id || id <= 0) {
+                alert('Por favor, digite um ID de fornecedor válido.');
+                return;
+            }
+
+            try {
+                const response = await fetch(`@Url.Action("BuscarPorIdJSON", "Fornecedor")?id=${id}`);
+
+                if (!response.ok) {
+                    alert('Fornecedor não encontrado.');
+                    return;
+                }
+
+                const fornecedor = await response.json();
+
+                selecionarFornecedor(fornecedor.idPessoa, fornecedor.nome);
+                idInput.value = '';       
+
+            } catch (error) {
+                console.error('Erro ao buscar fornecedor por ID:', error);
+                alert('Ocorreu um erro de comunicação.');
+            }
+        }
+
+       
+
+        async function buscarFormaPgtoPorId() {
+            const idInput = document.getElementById('FormaPgtoIdInput');
+            const id = parseInt(idInput.value);
+
+            if (!id || id <= 0) {
+                alert('Por favor, digite um ID de forma de pagamento válido.');
+                return;
+            }
+
+            try {
+                const response = await fetch(`@Url.Action("BuscarPorIdJSON", "FormaPagamento")?id=${id}`);
+
+                if (!response.ok) {
+                    alert('Forma de Pagamento não encontrada.');
+                    return;
+                }
+
+                const forma = await response.json();
+
+                selecionarFormaPgto(forma.idFormaPgto, forma.descricao);
+                idInput.value = '';       
+
+            } catch (error) {
+                console.error('Erro ao buscar forma de pagamento por ID:', error);
+                alert('Ocorreu um erro de comunicação.');
+            }
+        }
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+
+            if (modo === "Cancelar") {
+
+                const form = document.getElementById('form-conta-pagar');
+                const modalConfirmButton = document.getElementById('btn-confirmar-envio-cancelamento');
+                const modalTextarea = document.getElementById('motivoCancelamentoInput');
+                const hiddenInput = document.getElementById('Motivo_Cancelamento_Hidden');
+                const validationMessage = document.getElementById('validation-motivo-modal');
+
+                if (modalConfirmButton) {
+
+                    modalConfirmButton.addEventListener('click', function() {
+                        const motivo = modalTextarea.value.trim();
+
+                        if (motivo === "") {
+                            validationMessage.style.display = 'block';
+                            modalTextarea.focus();
+                            return;       
+                        }
+
+                        validationMessage.style.display = 'none';
+
+                        hiddenInput.value = motivo;
+
+                        form.submit();
+                    });
+                }
+
+                if (modalTextarea) {
+                    modalTextarea.addEventListener('input', function() {
+                        if (validationMessage.style.display === 'block') {
+                            validationMessage.style.display = 'none';
+                        }
+                    });
+                }
+            }
+
+        });             
+
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+
+
+                const form = document.getElementById('form-conta-pagar');
+                if (form) {
+                    form.addEventListener('keydown', function(event) {
+
+                        if (event.key === 'Enter') {
+
+                            if (event.target.tagName !== 'TEXTAREA') {
+
+                                event.preventDefault();
+
+                            }
+                        }
+                    });
+                }
+
+            const btnBuscarFornecedor = document.getElementById('btnBuscarFornecedorPorId');
+            if (btnBuscarFornecedor) {
+                btnBuscarFornecedor.addEventListener('click', buscarFornecedorPorId);
+            }
+
+            const btnBuscarFormaPgto = document.getElementById('btnBuscarFormaPgtoPorId');
+            if (btnBuscarFormaPgto) {
+                btnBuscarFormaPgto.addEventListener('click', buscarFormaPgtoPorId);
+            }
+
+
+            });       
+        const modo = "@modo";
+
+        
+
+        function parseValor(valorString) {
+            if (!valorString) return 0;
+
+            let valorNumerico = String(valorString)
+                .replace(',', '.');
+
+            return parseFloat(valorNumerico) || 0;
+        }
+
+        function formatarMoeda(valor) {
+            const n = parseFloat(valor) || 0;
+            return n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+
+        function calcularValorPago() {
+            const valorParcelaInput = document.getElementById('ValorParcela');
+            const valorBase = parseValor(valorParcelaInput.value);
+
+            const jurosInput = document.getElementById('Juros');
+            const multaInput = document.getElementById('Multa');
+            const descontoInput = document.getElementById('Desconto');
+
+            const jurosPercent = parseValor(jurosInput.value);
+            const multaPercent = parseValor(multaInput.value);
+            const descontoPercent = parseValor(descontoInput.value);
+
+            const dataPagamentoInput = document.getElementById('DataPagamento');
+            const dataVencimentoInput = document.getElementById('DataVencimento');
+            let total = valorBase;
+
+            if (dataPagamentoInput.value && dataVencimentoInput.value) {
+
+                const dataPag = new Date(dataPagamentoInput.value + 'T00:00:00');
+                const dataVenc = new Date(dataVencimentoInput.value + 'T00:00:00');
+
+                if (dataPag > dataVenc) {
+                    total += (valorBase * (multaPercent / 100));
+                    total += (valorBase * (jurosPercent / 100));
+                } else {
+                    total -= (valorBase * (descontoPercent / 100));
+                }
+            }
+
+            const valorPagoDisplayInput = document.getElementById('ValorPagoDisplay');
+            const valorPagoHiddenInput = document.getElementById('ValorPagoHidden');
+
+            if (valorPagoDisplayInput && valorPagoHiddenInput) {
+                valorPagoDisplayInput.value = formatarMoeda(total);
+
+                valorPagoHiddenInput.value = total.toLocaleString('pt-BR', {
+                minimumFractionDigits: 2,
+                useGrouping: false
+                });   
+            }
+        }
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+
+            function getTodayString() {
+                const hoje = new Date();
+                const ano = hoje.getFullYear();
+                const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+                const dia = String(hoje.getDate()).padStart(2, '0');
+                return `${ano}-${mes}-${dia}`;
+            }
+
+            const todayString = getTodayString();
+
+            const dataEmissaoInput = document.getElementById('DataEmissao');
+            const dataVencimentoInput = document.getElementById('DataVencimento');
+
+            if (modo === "Criar" && dataEmissaoInput && dataVencimentoInput) {
+
+                dataEmissaoInput.max = todayString;
+
+                dataVencimentoInput.min = dataEmissaoInput.value;
+
+                dataEmissaoInput.addEventListener('input', function() {
+                    const emissaoValue = dataEmissaoInput.value;
+                    dataVencimentoInput.min = emissaoValue;
+                    if (dataVencimentoInput.value < emissaoValue) {
+                        dataVencimentoInput.value = '';
+                    }
+                });
+
+                dataEmissaoInput.addEventListener('blur', function() {
+                    if (dataEmissaoInput.value > todayString) {
+                        alert('A Data de Emissão não pode ser futura. Ajustando para hoje.');
+                        dataEmissaoInput.value = todayString;
+                        dataEmissaoInput.dispatchEvent(new Event('input'));
+                    }
+                });
+
+                dataVencimentoInput.addEventListener('blur', function() {
+                    const emissaoValue = dataEmissaoInput.value;
+                    const vencimentoValue = dataVencimentoInput.value;
+
+                    if (vencimentoValue && emissaoValue && vencimentoValue < emissaoValue) {
+                        alert('A Data de Vencimento não pode ser anterior à Data de Emissão. Ajustando para hoje.');
+                        dataVencimentoInput.value = todayString;
+                    }
+                });
+            }
+
+           if (modo === "Baixar") {
+            const dataPagamentoInput = document.getElementById('DataPagamento');
+            const jurosInput = document.getElementById('Juros');
+            const multaInput = document.getElementById('Multa');
+            const descontoInput = document.getElementById('Desconto');
+
+            if (dataPagamentoInput) {
+                dataPagamentoInput.max = todayString;
+
+                if (!dataPagamentoInput.value) {
+                    dataPagamentoInput.value = todayString;
+                }
+            }
+
+            if (dataPagamentoInput) dataPagamentoInput.addEventListener('input', calcularValorPago);
+            if (jurosInput)        jurosInput.addEventListener('input', calcularValorPago);
+            if (multaInput)        multaInput.addEventListener('input', calcularValorPago);
+            if (descontoInput)     descontoInput.addEventListener('input', calcularValorPago);
+
+            calcularValorPago();
+        }
+
+
+            if (modo === "Detalhes") {
+            const valorPagoHiddenInput = document.getElementById('ValorPagoHidden');
+            const valorPagoDisplayInput = document.getElementById('ValorPagoDisplay');
+
+            if (valorPagoHiddenInput && valorPagoDisplayInput) {
+                const valorNumerico = parseValor(valorPagoHiddenInput.value);
+
+                if (valorNumerico > 0) {
+                    valorPagoDisplayInput.value = formatarMoeda(valorNumerico);
+                }
+            }
+        }
+        });
+
+    </script>
+}

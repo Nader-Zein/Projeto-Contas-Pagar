@@ -3,7 +3,7 @@
 @{
     string modo = ViewData["Modo"] as string ?? "Criar";
     ViewData["Title"] = modo == "Criar" ? "Cadastro de Compra" : (modo == "Detalhes" ? "Detalhes da Compra" : "Cancelar Compra");
-    bool isReadOnly = (modo != "Criar");           
+    bool isReadOnly = (modo != "Criar");                
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -69,6 +69,8 @@
                         }
                 </div>
 
+                @*  
+                 *@
 
             </div>
             <div class="row mt-3">
@@ -293,7 +295,6 @@
                 <table class="table table-bordered table-hover" id="tabelaFornecedores">
                     <thead><tr><th>ID</th><th>Nome</th><th>Ação</th></tr></thead>              
                     <tbody>
-                    
                         @foreach (var fornecedor in ViewBag.Fornecedores as List<Pagamento.Models.Fornecedor>)
                         {
                             <tr>
@@ -332,7 +333,6 @@
                                 <td>@produto.IdProduto</td>
                                 <td>@produto.Descricao</td>
                                 <td>
-                                    @*       *@
                                     <button type="button" class="btn btn-sm btn-primary" onclick="selecionarProduto(@produto.IdProduto, '@produto.Descricao', '@produto.NomeUnidade')">Selecionar</button>
                                 </td>
                             </tr>
@@ -355,9 +355,6 @@
     </div>
 </div>
 
-
-
-@*            *@
 <div class="modal fade" id="modalNovoProduto" tabindex="-1">
     <div class="modal-dialog modal-xl">
         <div class="modal-content" id="modalNovoProdutoContent">
@@ -365,10 +362,6 @@
     </div>
 </div>
 
-
-@*    *@
-
-@*  *@
 <div class="modal fade" id="modalMarcaSelecionar" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -386,7 +379,6 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @*        *@
                          @foreach (var marca in ViewBag.MarcasItens as List<SelectListItem>)
                         {
                             <tr>
@@ -425,7 +417,6 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @*        *@
                         @foreach (var unidade in ViewBag.UnidadesItens as List<SelectListItem>)
                         {
                             <tr>
@@ -464,7 +455,6 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @*        *@
                         @foreach (var categoria in ViewBag.CategoriasItens as List<SelectListItem>)
                         {
                             <tr>
@@ -506,7 +496,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @*        *@
+                     
                         @foreach (var t in ViewBag.FornecedoresItens as List<SelectListItem>)
                         {
                             <tr>
@@ -529,7 +519,7 @@
     </div>
 </div>
 
-@*             *@
+
 <div class="modal fade" id="modalMarca" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog"><div class="modal-content" id="modalMarcaContent"></div></div>
 </div>
@@ -545,9 +535,6 @@
 
 
 
-@*  *@
-
-@*    *@
 
 <div class="modal fade" id="modalCidadeFornecedor" tabindex="-1" aria-labelledby="modalCidadeFornecedorLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -569,7 +556,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @*        *@
+                      
                         @foreach (var cidade in ViewBag.CidadesItens as List<SelectListItem>)
                         {
                             <tr>
@@ -610,7 +597,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @* @foreach (var condicao in ViewBag.CondicoesPagamento as List<SelectListItem>) *@
+                      
                         @foreach (var condicao in ViewBag.CondicoesPagamentoItens as List<SelectListItem>)
                         {
                             <tr>
@@ -705,12 +692,13 @@
 <div class="modal fade" id="modalNovaCondicaoCompra" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content" id="modalNovaCondicaoContentCompra">
-          
+           
         </div>
     </div>
 </div>
 
 }
+
 
 
 <partial name="_ModalCondicaoPagamento" model="ViewBag.CondicoesPagamento" />
@@ -740,8 +728,6 @@
 
                 try {
                     const url = `@Url.Action("VerificarChaveExistente", "Compra")?modelo=${encodeURIComponent(modelo)}&serie=${encodeURIComponent(serie)}&numeroNota=${encodeURIComponent(numeroNota)}&fornecedorId=${fornecedorId}`;
-
-                    const response = await fetch(url);
 
                     if (!response.ok) {
                         console.error('Erro na resposta do servidor ao verificar chave:', response.statusText);

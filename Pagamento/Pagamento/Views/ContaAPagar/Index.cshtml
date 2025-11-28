@@ -1,0 +1,138 @@
+﻿@model List<Pagamento.Models.ContaAPagar>
+
+@{
+    ViewData["Title"] = "Contas a Pagar";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<p>
+    <a asp-action="CriarAvulsa" class="btn btn-primary">Nova Conta </a>
+</p>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+<div class="card">
+    <div class="card-body">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Fornecedor</th>
+                    <th>Vencimento</th>
+                    <th>Valor</th>
+                    <th>Situação</th>
+                    <th>Origem (Nº Nota)</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    string trClass = "";
+                    if (item.Situacao == "PAGO")
+                    {
+                        trClass = "table-success";
+                    }
+                    else if (item.DataVencimento.Date < DateTime.Today)
+                    {
+                        trClass = "table-danger";    
+                    }
+
+                    if (!item.Status)                
+                    {
+                        trClass = "table-secondary text-decoration-line-through";
+                    }
+
+                    <tr class="@trClass">
+                        <td>@item.NomeFornecedor</td>
+                        <td>@item.DataVencimento.ToString("dd/MM/yyyy")</td>
+                        <td title="@(item.ValorPago.HasValue ? "Valor pago" : "Valor da parcela")">
+                            @{
+                                decimal valor = item.ValorPago.GetValueOrDefault(item.ValorParcela);
+                            }
+                            @valor.ToString("C2")
+
+
+
+                        </td>
+                        <td>
+                            <span class="badge
+                                    @(item.Situacao == "PAGO" ? "bg-success" : (item.Situacao == "A PAGAR" ? "bg-warning text-dark" : "bg-secondary"))">
+                                @item.Situacao
+                            </span>
+                        </td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(item.Modelo))
+                            {
+                                <small>@($"{item.Modelo}/{item.Serie} - {item.NumeroNota}")</small>
+                            }
+                            else
+                            {
+                                <small>Avulsa</small>
+                            }
+                        </td>
+                        <td>
+                            <span class="badge @(item.Status ? "bg-success" : "bg-danger")">
+                                @(item.Status ? "Ativo" : "Cancelado")
+                            </span>
+                        </td>
+                        <td>
+                            @{
+                                string baixarDisabled = (item.Situacao != "A PAGAR" || item.Status == false) ? "disabled" : "";
+                                string cancelarDisabled = (item.Situacao == "PAGO" || item.Status == false) ? "disabled" : "";
+                            }
+                            <a asp-action="Detalhes"
+                               asp-route-modelo="@item.Modelo"
+                               asp-route-serie="@item.Serie"
+                               asp-route-numeroNota="@item.NumeroNota"
+                               asp-route-fornecedorId="@item.FornecedorId"
+                               asp-route-numeroParcela="@item.NumeroParcela"
+                               class="btn btn-sm btn-info"
+                               title="Ver Detalhes">
+                                Detalhes
+                            </a>
+                            @*   
+                                            
+                                             
+                            *@
+                            <a asp-action="Baixar"
+                               asp-route-modelo="@item.Modelo"
+                               asp-route-serie="@item.Serie"
+                               asp-route-numeroNota="@item.NumeroNota"
+                               asp-route-fornecedorId="@item.FornecedorId"
+                               asp-route-numeroParcela="@item.NumeroParcela"
+                               class="btn btn-sm btn-primary @baixarDisabled"
+                               title="Pagar/Baixar">
+                                Baixar
+                            </a>
+
+                            @*   
+                                       
+                               
+                                       
+                            *@
+                            <a asp-action="Cancelar"
+                               asp-route-modelo="@item.Modelo"
+                               asp-route-serie="@item.Serie"
+                               asp-route-numeroNota="@item.NumeroNota"
+                               asp-route-fornecedorId="@item.FornecedorId"
+                               asp-route-numeroParcela="@item.NumeroParcela"
+                               class="btn btn-sm btn-danger @cancelarDisabled"
+                               title="Cancelar Conta">
+                                Cancelar
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -90,5 +90,20 @@ namespace Pagamento.Controllers
             return PartialView("FormFormaPagamentoModal", forma);
         }
 
+
+        [HttpGet]
+        public IActionResult BuscarPorIdJSON(int id)
+        {
+            var forma = _dao.BuscarPorId(id);       
+            if (forma == null)
+            {
+                return NotFound("Forma de Pagamento não encontrada.");
+            }
+            return Json(new
+            {
+                idFormaPgto = forma.IdFormaPgto,
+                descricao = forma.Descricao
+            });
+        }
     }
 }

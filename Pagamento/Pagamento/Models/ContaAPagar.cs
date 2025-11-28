@@ -10,7 +10,7 @@ namespace Pagamento.Models
         [StringLength(10)]
         public string Modelo { get; set; }
 
-       
+      
         [Required(ErrorMessage = "A Série da nota é obrigatória.")]
         [StringLength(10)]
         public string Serie { get; set; }
@@ -19,10 +19,13 @@ namespace Pagamento.Models
         [Required(ErrorMessage = "O Número da Nota é obrigatório.")]
         public int NumeroNota { get; set; }
 
-       
+      
         [Required(ErrorMessage = "O ID do Fornecedor é obrigatório.")]
         public int FornecedorId { get; set; }
 
+        public string? NomeFornecedor { get; set; }
+
+       
         [Required(ErrorMessage = "O Número da Parcela é obrigatório.")]
         [Range(1, int.MaxValue, ErrorMessage = "Número da parcela inválido.")]
         public int NumeroParcela { get; set; }
