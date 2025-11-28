@@ -1,0 +1,166 @@
+﻿@model Pagamento.Models.Cliente
+
+<div class="modal-header">
+    <h5 class="modal-title">Cadastrar Novo Cliente</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+</div>
+
+<div class="modal-body">
+    <form id="formCadastrarClienteModal">
+        <div class="row">
+
+            <div class="d-flex justify-content-end mt-3">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" asp-for="Status" checked />
+                    <label class="form-check-label" asp-for="Status">Ativo</label>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <label asp-for="TipoPessoa" class="form-label">Tipo de Pessoa</label>
+                <select asp-for="TipoPessoa" class="form-control" id="Cliente_TipoPessoa">
+                    <option value="Física">Física</option>
+                    <option value="Jurídica">Jurídica</option>
+                </select>
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <label id="labelNomeRazao_Modal" asp-for="Nome_RazaoSocial" class="form-label">Nome</label>
+                <input asp-for="Nome_RazaoSocial" class="form-control" maxlength="40" />
+                <span asp-validation-for="Nome_RazaoSocial" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <label id="labelApelidoFantasia_Modal" asp-for="Apelido_NomeFantasia" class="form-label">Apelido </label>
+                <input asp-for="Apelido_NomeFantasia" class="form-control" />
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <label asp-for="Endereco" class="form-label">Endereço</label>
+                <input asp-for="Endereco" class="form-control" maxlength="40" />
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <label asp-for="Numero" class="form-label">Número</label>
+                <input asp-for="Numero" class="form-control" />
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <label asp-for="Complemento" class="form-label">Complemento</label>
+                <input asp-for="Complemento" class="form-control" maxlength="40" />
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <label asp-for="Bairro" class="form-label">Bairro</label>
+                <input asp-for="Bairro" class="form-control" maxlength="40" />
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <label asp-for="Cep" class="form-label">CEP</label>
+                <input asp-for="Cep" class="form-control" id="Cliente_Cep" />
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <label class="form-label">Cidade</label>
+                <div class="input-group">
+                    <input type="text" id="Cliente_NomeCidade" class="form-control" placeholder="Selecione..." readonly />
+                    <input type="hidden" asp-for="IdCidade" id="Cliente_IdCidade" />
+                    <button type="button" class="btn btn-outline-secondary" onclick="abrirModalCidadeParaCliente()">
+                        <i class="bi bi-search"></i>
+                        Selecionar
+                    </button>
+                </div>
+                <span asp-validation-for="IdCidade" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <label id="labelNascimentoFundacao_Modal" asp-for="DataNascimento_Fundacao" class="form-label">Data de Nascimento</label>
+                <input asp-for="DataNascimento_Fundacao" type="date" class="form-control" />
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <label id="labelCpfCnpj_Modal" asp-for="CPF_CNPJ" class="form-label">CPF</label>
+                <input asp-for="CPF_CNPJ" class="form-control" id="Cliente_CPF_CNPJ" />
+                <span asp-validation-for="CPF_CNPJ" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <label id="labelRgIe_Modal" asp-for="RG_InsEstadual" class="form-label">RG</label>
+                <input asp-for="RG_InsEstadual" class="form-control" />
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <label asp-for="Email" class="form-label">Email</label>
+                <input asp-for="Email" class="form-control" />
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <label asp-for="Telefone" class="form-label">Telefone</label>
+                <input asp-for="Telefone" class="form-control" id="Cliente_Telefone" />
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <label class="form-label">Condição de Pagamento</label>
+                <div class="input-group">
+                    <input type="hidden" asp-for="IdCondPgto" id="Cliente_IdCondPgto" />
+                    <input type="text" id="Cliente_NomeCondicao" class="form-control" placeholder="Padrão..." readonly />
+                    <button type="button" class="btn btn-outline-secondary" onclick="abrirModalCondicaoParaCliente()">
+                        <i class="bi bi-search"></i>
+                        Selecionar
+                    </button>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <label asp-for="LimiteCredito" class="form-label">Limite de Crédito</label>
+                <input asp-for="LimiteCredito" class="form-control" />
+            </div>
+
+            <input type="hidden" asp-for="DataCriacao" value="@DateTime.Now" />
+        </div>
+
+        <div class="modal-footer px-0 border-0">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-success">Salvar Cliente</button>
+        </div>
+    </form>
+</div>
+
+
+
+<partial name="_ValidationScriptsPartial" />
+
+<script>
+    $(document).ready(function() {
+              
+        function atualizarLabelsModal(tipo) {
+            if (tipo === "Física") {
+                $('#labelNomeRazao_Modal').text("Nome");
+                $('#labelApelidoFantasia_Modal').text("Apelido");
+                $('#labelCpfCnpj_Modal').text("CPF");
+                $('#labelNascimentoFundacao_Modal').text("Data Nascimento");
+                $('#Cliente_CPF_CNPJ').mask('000.000.000-00', {reverse: true});
+            } else {
+                $('#labelNomeRazao_Modal').text("Razão Social");
+                $('#labelApelidoFantasia_Modal').text("Nome Fantasia");
+                $('#labelCpfCnpj_Modal').text("CNPJ");
+                $('#labelNascimentoFundacao_Modal').text("Fundação");
+                $('#Cliente_CPF_CNPJ').mask('00.000.000/0000-00', {reverse: true});
+            }
+        }
+
+        $('#Cliente_TipoPessoa').change(function () {
+            atualizarLabelsModal($(this).val());
+            $('#Cliente_CPF_CNPJ').val('');
+        });
+
+        var maskTel = function (val) { return val.replace(/\D/g, '').length === 11 ? '(00) 00000-0000' : '(00) 0000-00009'; },
+            optTel = { onKeyPress: function(val, e, field, options) { field.mask(maskTel.apply({}, arguments), options); } };
+
+        $('#Cliente_Telefone').mask(maskTel, optTel);
+        $('#Cliente_Cep').mask('00000-000');
+
+        atualizarLabelsModal($('#Cliente_TipoPessoa').val());
+    });
+
+</script>

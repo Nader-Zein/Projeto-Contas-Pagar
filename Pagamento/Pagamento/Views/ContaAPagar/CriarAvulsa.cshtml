@@ -78,27 +78,30 @@
                     </div>
 
                     <div class="row mb-3">
-                        <div class="col-md-6">
+                        
+                        <div class="col-md-2">
+                            <label asp-for="NumeroParcela" class="form-label text-nowrap ">Número da Parcela</label>
+                            <input asp-for="NumeroParcela" class="form-control" type="number" readonly="@isReadOnly" />
+                            <span asp-validation-for="NumeroParcela" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-2">
                             <label asp-for="DataEmissao" class="form-label">Data de Emissão</label>
                             <input asp-for="DataEmissao" type="date" class="form-control" readonly="@isReadOnly" />
                         </div>
-                        <div class="col-md-6">
-                            <label asp-for="DataVencimento" class="form-label">Data de Vencimento</label>
+                        <div class="col-md-2">
+                            <label asp-for="DataVencimento" class="form-label text-nowrap">Data de Vencimento</label>
                             <input asp-for="DataVencimento" type="date" class="form-control" id="DataVencimento" readonly="@isReadOnly" />
+                        </div>
+
+                        <div class="col-md-2">
+                            <label asp-for="ValorParcela" class="form-label">Valor da Parcela</label>
+                            <input asp-for="ValorParcela" class="form-control" type="text" id="ValorParcela" readonly="@isReadOnly" />
+                            <span asp-validation-for="ValorParcela" class="text-danger"></span>
                         </div>
                     </div>
 
                     <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label asp-for="ValorParcela" class="form-label">Valor da Parcela</label>
-                            <input asp-for="ValorParcela" class="form-control" type="text"  id="ValorParcela" readonly="@isReadOnly" />
-                            <span asp-validation-for="ValorParcela" class="text-danger"></span>
-                        </div>
-                        <div class="col-md-6">
-                            <label asp-for="NumeroParcela" class="form-label">Número da Parcela</label>
-                            <input asp-for="NumeroParcela" class="form-control" type="number" readonly="@isReadOnly" />
-                            <span asp-validation-for="NumeroParcela" class="text-danger"></span>
-                        </div>
+                        
                     </div>
 
                 </div>
@@ -106,29 +109,32 @@
 
             
 
+            @* 8. O card de "Termos" (Juros, Multa, etc.) é separado *@
             <div class="card mt-3">
                 <div class="card-header">
                     Termos e Forma de Pagamento
                 </div>
                 <div class="card-body">
 
+                    @* --- LINHA 1: PORCENTAGENS (Bloqueadas na Baixa) --- *@
                     <div class="row mb-1">
                         <div class="col-md-12">
                             <h6 class="text-muted">Taxas Configuradas (%)</h6>
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col-md-4">
+                        <div class="col-md-2">
                             <label asp-for="Juros" class="form-label small">Juros (%)</label>
+                            @* Note que adicionamos readonly="@isBaixar" aqui *@
                             <input asp-for="Juros" class="form-control bg-light" type="text"  placeholder="0,00" id="JurosPercentual"
                                    readonly="@(isBaixar || isCancelar || isDetalhes)" />
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-2">
                             <label asp-for="Multa" class="form-label small">Multa (%)</label>
                             <input asp-for="Multa" class="form-control bg-light" type="text"  placeholder="0,00" id="MultaPercentual"
                                    readonly="@(isBaixar || isCancelar || isDetalhes)" />
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-2">
                             <label asp-for="Desconto" class="form-label small">Desconto (%)</label>
                             <input asp-for="Desconto" class="form-control bg-light" type="text"  placeholder="0,00" id="DescontoPercentual"
                                    readonly="@(isBaixar || isCancelar || isDetalhes)" />
@@ -139,28 +145,50 @@
                     {
                         <div class="row mb-1">
                             <div class="col-md-12">
-                                <h6 class="text-primary">Valores Calculados (R$) - <small>Editáveis</small></h6>
+                                <h6>Valores Calculados (R$)</h6>
                             </div>
                         </div>
                         <div class="row mb-3">
-                            <div class="col-md-4">
+                            <div class="col-md-2">
                                 <label asp-for="ValJuros" class="form-label fw-bold">Valor Juros (R$)</label>
                                 <input asp-for="ValJuros" type="text" class="form-control money" oninput="somarTotalFinal()" readonly="@(isDetalhes)" />
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-2">
                                 <label asp-for="ValMulta" class="form-label fw-bold">Valor Multa (R$)</label>
                                 <input asp-for="ValMulta" type="text" class="form-control money" oninput="somarTotalFinal()" readonly="@(isDetalhes)" />
                             </div>
-                            <div class="col-md-4">
-                                <label asp-for="ValDesconto" class="form-label fw-bold">Valor Desconto (R$)</label>
+                            <div class="col-md-2">
+                                <label asp-for="ValDesconto" class="form-label fw-bold text-nowrap">Valor Desconto (R$)</label>
                                 <input asp-for="ValDesconto" type="text" class="form-control money" oninput="somarTotalFinal()" readonly="@(isDetalhes)" />
                             </div>
+                            @if (isBaixar || (isDetalhes && Model.Situacao == "PAGO"))
+                            {
+                                <div class="col-md-2 ps-4">
+                                <label asp-for="ValorPago" class="form-label fw-bold text-nowrap">Valor Pago (Calculado)</label>
+
+                                <input class="form-control" type="text" id="ValorPagoDisplay" readonly />
+
+                                <input asp-for="ValorPago" type="hidden" id="ValorPagoHidden" />
+
+                                <span asp-validation-for="ValorPago" class="text-danger"></span>
+                            </div>
+                            }
                     
                         </div>
                     }
 
                     <div class="row mb-3">
-                        <div class="col-md-8">
+                        
+                        @if (isBaixar || (isDetalhes && Model.Situacao == "PAGO"))
+                            {
+                                <div class="col-md-3">
+                                <label asp-for="DataPagamento" class="form-label fw-bold text-nowrap">Data de Pagamento</label>
+                                <input asp-for="DataPagamento" type="date" class="form-control" id="DataPagamento" readonly="@isDetalhes" />
+                                <span asp-validation-for="DataPagamento" class="text-danger"></span>
+								</div>
+                            }
+
+                            <div class="col-md-6">
                             <label asp-for="IdFormaPgto" class="form-label">Forma de Pagamento</label>
                             <div class="input-group">
                                 
@@ -173,7 +201,7 @@
                                 
                                 
                             </div>
-                        </div>
+                            </div>
                     </div>
                 </div>
             </div>
@@ -217,33 +245,6 @@
             }
 
 
-
-            @if (isBaixar || (isDetalhes && Model.Situacao == "PAGO"))
-            {
-                <div class="card mt-3">
-                    <div class="card-header bg-primary text-white">
-                        Dados da Baixa (Pagamento)
-                    </div>
-                    <div class="card-body">
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label asp-for="DataPagamento" class="form-label fw-bold">Data de Pagamento</label>
-                                <input asp-for="DataPagamento" type="date" class="form-control" id="DataPagamento" readonly="@isDetalhes" />
-                                <span asp-validation-for="DataPagamento" class="text-danger"></span>
-                            </div>
-                            <div class="col-md-6">
-                                <label asp-for="ValorPago" class="form-label fw-bold">Valor Pago (Calculado)</label>
-
-                                <input class="form-control" type="text" id="ValorPagoDisplay" readonly />
-
-                                <input asp-for="ValorPago" type="hidden" id="ValorPagoHidden" />
-
-                                <span asp-validation-for="ValorPago" class="text-danger"></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            }
 
 
             @if (isDetalhes && Model.Status == false)

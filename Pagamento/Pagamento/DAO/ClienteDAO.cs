@@ -103,6 +103,9 @@ namespace Pagamento.DAO
                 cmd.Parameters.AddWithValue("@LimiteCredito", cliente.LimiteCredito ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@DataCriacao", DateTime.Now);
                 cmd.ExecuteNonQuery();
+
+                // ✅ ADICIONE ESTA LINHA PARA RECUPERAR O ID GERADO
+                cliente.IdPessoa = (int)cmd.LastInsertedId;
             }
         }
 

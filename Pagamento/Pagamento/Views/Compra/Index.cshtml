@@ -28,7 +28,9 @@
         {
             @foreach (var compra in Model)
             {
-                <tr>
+
+                string trClass = compra.Status ? "" : "table-danger";          
+                <tr class="@trClass">
                     <td>
                         @compra.Modelo / @compra.Serie / @compra.NumeroNota
                     </td>
@@ -60,13 +62,12 @@
                         }
                         else
                         {
-                            <span class="badge bg-secondary">Cancelada</span>
+                            <span class="badge bg-danger">Cancelada</span>
                         }
                     </td>
                     <td>
 
                         @{
-                            // Define as condições de desabilitar
                             string cancelarDisabled = (!compra.Status) ? "disabled" : "";
                         }
                         <a asp-action="Detalhes"

@@ -426,7 +426,6 @@
                 <h5 class="modal-title" id="modalNovaCondicaoFornecedorLabel">Cadastrar Condição</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
             </div>
-            <!-- conteúdo via AJAX -->
         </div>
     </div>
 </div>
@@ -438,6 +437,8 @@
     <script>
 
 
+
+            
 
 
 
@@ -460,6 +461,8 @@
           ultimoModalPaiFechado = null;
         }
 
+       
+
 
 
         function abrirSelecaoCidadeDesdeFornecedor() {
@@ -473,6 +476,8 @@
           }
           bootstrap.Modal.getOrCreateInstance(filho).show();
         }
+        
+
 
         function abrirSelecaoCondicaoDesdeFornecedor() {
           const filho = document.getElementById('modalCondicaoPgtoFornecedor');
@@ -491,10 +496,10 @@
           if (!el) return;
           el.addEventListener('hidden.bs.modal', function () {
             const parentId = el.dataset.parentModalId;
-            if (!parentId) return;       
+            if (!parentId) return; 
             const pai = document.getElementById(parentId);
             if (pai) bootstrap.Modal.getOrCreateInstance(pai).show();
-            el.dataset.parentModalId = '';                 
+            el.dataset.parentModalId = ''; 
           });
         });
 

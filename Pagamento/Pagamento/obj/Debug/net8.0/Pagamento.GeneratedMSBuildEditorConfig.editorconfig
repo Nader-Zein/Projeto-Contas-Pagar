@@ -72,6 +72,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50ZVxFeGNsdWlyLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/User/Documents/Pratica Profissional 2/Projeto-Final/Pagamento/Pagamento/Views/Cliente/FormClienteModal.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50ZVxGb3JtQ2xpZW50ZU1vZGFsLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/User/Documents/Pratica Profissional 2/Projeto-Final/Pagamento/Pagamento/Views/Cliente/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2xpZW50ZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
@@ -114,6 +118,14 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/User/Documents/Pratica Profissional 2/Projeto-Final/Pagamento/Pagamento/Views/ContaAPagar/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29udGFBUGFnYXJcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/Pratica Profissional 2/Projeto-Final/Pagamento/Pagamento/Views/ContaAReceber/Criar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29udGFBUmVjZWJlclxDcmlhci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/Pratica Profissional 2/Projeto-Final/Pagamento/Pagamento/Views/ContaAReceber/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29udGFBUmVjZWJlclxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/User/Documents/Pratica Profissional 2/Projeto-Final/Pagamento/Pagamento/Views/Estado/Criar.cshtml]
@@ -186,6 +198,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/User/Documents/Pratica Profissional 2/Projeto-Final/Pagamento/Pagamento/Views/Funcionario/Excluir.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRnVuY2lvbmFyaW9cRXhjbHVpci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/Pratica Profissional 2/Projeto-Final/Pagamento/Pagamento/Views/Funcionario/FormFuncionarioModal.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRnVuY2lvbmFyaW9cRm9ybUZ1bmNpb25hcmlvTW9kYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/User/Documents/Pratica Profissional 2/Projeto-Final/Pagamento/Pagamento/Views/Funcionario/Index.cshtml]
@@ -286,6 +302,14 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/User/Documents/Pratica Profissional 2/Projeto-Final/Pagamento/Pagamento/Views/UnidadeMedida/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVW5pZGFkZU1lZGlkYVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/Pratica Profissional 2/Projeto-Final/Pagamento/Pagamento/Views/Venda/Criar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmVuZGFcQ3JpYXIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/Pratica Profissional 2/Projeto-Final/Pagamento/Pagamento/Views/Venda/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmVuZGFcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/User/Documents/Pratica Profissional 2/Projeto-Final/Pagamento/Pagamento/Views/_ViewImports.cshtml]

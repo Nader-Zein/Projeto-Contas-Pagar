@@ -117,6 +117,8 @@ namespace Pagamento.DAO
                 cmd.Parameters.AddWithValue("@DataAdmissao", funcionario.DataAdmissao);
                 cmd.Parameters.AddWithValue("@DataDemissao", (object?)funcionario.DataDemissao ?? DBNull.Value);
                 cmd.ExecuteNonQuery();
+
+                funcionario.IdPessoa = (int)cmd.LastInsertedId;
             }
         }
 

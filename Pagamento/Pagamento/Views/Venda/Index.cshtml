@@ -1,0 +1,154 @@
+﻿@model List<Pagamento.Models.Venda>
+
+@{
+    ViewData["Title"] = "Listagem de Vendas";
+}
+
+<div class="container p-5">
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h1 class="display-6">Lista de Vendas </h1>
+        </div>
+        <div class="col-md-6 text-end">
+            <a asp-action="Criar" class="btn btn-primary btn-lg">
+                <i class="fa fa-plus"></i> Cadastro de Venda
+            </a>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    
+
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            
+                            <th>Nota Fiscal (Modelo/Série/Número)</th>
+                            <th>Cliente</th>
+                            <th>Funcionário</th>
+                            <th>Produtos</th>
+                            <th class="text-end">Valor Total</th>
+                            <th class="text-center">Status</th>
+                            <th class="text-center">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var venda in Model)
+                            {
+                                <tr class="@(venda.Status ? "" : "table-danger text-muted")">
+                                    <td>
+                                        @venda.Modelo / @venda.Serie / @venda.NumeroNota
+                                    </td>
+                                    <td>@venda.NomeCliente</td>
+                                    <td>@venda.NomeFuncionario</td>
+                                    <td>
+                                        @if (venda.Itens != null && venda.Itens.Any())
+                                        {
+                                            <ul>
+                                                @foreach (var item in venda.Itens)
+                                                {
+                                                    <li>@item.NomeProduto</li>
+                                                }
+                                            </ul>
+                                        }
+                                        else
+                                        {
+                                            <span>(Sem itens)</span>
+                                        }
+                                    </td>
+                                    <td class="text-end fw-bold">
+                                        @venda.TotalNota.ToString("C2")
+                                    </td>
+                                    <td class="text-center">
+                                        @if (venda.Status)
+                                        {
+                                            <span class="badge bg-success">Ativa</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger" title="@venda.Motivo_Cancelamento">Cancelada</span>
+                                        }
+                                    </td>
+                                    <td class="text-center">
+                                        
+                                            <a asp-action="Detalhes"
+                                               asp-route-modelo="@venda.Modelo"
+                                               asp-route-serie="@venda.Serie"
+                                               asp-route-numeroNota="@venda.NumeroNota"
+                                               asp-route-clienteId="@venda.ClienteId"
+                                               class="btn btn-sm btn-info" title="Ver Detalhes">
+                                                Detalhes
+                                            </a>
+
+                                            @if (venda.Status)
+                                            {
+                                                <a asp-action="Cancelar"
+                                                   asp-route-modelo="@venda.Modelo"
+                                                   asp-route-serie="@venda.Serie"
+                                                   asp-route-numeroNota="@venda.NumeroNota"
+                                                   asp-route-clienteId="@venda.ClienteId"
+                                                   class="btn btn-sm btn-danger" title="Cancelar Venda">
+                                                    Cancelar
+                                                </a>
+                                            }
+                                       
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="7" class="text-center py-4 text-muted">
+                                    Nenhuma venda registrada até o momento.
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalAvisoErro" tabindex="-1" aria-labelledby="modalAvisoErroLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="modalAvisoErroLabel">Atenção</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @TempData["ErrorMessage"]
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            var mensagemErro = '@TempData["ErrorMessage"]';
+
+            if (mensagemErro && mensagemErro.trim() !== "") {
+                var myModal = new bootstrap.Modal(document.getElementById('modalAvisoErro'));
+                myModal.show();
+            }
+        });
+    </script>
+}

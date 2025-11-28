@@ -70,13 +70,12 @@
                         }
                 </div>
 
-                @*  
-                 *@
+                
 
             </div>
             <div class="row mt-3">
                 <div class="col-md-3">
-                    <label asp-for="DataEmissao" class="form-label"> Data de Emissao</label>
+                    <label asp-for="DataEmissao" class="form-label"> Data de Emissao*</label>
                     <input asp-for="DataEmissao" type="date" class="form-control" id="DataEmissao" /> 
                 </div>
                 <div class="col-md-3">
@@ -126,7 +125,7 @@
                     <input id="produto-valor" type="text" class="form-control" />
                 </div>
 
-                            <div style="width: 12.5%;">
+                <div style="width: 12.5%;">
                     <label class="form-label">Total</label>
                     <input id="produto-total" type="text" class="form-control" readonly />
                 </div>
@@ -134,7 +133,6 @@
                             
                 <div class="col-md-auto d-flex gap-1 ms-3 align-self-end">                
                 <button type="button" id="btn-adicionar-produto" class="btn btn-secondary flex-grow-1">Adicionar</button>
-                
                 <button type="button" id="btn-limpar-produtos" class="btn btn-outline-danger" title="Limpar lista e desbloquear dados da nota">
                 <i class="bi bi-trash"></i> Limpar       
                 </button>            
@@ -202,6 +200,19 @@
                                        value="@(isReadOnly? ViewBag.NomeCondicaoPagamento: "")" />
                             @if (modo == "Criar")
                                 {
+
+                                    
+                            <input type="number"
+                                   id="condicao-id-input"
+                                   class="form-control"
+                                   placeholder="ID"
+                                   style="max-width: 100px;" />
+
+                            <button type="button"
+                                    id="btn-buscar-condicao-por-id"
+                                    class="btn btn-primary">
+                                Buscar ID
+                            </button>
                             <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#modalCondicaoCompra">Buscar</button>
                                 }
 
@@ -566,7 +577,6 @@
 
 
 
-
 <div class="modal fade" id="modalCidadeFornecedor" tabindex="-1" aria-labelledby="modalCidadeFornecedorLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -622,6 +632,7 @@
                 <table class="table table-bordered" id="tabelaCondicoesFornecedor">
                     <thead>
                         <tr>
+                            <th>ID</th>
                             <th>Descrição</th>
                             <th>Ação</th>
                         </tr>
@@ -630,6 +641,7 @@
                         @foreach (var condicao in ViewBag.CondicoesPagamentoItens as List<SelectListItem>)
                         {
                             <tr>
+                                <td>@condicao.Value</td>
                                 <td>@condicao.Text</td>
                                 <td>
                                     <button type="button" class="btn btn-sm btn-primary"
@@ -763,7 +775,6 @@
         </div>
     </div>
 </div>
-
 <div class="modal fade" id="modalNovaCondicaoCompra" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content" id="modalNovaCondicaoContentCompra">
@@ -799,7 +810,54 @@
       if (modo == "Criar")
       {
 
+            async function buscarEselecionarCondicaoPorId() {
+                const idInput = document.getElementById('condicao-id-input');
+                const id = parseInt(idInput.value);
 
+                if (!id || id <= 0) {
+                    alert('Por favor, digite um ID de condição válido.');
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`@Url.Action("BuscarPorIdJSON", "CondicaoPagamento")?id=${id}`);
+
+                    if (!response.ok) {
+                        const errorData = await response.json().catch(() => null);
+                        alert(errorData?.mensagem || 'Condição de pagamento não encontrada.');
+                        return;
+                    }
+
+                    const condicao = await response.json();
+
+                    const idCond =
+                        condicao.idCondPgto ??
+                        condicao.id ??
+                        condicao.idCondicao ??
+                        id;
+
+                    const descricao =
+                        condicao.descricao ??
+                        condicao.nome ??
+                        condicao.Descricao ??
+                        "";
+
+                    selecionarCondicaoCompra(idCond, descricao);
+
+                    idInput.value = '';
+
+                } catch (error) {
+                    console.error('Erro ao buscar condição por ID:', error);
+                    alert('Ocorreu um erro de comunicação ao tentar buscar a condição.');
+                }
+            }
+
+            document.addEventListener('DOMContentLoaded', function () {
+                const btnBuscarCondicaoId = document.getElementById('btn-buscar-condicao-por-id');
+                if (btnBuscarCondicaoId) {
+                    btnBuscarCondicaoId.addEventListener('click', buscarEselecionarCondicaoPorId);
+                }
+            });
 
             const btnLimparParcelas = document.getElementById('btn-limpar-parcelas');
             if (btnLimparParcelas) {
@@ -1603,6 +1661,7 @@
                             modal.hide();
 
                             var novaLinha = `<tr data-id="${response.condicao.id}">
+                                <td>${response.condicao.id}</td>
                                 <td>${response.condicao.nome}</td>
                                 <td>
                                    <button type="button" class="btn btn-sm btn-primary"
@@ -1620,6 +1679,7 @@
 
                             const linha = `
                               <tr>
+                                <td>${response.condicao.id}</td>
                                 <td>${response.condicao.nome}</td>
                                 <td>
                                   <button type='button' class='btn btn-sm btn-primary'
@@ -1667,7 +1727,10 @@
             document.getElementById('UnidadeProdutoSelecionado').value = unidade;     
             document.getElementById('produto-unidade').value = unidade;
             var modal = bootstrap.Modal.getInstance(document.getElementById('modalProduto'));
-            modal.hide();
+           
+            if (modal) {
+              modal.hide();
+            }
 
 
                 
@@ -1945,9 +2008,24 @@
 
                 const tabelaParcelasBody = document.getElementById('tabela-parcelas');
                 tabelaParcelasBody.innerHTML = '';             
+                        
+                
+                        const totalEmCentavos = Math.round(totalNotaNum * 100);
+        
+                        let somaCentavos = 0;
+                        condicao.parcelas.forEach((p, index) => {
+                        let valorCentavos = Math.round(totalEmCentavos * (p.valorPercentual / 100));
+                        somaCentavos += valorCentavos;
 
-                condicao.parcelas.forEach(p => {
-                    const valorParcela = totalNotaNum * (p.valorPercentual / 100);
+                        if (index === condicao.parcelas.length - 1) {
+                            const resto = totalEmCentavos - somaCentavos;
+                            valorCentavos += resto;
+                        }
+
+                        const valorParcela = valorCentavos / 100;
+
+
+
                     const dataVencimento = new Date(dataBaseUTC.valueOf());
                     dataVencimento.setUTCDate(dataVencimento.getUTCDate() + p.diasAposVenda);
 
@@ -2194,6 +2272,19 @@
             const form = document.getElementById('form-compra');
             if (form) {
                 form.addEventListener('submit', function (e) {
+
+                    if (modo === "Criar") {
+
+                        form.querySelectorAll('fieldset:disabled')
+                            .forEach(fs => fs.disabled = false);
+
+                                  
+                        form.querySelectorAll('[disabled]')
+                            .forEach(el => el.disabled = false);
+                    }
+
+
+
                     const itens = [];
                     const linhas = document.getElementById('tabela-produtos')?.querySelectorAll('tr') || [];
                     linhas.forEach(l => {

@@ -1,0 +1,2077 @@
+﻿@model Pagamento.Models.Venda
+
+@{
+    string modo = ViewData["Modo"] as string ?? "Criar";
+    ViewData["Title"] = modo == "Criar" ? "Nova Venda" : (modo == "Detalhes" ? "Detalhes da Venda" : "Cancelar Venda");
+    bool isReadOnly = (modo != "Criar");
+}
+
+<h1>@ViewData["Title"]</h1>
+<hr />
+
+<form asp-action="@(modo == "Cancelar" ? "ConfirmarCancelamento" : "Criar")" method="post" id="form-venda">
+    <input type="hidden" name="itensJson" id="itens-json" />
+
+    <input asp-for="ClienteId" type="hidden" id="ClienteId" />
+    <input asp-for="FuncionarioId" type="hidden" id="FuncionarioIdInput" />
+    <input asp-for="CondicaoPagamentoId" type="hidden" id="CondicaoPagamentoVendaId" />
+
+    <fieldset @(isReadOnly ? "disabled" : "")>
+
+        <div class="card mb-3">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span>Dados da Venda</span>
+                <div class="form-check form-switch">
+                    <input asp-for="Status" class="form-check-input" type="checkbox" role="switch" checked>
+                    <label asp-for="Status" class="form-check-label">Ativa</label>
+                </div>
+            </div>
+            <div class="card-body">
+                <fieldset id="fieldset-dados-nota">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label asp-for="Modelo" class="form-label"></label>
+                            <input asp-for="Modelo" class="form-control" />
+                            <span asp-validation-for="Modelo" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-2">
+                            <label asp-for="Serie" class="form-label"></label>
+                            <input asp-for="Serie" class="form-control" />
+                            <span asp-validation-for="Serie" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-2">
+                            <label asp-for="NumeroNota" class="form-label">Número da Nota</label>
+                            <input asp-for="NumeroNota" class="form-control" />
+                            <span asp-validation-for="NumeroNota" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Cliente</label>
+                            @if (modo == "Criar")
+                            {
+                                <div class="input-group mb-2">
+                                    <input type="number" id="cliente-id-input" class="form-control" placeholder="ID..." style="max-width: 120px;" />
+                                    <button type="button" id="btn-buscar-cliente-id" class="btn btn-primary">Buscar ID</button>
+                                    <button type="button" class="btn btn-outline-secondary ms-2" data-bs-toggle="modal" data-bs-target="#modalCliente">Buscar Nome</button>
+                                </div>
+                                <table class="table table-sm table-bordered">
+                                    <thead><tr><th>ID</th><th>Cliente Selecionado</th></tr></thead>
+                                    <tbody id="tabela-cliente-selecionado">
+                                    </tbody>
+                                </table>
+                            }
+                            else
+                            {
+                                <input type="text" class="form-control" value="@Model.NomeCliente (ID: @Model.ClienteId)" readonly />
+                            }
+                        </div>
+                        <div class="col-md-3">
+                            <label asp-for="DataEmissao" class="form-label">Data de Emissão</label>
+                            <input asp-for="DataEmissao" type="date" class="form-control" id="DataEmissao" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Funcionário (Vendedor)</label>
+
+                            @if (modo == "Criar")
+                            {
+                                <div class="input-group mb-2">
+                                    <input type="number" id="funcionario-id-input" class="form-control" placeholder="ID..." style="max-width: 120px;" />
+
+                                    <button type="button" id="btn-buscar-funcionario-id" class="btn btn-primary">Buscar ID</button>
+
+                                    <button type="button" class="btn btn-outline-secondary ms-2" data-bs-toggle="modal" data-bs-target="#modalSelecionarFuncionario">
+                                        Buscar Nome
+                                    </button>
+                                </div>
+
+                                <table class="table table-sm table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 60px;">ID</th>
+                                            <th>Funcionário Selecionado</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tabela-funcionario-selecionado">
+                                    </tbody>
+                                </table>
+                            }
+                            else
+                            {
+                                <input type="text" class="form-control" value="@Model.NomeFuncionario (ID: @Model.FuncionarioId)" readonly />
+                            }
+
+                           
+                            <span asp-validation-for="FuncionarioId" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        
+
+                       
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-header">Lista de Produtos</div>
+            <div class="card-body">
+                <fieldset id="fieldset-lista-produtos" disabled>
+                    @if (modo == "Criar")
+                    {
+                        <div class="row align-items-end gx-2">
+                            <div class="col-md-auto">
+                                <label class="form-label">Produto</label>
+                                <div class="input-group">
+                                    <input type="number" id="produto-id-input" class="form-control" placeholder="ID..." style="max-width: 100px;" />
+                                    <button type="button" id="btn-buscar-produto-por-id" class="btn btn-primary">Buscar ID</button>
+                                    <button class="btn btn-outline-secondary ms-2" type="button" data-bs-toggle="modal" data-bs-target="#modalProduto" title="Abrir lista">Buscar</button>
+                                </div>
+                            </div>
+
+                            <div class="col-md-2">
+                                <label class="form-label">Descrição</label>
+                                <input type="text" id="NomeProdutoSelecionado" class="form-control" readonly placeholder="-" />
+                                <input type="hidden" id="IdProdutoSelecionado" />
+                                <input type="hidden" id="UnidadeProdutoSelecionado" />
+                            </div>
+                            <div class="col-md-1">
+                                <label class="form-label">UN</label>
+                                <input id="produto-unidade" type="text" class="form-control" readonly />
+                            </div>
+                            <div class="col-md-1">
+                                <label class="form-label">Qtd</label>
+                                <input id="produto-quantidade" type="number" class="form-control" value="1" min="1" />
+                            </div>
+                            <div style="width: 10%;">
+                                <label class="form-label">Valor (R$)</label>
+                                <input id="produto-valor" type="text" class="form-control" />
+                            </div>
+                            <div style="width: 12.5%;">
+                                <label class="form-label">Total</label>
+                                <input id="produto-total" type="text" class="form-control" readonly />
+                            </div>
+
+                            <div class="col-md-auto d-flex gap-1 ms-3 align-self-end">
+                                <button type="button" id="btn-adicionar-produto" class="btn btn-secondary">Adicionar</button>
+                                <button type="button" id="btn-limpar-produtos" class="btn btn-outline-danger" title="Limpar lista">
+                                    <i class="bi bi-trash"></i> Limpar
+                                </button>
+                            </div>
+                        </div>
+                        <input type="hidden" id="EstoqueProdutoSelecionado" />
+
+                    }
+
+                    <table class="table table-hover mt-3">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Produto</th>
+                                <th>UN</th>
+                                <th>Qtd</th>
+                                <th>Vl. Unitário</th>
+                                <th>Total</th>
+                                @if (modo == "Criar")
+                                {
+                                    <th>Ação</th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody id="tabela-produtos">
+                            @if (isReadOnly)
+                            {
+                                foreach (var item in Model.Itens)
+                                {
+                                    <tr>
+                                        <td>@item.ProdutoId</td>
+                                        <td>@item.NomeProduto</td>
+                                        <td>@item.NomeUnidade</td>
+                                        <td>@item.Quantidade</td>
+                                        <td>@item.ValorUnitario.ToString("C2")</td>
+                                        <td>@item.Total.ToString("C2")</td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </fieldset>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-header">Financeiro</div>
+            <div class="card-body">
+                <fieldset id="fieldset-financeiro" disabled>
+                    <div class="mb-4">
+                        <h5>Valores Totais</h5><hr />
+                        <div class="mb-2 row fw-bold fs-5">
+                            <label class="col-sm-4 col-form-label">Total a Pagar</label>
+                            <div class="col-sm-3">
+                                <input type="text" readonly class="form-control-plaintext fs-4 " id="total-nota"
+                                       value="@(isReadOnly? Model.TotalNota.ToString("C2") : "R$ 0,00")">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h5>Pagamento</h5><hr />
+                        <label class="form-label">Condição de Pagamento</label>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="input-group flex-grow-1">
+                                    <input type="text" id="NomeCondicaoVenda" class="form-control" readonly
+                                           placeholder="@(isReadOnly ? "" : "Selecione a condição...")"
+                                           value="@(isReadOnly? ViewBag.NomeCondicaoPagamento: "")" />
+
+                                    @if (modo == "Criar")
+                                    {
+
+                                        <input type="number"
+                                               id="condicao-id-input"
+                                               class="form-control"
+                                               placeholder="ID"
+                                               style="max-width: 100px;" />
+
+                                        <button type="button"
+                                                id="btn-buscar-condicao-por-id"
+                                                class="btn btn-primary">
+                                            Buscar ID
+                                        </button>
+
+                                        <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#modalCondicaoVenda">Buscar</button>
+                                        <button type="button" id="btn-gerar-parcelas" class="btn btn-dark ms-3">Gerar Parcelas</button>
+                                        <button type="button" id="btn-limpar-parcelas" class="btn btn-outline-danger ms-1">Limpar</button>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <table class="table table-sm table-bordered mt-2">
+                            <thead><tr><th>Parcela</th><th>Valor</th><th>Vencimento</th><th>Forma de Pagamento</th></tr></thead>
+                            <tbody id="tabela-parcelas">
+                                @if (isReadOnly && Model.ParcelasGeradas != null)
+                                {
+                                    foreach (var p in Model.ParcelasGeradas)
+                                    {
+                                        <tr>
+                                            <td>@p.NumeroParcela</td>
+                                            <td>@p.ValorParcela.ToString("C2")</td>
+                                            <td>@p.DataVencimento.ToString("dd/MM/yyyy")</td>
+                                            <td>@p.NomeFormaPgto</td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col-md-12">
+                <label asp-for="Observacoes" class="form-label">Observações Gerais</label>
+                <textarea asp-for="Observacoes" class="form-control" rows="3"></textarea>
+            </div>
+        </div>
+
+    </fieldset>
+
+    @if (modo == "Cancelar")
+    {
+        <div class="modal fade" id="modalMotivoCancelamento" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Motivo do Cancelamento</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <textarea class="form-control" name="motivoCancelamento" id="motivoCancelamentoInput" rows="4" placeholder="Obrigatório..."></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Voltar</button>
+                        <button type="button" class="btn btn-danger" id="btn-confirmar-envio-cancelamento">Confirmar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="mt-4 text-end">
+        @if (modo == "Criar")
+        {
+            <button type="submit" class="btn btn-success">Finalizar Venda</button>
+            <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+        }
+        else if (modo == "Detalhes")
+        {
+            <a asp-action="Index" class="btn btn-secondary">Voltar para Lista</a>
+        }
+        else if (modo == "Cancelar")
+        {
+            <input type="hidden" asp-for="Modelo" />
+            <input type="hidden" asp-for="Serie" />
+            <input type="hidden" asp-for="NumeroNota" />
+            
+
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalMotivoCancelamento">
+                Confirmar Cancelamento
+            </button>
+            <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+        }
+    </div>
+</form>
+
+
+
+
+<div class="modal fade" id="modalCliente" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header"><h5 class="modal-title">Selecionar Cliente</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <div class="modal-body">
+                <input type="text" id="filtroCliente" class="form-control mb-3" placeholder="Digite para buscar..." onkeyup="filtrarTabelaCliente()" />
+                <table class="table table-bordered table-hover" id="tabelaClientesModal">
+                    <thead><tr><th>ID</th><th>Nome / Razão Social</th><th>CPF/CNPJ</th><th>Ação</th></tr></thead>
+                    <tbody>
+                        @if (ViewBag.Clientes != null)
+                        {
+                            foreach (var cliente in ViewBag.Clientes as List<Pagamento.Models.Cliente>)
+                            {
+                                <tr>
+                                    <td>@cliente.IdPessoa</td>
+                                    <td>@cliente.Nome_RazaoSocial</td>
+                                    <td>@cliente.CPF_CNPJ</td>
+                                    <td>
+                                        <button type="button" class="btn btn-sm btn-primary" onclick="selecionarCliente(@cliente.IdPessoa, '@cliente.Nome_RazaoSocial', @cliente.IdCondPgto)">
+                                            Selecionar
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+                <div class="mt-3 border-top pt-3">
+                    <button type="button" class="btn btn-success" onclick="abrirFormNovoCliente()">
+                        <i class="bi bi-person-plus-fill"></i> Cadastrar Novo Cliente
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalProduto" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header"><h5 class="modal-title">Selecionar Produto</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <div class="modal-body">
+                <input type="text" id="filtroProduto" class="form-control mb-3" placeholder="Buscar produto..." onkeyup="filtrarTabelaProduto()" />
+                <table class="table table-bordered table-hover" id="tabelaProdutosModal">
+                    <thead><tr><th>ID</th><th>Descrição</th><th>Preço Venda</th><th>Ação</th></tr></thead>
+                    <tbody>
+                        @if (ViewBag.Produtos != null)
+                        {
+                            foreach (var produto in ViewBag.Produtos as List<Pagamento.Models.Produto>)
+                            {
+                                <tr>
+                                    <td>@produto.IdProduto</td>
+                                    <td>@produto.Descricao</td>
+                                    <td>@produto.ValorVenda.ToString("C2")</td>
+                                    <td>
+                                        <button type="button" class="btn btn-sm btn-primary"
+                                                onclick="selecionarProduto(@produto.IdProduto, '@produto.Descricao', '@produto.NomeUnidade', @produto.ValorVenda.ToString("F2", System.Globalization.CultureInfo.InvariantCulture), @produto.Quantidade)">
+                                            Selecionar
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+                <div class="mt-3 border-top pt-3">
+                    <button type="button" class="btn btn-success" onclick="abrirFormNovoProduto()">
+                        <i class="bi bi-box-seam"></i> Cadastrar Novo Produto
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modalNovoProduto" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content" id="modalNovoProdutoContent">
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modalCondicaoVenda" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header"><h5 class="modal-title">Selecionar Condição de Pagamento</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <div class="modal-body">
+                <input type="text" id="filtroCondicao" class="form-control mb-3" placeholder="Buscar..." onkeyup="filtrarTabelaCondicao()" />
+                <table class="table table-bordered table-hover" id="tabelaCondicoesModal">
+                    <thead><tr><th>ID</th><th>Descrição</th><th>Ação</th></tr></thead>
+                    <tbody>
+                        @if (ViewBag.CondicoesPagamento != null)
+                        {
+                            foreach (var c in ViewBag.CondicoesPagamento as List<Pagamento.Models.CondicaoPagamento>)
+                            {
+                                <tr>
+                                    <td>@c.IdCondPgto</td>
+                                    <td>@c.Descricao</td>
+                                    
+                                    <td>
+                                        <button type="button" class="btn btn-sm btn-primary" onclick="selecionarCondicaoVenda(@c.IdCondPgto, '@c.Descricao')">
+                                            Selecionar
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+                <div class="mt-3 border-top pt-3">
+                    <button type="button" class="btn btn-success" onclick="abrirFormNovaCondicaoVenda()">
+                        <i class="bi bi-plus-circle"></i> Cadastrar Nova Condição
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalNovaCondicao" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content" id="modalNovaCondicaoContent">
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalFormaPgtoSelect" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Selecionar Forma de Pagamento</h5>
+                <button type="button" class="btn-close" onclick="fecharModalForma_VoltarCondicao()"></button>
+            </div>
+            <div class="modal-body">
+                <input type="text" class="form-control mb-2" placeholder="Buscar..." onkeyup="filtrarModalSimples(this, '#tabFormaAux')" />
+                <div style="max-height: 300px; overflow-y: auto;">
+                    <table class="table table-hover" id="tabFormaAux">
+                        <thead><tr><th>Descrição</th><th>Ação</th></tr></thead>
+                        <tbody>
+                            @if (ViewBag.FormasPagamentoItens != null)
+                            {
+                                foreach (var f in ViewBag.FormasPagamentoItens as List<SelectListItem>)
+                                {
+                                    <tr>
+                                        <td>@f.Text</td>
+                                        <td>
+                                            <button type="button"
+                                                    class="btn btn-sm btn-primary btn-select-forma"
+                                                    data-id="@f.Value"
+                                                    data-nome="@f.Text">
+                                                Selecionar
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <button class="btn btn-success w-100 mt-2" onclick="abrirFormNovaFormaPgto()">+ Nova Forma</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 3. Container para Cadastro de Nova Forma (Opcional) -->
+<div class="modal fade" id="modalNovaForma" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content" id="modalNovaFormaContent"></div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modalSelecionarFuncionario" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header ">
+                <h5 class="modal-title">Selecionar Funcionario</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group mb-3">
+                    <input type="text" id="filtroFuncionarioInput" class="form-control" placeholder="Digite nome" onkeyup="filtrarTabelaFuncionarios()">
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover table-bordered table-sm" id="tabelaFuncionarios">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome</th>
+                                <th class="text-center">Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (ViewBag.Funcionarios != null)
+                            {
+                                foreach (var func in ViewBag.Funcionarios as List<Pagamento.Models.Funcionario>)
+                                {
+                                    <tr>
+                                        <td>@func.IdPessoa</td>
+                                        <td>@func.Nome_RazaoSocial</td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-sm btn-primary"
+                                                    onclick="selecionarFuncionario(@func.IdPessoa, '@func.Nome_RazaoSocial')">
+                                                <i class="fa fa-check"></i>
+                                                Selecionar
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                    <div class="mt-3 border-top pt-3">
+                        <button type="button" class="btn btn-success" onclick="abrirFormNovoFuncionario()">
+                            <i class="bi bi-person-plus-fill"></i> Cadastrar Novo Funcionário
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalCidadeParaCadastroCliente" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Selecionar Cidade</h5>
+                <button type="button" class="btn-close" onclick="fecharModalCidade_VoltarCliente()"></button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="filtroCidadeClienteMain" class="form-control mb-3" placeholder="Buscar cidade..." onkeyup="filtrarTabelaCidadeClienteMain()" />
+
+                <div style="max-height: 400px; overflow-y: auto;">
+                    <table class="table table-bordered table-hover" id="tabelaCidadesClienteMain">
+                        <thead><tr><th>Nome</th><th>Ação</th></tr></thead>
+                        <tbody>
+                            @if (ViewBag.CidadesItens != null)
+                            {
+                                foreach (var item in ViewBag.CidadesItens as List<SelectListItem>)
+                                {
+                                    <tr>
+                                        <td>@item.Text</td>
+                                        <td>
+                                            <button type="button" class="btn btn-sm btn-primary"
+                                                    onclick="confirmarCidadeParaCliente(@item.Value, '@Html.Raw(item.Text)')">
+                                                Selecionar
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modalCidadeParaCadastroFuncionario" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Selecionar Cidade (Funcionário)</h5>
+                <button type="button" class="btn-close" onclick="fecharModalCidade_VoltarFuncionario()"></button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="filtroCidadeFuncMain" class="form-control mb-3" placeholder="Buscar..." onkeyup="filtrarTabelaCidadeFuncMain()" />
+                <div style="max-height: 400px; overflow-y: auto;">
+                    <table class="table table-bordered table-hover" id="tabelaCidadesFuncMain">
+                        <thead><tr><th>Nome</th><th>Ação</th></tr></thead>
+                        <tbody>
+                            @if (ViewBag.CidadesItens != null)
+                            {
+                                foreach (var item in ViewBag.CidadesItens as List<SelectListItem>)
+                                {
+                                    <tr>
+                                        <td>@item.Text</td>
+                                        <td>
+                                            <button type="button" class="btn btn-sm btn-primary"
+                                                    onclick="confirmarCidadeParaFuncionario(@item.Value, '@Html.Raw(item.Text)')">
+                                                Selecionar
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modalCondicaoParaCadastroCliente" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Selecionar Condição </h5>
+                <button type="button" class="btn-close" onclick="fecharModalCondicao_VoltarCliente()"></button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="filtroCondicaoClienteMain" class="form-control mb-3" placeholder="Buscar..." onkeyup="filtrarTabelaCondicaoClienteMain()" />
+
+                <table class="table table-bordered table-hover" id="tabelaCondicoesClienteMain">
+                    <thead><tr><th>Descrição</th><th>Ação</th></tr></thead>
+                    <tbody>
+                        @if (ViewBag.CondicoesPagamentoItens != null)
+                        {
+                            foreach (var item in ViewBag.CondicoesPagamentoItens as List<SelectListItem>)
+                            {
+                                <tr>
+                                    <td>@item.Text</td>
+                                    <td>
+                                        <button type="button" class="btn btn-sm btn-primary"
+                                                onclick="confirmarCondicaoParaCliente(@item.Value, '@Html.Raw(item.Text)')">
+                                            Selecionar
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalMarcaSelecionar" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Selecionar Marca</h5>
+                <button type="button" class="btn-close" onclick="fecharModalAux_VoltarProduto('#modalMarcaSelecionar')"></button>
+            </div>
+            <div class="modal-body">
+                <input type="text" class="form-control mb-2" placeholder="Buscar..." onkeyup="filtrarModalSimples(this, '#tabMarca')" />
+                <div style="max-height: 300px; overflow-y: auto;">
+                    <table class="table table-hover" id="tabMarca">
+                        <tbody>
+                            @if (ViewBag.MarcasItens != null)
+                            {
+                                foreach (var m in ViewBag.MarcasItens as List<SelectListItem>)
+                                {
+                                    <tr>
+                                        <td>@m.Text</td>
+                                        <td><button class="btn btn-sm btn-primary" onclick="setProdutoDados('Marca', @m.Value, '@Html.Raw(m.Text)')">Selecionar</button></td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalUnidadeSelecionar" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Selecionar Unidade</h5>
+                <button type="button" class="btn-close" onclick="fecharModalAux_VoltarProduto('#modalUnidadeSelecionar')"></button>
+            </div>
+            <div class="modal-body">
+                <input type="text" class="form-control mb-2" placeholder="Buscar..." onkeyup="filtrarModalSimples(this, '#tabUnidade')" />
+                <div style="max-height: 300px; overflow-y: auto;">
+                    <table class="table table-hover" id="tabUnidade">
+                        <tbody>
+                            @if (ViewBag.UnidadesItens != null)
+                            {
+                                foreach (var u in ViewBag.UnidadesItens as List<SelectListItem>)
+                                {
+                                    <tr>
+                                        <td>@u.Text</td>
+                                        <td><button class="btn btn-sm btn-primary" onclick="setProdutoDados('UnidadeMedida', @u.Value, '@Html.Raw(u.Text)')">Selecionar</button></td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalCategoriaSelecionar" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Selecionar Categoria</h5>
+                <button type="button" class="btn-close" onclick="fecharModalAux_VoltarProduto('#modalCategoriaSelecionar')"></button>
+            </div>
+            <div class="modal-body">
+                <input type="text" class="form-control mb-2" placeholder="Buscar..." onkeyup="filtrarModalSimples(this, '#tabCategoria')" />
+                <div style="max-height: 300px; overflow-y: auto;">
+                    <table class="table table-hover" id="tabCategoria">
+                        <tbody>
+                            @if (ViewBag.CategoriasItens != null)
+                            {
+                                foreach (var c in ViewBag.CategoriasItens as List<SelectListItem>)
+                                {
+                                    <tr>
+                                        <td>@c.Text</td>
+                                        <td><button class="btn btn-sm btn-primary" onclick="setProdutoDados('Categoria', @c.Value, '@Html.Raw(c.Text)')">Selecionar</button></td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalFornecedorSelecionarProduto" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Selecionar Fornecedores</h5>
+                <button type="button" class="btn-close" onclick="fecharModalAux_VoltarProduto('#modalFornecedorSelecionarProduto')"></button>
+            </div>
+            <div class="modal-body">
+                <input type="text" class="form-control mb-2" placeholder="Buscar..." onkeyup="filtrarModalSimples(this, '#tabFornMulti')" />
+                <div style="max-height: 300px; overflow-y: auto;">
+                    <table class="table table-bordered" id="tabFornMulti">
+                        <thead><tr><th style="width:30px"></th><th>Nome</th></tr></thead>
+                        <tbody>
+                            @if (ViewBag.FornecedoresItens != null)
+                            {
+                                foreach (var f in ViewBag.FornecedoresItens as List<SelectListItem>)
+                                {
+                                    <tr>
+                                        <td class="text-center">
+                                            <input type="checkbox" class="form-check-input chk-fornecedor-prod" value="@f.Value" data-nome="@f.Text" />
+                                        </td>
+                                        <td>@f.Text</td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <button class="btn btn-primary w-100 mt-2" onclick="confirmarFornecedoresProduto()">Confirmar Seleção</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modalVendaExistente" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-warning">
+                    <i class="bi bi-exclamation-triangle-fill"></i> Atenção: Venda Duplicada Encontrada
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <p>Já existe uma venda registrada com os dados informados:</p>
+                <dl class="row">
+
+                    <dt class="col-sm-3">Modelo:</dt>
+                    <dd class="col-sm-9"><span id="venda-existente-modelo">-</span></dd>
+
+                    <dt class="col-sm-3">Série:</dt>
+                    <dd class="col-sm-9"><span id="venda-existente-serie">-</span></dd>
+
+                    <dt class="col-sm-3">Número da Nota:</dt>
+                    <dd class="col-sm-9"><span id="venda-existente-numero">-</span></dd>
+
+                    <dt class="col-sm-3">Cliente:</dt>
+                    <dd class="col-sm-9"><span id="venda-existente-cliente">-</span></dd>
+
+                    <dt class="col-sm-3">Data Emissão:</dt>
+                    <dd class="col-sm-9"><span id="venda-existente-emissao">-</span></dd>
+
+                    <dt class="col-sm-3">Vendedor:</dt>
+                    <dd class="col-sm-9"><span id="venda-existente-funcionario">-</span></dd>
+
+                    <dt class="col-sm-3">Total:</dt>
+                    <dd class="col-sm-9 fw-bold"><span id="venda-existente-total">-</span></dd>
+
+                    <dt class="col-sm-3">Observações:</dt>
+                    <dd class="col-sm-9"><span id="venda-existente-obs">-</span></dd>
+
+                </dl>
+                <hr />
+                <p class="text-muted small">Os campos do formulário foram limpos. Por favor, verifique os dados ou insira uma nova nota.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modalNovoCliente" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" id="modalNovoClienteContent">
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="modalNovoFuncionario" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content" id="modalNovoFuncionarioContent">
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+
+
+
+        async function buscarEselecionarCondicaoPorId() {
+            const idInput = document.getElementById('condicao-id-input');
+            const id = parseInt(idInput.value);
+
+            if (!id || id <= 0) {
+                alert('Por favor, digite um ID de condição válido.');
+                return;
+            }
+
+            try {
+                const response = await fetch(`@Url.Action("BuscarPorIdJSON", "CondicaoPagamento")?id=${id}`);
+
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => null);
+                    alert(errorData?.mensagem || 'Condição de pagamento não encontrada.');
+                    return;
+                }
+
+                const condicao = await response.json();
+
+                const idCond =
+                    condicao.idCondPgto ??
+                    condicao.id ??
+                    condicao.idCondicao ??
+                    id;
+
+                const descricao =
+                    condicao.descricao ??
+                    condicao.nome ??
+                    condicao.Descricao ??
+                    "";
+
+                selecionarCondicaoVenda(idCond, descricao);
+
+                idInput.value = '';
+
+            } catch (error) {
+                console.error('Erro ao buscar condição por ID:', error);
+                alert('Ocorreu um erro de comunicação ao tentar buscar a condição.');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const btnBuscarCondicaoId = document.getElementById('btn-buscar-condicao-por-id');
+            if (btnBuscarCondicaoId) {
+                btnBuscarCondicaoId.addEventListener('click', buscarEselecionarCondicaoPorId);
+            }
+        });
+        
+        
+
+        let parcelasTemp = [];                 
+
+                
+        function abrirFormNovaCondicaoVenda() {
+            parcelasTemp = [];
+            $.get('@Url.Action("FormModal", "CondicaoPagamento")', function (html) {
+                $('#modalNovaCondicaoContent').html(html);
+
+                $('#modalNovaCondicaoContent')
+                  .find('[data-bs-target="#modalFormaPgto"]')
+                  .attr('data-bs-target', '#modalFormaPgtoSelect');
+
+                new bootstrap.Modal(document.getElementById('modalNovaCondicao')).show();
+
+                setupModalFormaPgtoSelectWiring();
+            });
+        }
+
+        $(document).on('submit', '#formCadastrarCondicaoPgto', function (e) {
+            e.preventDefault();
+
+            let total = parcelasTemp.reduce((sum, p) => sum + (parseFloat(p.valorPercentual) || 0), 0);
+            if (Math.abs(total - 100) > 0.1) {
+                alert(`A soma das parcelas deve ser 100%. Atual: ${total.toFixed(2)}%`);
+                return;
+            }
+
+            let formData = $(this).serializeArray();
+            formData.push({ name: "ParcelasJson", value: JSON.stringify(parcelasTemp) });
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("FormModal", "CondicaoPagamento")',
+                data: $.param(formData),
+                success: function (res) {
+                    if (res.sucesso) {
+                        var modalEl = document.getElementById('modalNovaCondicao');
+                        var modal = bootstrap.Modal.getInstance(modalEl);
+                        modal.hide();
+
+                        modalEl.addEventListener('hidden.bs.modal', function () {
+                            $('.modal-backdrop').remove();
+                            $('body').removeClass('modal-open').css('overflow', '');
+
+                            var modalSelEl = document.getElementById('modalCondicaoVenda');
+                            if(modalSelEl) new bootstrap.Modal(modalSelEl).show();
+
+                        }, { once: true });
+
+                        const novaLinha = `
+                            <tr class="table-success">
+                                <td>${res.condicao.id}</td>
+                                <td>${res.condicao.nome}</td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-primary"
+                                        onclick="selecionarCondicaoVenda(${res.condicao.id}, '${res.condicao.nome}')">
+                                        Selecionar
+                                    </button>
+                                </td>
+                            </tr>`;
+
+                        $('#tabelaCondicoesModal tbody').append(novaLinha);         
+
+                    } else {
+                        $('#modalNovaCondicaoContent').html(res);
+                        renderizarTabelaParcelas();
+                        setupModalFormaPgtoSelectWiring();         
+                    }
+                },
+                error: function() { alert("Erro ao salvar condição."); }
+            });
+        });
+
+                
+        document.getElementById('modalNovaCondicao')
+          .addEventListener('hidden.bs.modal', function () {
+
+              if (nestingFormaAberto) return;             
+
+              document.getElementById('modalNovaCondicaoContent').innerHTML = '';
+              parcelasTemp = [];
+        });
+
+        $(document).on('click', '#btnAdicionarParcela', function () {
+            const num = parseInt($('#NumeroParcela').val());
+            const idForma = parseInt($('#IdFormaPgto').val());
+            const nomeForma = $('#NomeFormaSelecionada').val();
+            const valor = parseFloat($('#ValorPercentual').val());
+            const dias = parseInt($('#DiasAposVenda').val());
+
+            if (!num || !idForma || isNaN(valor) || isNaN(dias)) {
+                alert("Preencha todos os campos da parcela.");
+                return;
+            }
+
+            if (parcelasTemp.some(p => p.numeroParcela === num)) {
+                alert("Número de parcela já existe.");
+                return;
+            }
+
+            let total = parcelasTemp.reduce((sum, p) => sum + p.valorPercentual, 0);
+            if (total + valor > 100) {
+                alert(`Ultrapassa 100%. Disponível: ${(100 - total).toFixed(2)}%`);
+                return;
+            }
+
+            parcelasTemp.push({
+                numeroParcela: num,
+                idFormaPgto: idForma,
+                descricaoFormaPgto: nomeForma,
+                valorPercentual: valor,
+                diasAposVenda: dias
+            });
+
+            renderizarTabelaParcelas();
+
+            $('#NumeroParcela').val(parcelasTemp.length + 1);       
+            $('#ValorPercentual').val('');
+            $('#DiasAposVenda').val('');
+        });
+
+        $(document).on('click', '.removerParcelaTemp', function () {
+            const num = $(this).data('num');
+            parcelasTemp = parcelasTemp.filter(p => p.numeroParcela !== num);
+            renderizarTabelaParcelas();
+        });
+
+        function renderizarTabelaParcelas() {
+            const tbody = $('#tabelaParcelas tbody');
+            tbody.empty();
+
+            parcelasTemp.sort((a, b) => a.numeroParcela - b.numeroParcela);
+
+            parcelasTemp.forEach(p => {
+                const tr = `
+                    <tr>
+                        <td>${p.numeroParcela}</td>
+                        <td>${p.descricaoFormaPgto}</td>
+                        <td>${p.valorPercentual}%</td>
+                        <td>${p.diasAposVenda}</td>
+                        <td><button type="button" class="btn btn-sm btn-danger removerParcelaTemp" data-num="${p.numeroParcela}">Excluir</button></td>
+                    </tr>`;
+                tbody.append(tr);
+            });
+        }
+
+        let nestingFormaAberto = false;
+                
+        function setupModalFormaPgtoSelectWiring() {
+            const container = document.getElementById('modalNovaCondicaoContent');
+            if (!container) return;
+
+            const auxEl = document.getElementById('modalFormaPgtoSelect');
+            const mainEl = document.getElementById('modalNovaCondicao');
+            if (!auxEl || !mainEl) return;
+
+            if (auxEl.dataset.nestingInit === '1') return;
+            auxEl.dataset.nestingInit = '1';
+
+            auxEl.addEventListener('show.bs.modal', () => {
+                nestingFormaAberto = true;
+                bootstrap.Modal.getInstance(mainEl)?.hide();
+            });
+
+            auxEl.addEventListener('hidden.bs.modal', () => {
+                nestingFormaAberto = false;
+
+                document.querySelectorAll('.modal-backdrop').forEach(b => b.remove());
+                document.body.classList.remove('modal-open');
+                document.body.style.removeProperty('overflow');
+                document.body.style.removeProperty('padding-right');
+
+                bootstrap.Modal.getOrCreateInstance(mainEl).show();
+            });
+        }
+
+        window.abrirFormNovaFormaPgto = function () {
+
+            const auxEl = document.getElementById('modalFormaPgtoSelect');
+            const auxInst = bootstrap.Modal.getInstance(auxEl);
+
+            if (auxInst) auxInst.hide();
+
+            $.get('@Url.Action("FormModal", "FormaPagamento")', function (html) {
+
+                $('#modalNovaFormaContent').html(html);
+
+                const novaEl = document.getElementById('modalNovaForma');
+                const novaInst = bootstrap.Modal.getOrCreateInstance(novaEl);
+                novaInst.show();
+
+                novaEl.addEventListener('hidden.bs.modal', function () {
+
+                    document.querySelectorAll('.modal-backdrop').forEach(b => b.remove());
+                    document.body.classList.remove('modal-open');
+                    document.body.style.removeProperty('overflow');
+                    document.body.style.removeProperty('padding-right');
+
+                    bootstrap.Modal.getOrCreateInstance(auxEl).show();
+
+                }, { once: true });
+            });
+        };
+
+        $(document).on('click', '.btn-select-forma', function () {
+            const id = parseInt(this.dataset.id);
+            const nome = this.dataset.nome;
+            confirmarFormaParaCondicao(id, nome);
+        });
+
+        function confirmarFormaParaCondicao(id, nome) {
+            $('#IdFormaPgto').val(id);
+            $('#NomeFormaSelecionada').val(nome);
+
+            const auxEl = document.getElementById('modalFormaPgtoSelect');
+            const auxInst = bootstrap.Modal.getInstance(auxEl);
+            if (auxInst) auxInst.hide();               
+        }
+
+        function fecharModalForma_VoltarCondicao() {
+            const auxEl = document.getElementById('modalFormaPgtoSelect');
+            const auxInst = bootstrap.Modal.getInstance(auxEl);
+            if (auxInst) auxInst.hide();
+        }
+
+
+
+                
+        function getModalNovoProdutoInst() {
+            const el = document.getElementById('modalNovoProduto');
+            return bootstrap.Modal.getOrCreateInstance(el);
+        }
+
+
+
+        function abrirFormNovoProduto() {
+            $.get('@Url.Action("FormModal", "Produto")', function (html) {
+                $('#modalNovoProdutoContent').html(html);
+
+                const el = document.getElementById('modalNovoProduto');
+                const inst = bootstrap.Modal.getOrCreateInstance(el);
+                inst.show();
+            });
+        }
+
+        $(document).on('submit', '#formCadastrarProduto', function (e) {                       
+            e.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("FormModal", "Produto")',
+                data: $(this).serialize(),
+                success: function (res) {
+                    if (res.sucesso) {
+                        var modalEl = document.getElementById('modalNovoProduto');
+                        var modalInst = bootstrap.Modal.getInstance(modalEl);
+                        modalInst.hide();
+
+                        modalEl.addEventListener('hidden.bs.modal', function () {
+                            $('.modal-backdrop').remove();
+                            $('body').removeClass('modal-open').css('overflow', '');
+
+                            var modalSelEl = document.getElementById('modalProduto');
+                            if(modalSelEl) {
+                                var modalSel = new bootstrap.Modal(modalSelEl);
+                                modalSel.show();
+                            }
+
+                        }, { once: true });
+
+                                
+                            const id = res.produto.id;
+                            const nome = res.produto.nome || '';
+                            const unidade = res.produto.unidade || '';             
+                            const estoque = res.produto.estoque ?? res.produto.quantidade ?? 0;         
+
+                            const valorVendaNum = parseFloat(res.produto.valorVenda || 0);
+                            const valorFormatado = valorVendaNum.toLocaleString('pt-BR', {
+                                style: 'currency',
+                                currency: 'BRL'
+                            });
+
+                            const nomeEsc = nome.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/\n/g, ' ');
+                            const unidadeEsc = unidade.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/\n/g, ' ');
+
+                                const novaLinha = `
+                                <tr class="table-success">
+                                    <td>${id}</td>
+                                    <td>${nomeEsc}</td>
+                                    <td>${valorFormatado}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-sm btn-primary"
+                                            onclick="selecionarProduto(${id}, '${nomeEsc}', '${unidadeEsc}', ${valorVendaNum.toFixed(2)}, ${estoque})">
+                                            Selecionar
+                                        </button>
+                                    </td>
+                                </tr>
+                            `;
+
+                        $('#tabelaProdutosModal tbody').append(novaLinha);
+
+                    } else {
+                        $('#modalNovoProdutoContent').html(res);
+                    }
+                },
+                error: function() { alert("Erro ao salvar produto."); }
+            });
+        });
+
+        document.getElementById('modalNovoProduto').addEventListener('hidden.bs.modal', function () {
+            document.getElementById('modalNovoProdutoContent').innerHTML = '';
+        });
+
+        function abrirModalMarcaParaProduto() { toggleModalProd('#modalMarcaSelecionar'); }
+        function abrirModalUnidadeParaProduto() { toggleModalProd('#modalUnidadeSelecionar'); }
+        function abrirModalCategoriaParaProduto() { toggleModalProd('#modalCategoriaSelecionar'); }
+        function abrirModalFornecedoresMultiplos() { toggleModalProd('#modalFornecedorSelecionarProduto'); }
+
+
+
+
+                
+        const modalNovoProdutoEl = document.getElementById('modalNovoProduto');
+        const modalNovoProdutoInst =
+            bootstrap.Modal.getOrCreateInstance(modalNovoProdutoEl);
+
+        function toggleModalProd(targetId) {
+            const prodInst = getModalNovoProdutoInst();
+            const prodEl = document.getElementById('modalNovoProduto');
+
+            prodInst.hide();
+
+            prodEl.addEventListener('hidden.bs.modal', function () {
+                const auxEl = document.querySelector(targetId);
+                const auxInst = bootstrap.Modal.getOrCreateInstance(auxEl);
+                auxInst.show();
+            }, { once: true });
+        }
+
+                
+        function fecharModalAux_VoltarProduto(currentId) {
+            const auxEl = document.querySelector(currentId);
+            const auxInst = bootstrap.Modal.getInstance(auxEl);
+
+            if (auxInst) {
+                auxInst.hide();
+
+                auxEl.addEventListener('hidden.bs.modal', function () {
+                    document.querySelectorAll('.modal-backdrop').forEach(b => b.remove());
+                    document.body.classList.remove('modal-open');
+                    document.body.style.removeProperty('overflow');
+                    document.body.style.removeProperty('padding-right');
+
+                    getModalNovoProdutoInst().show();
+                }, { once: true });
+
+            } else {
+                getModalNovoProdutoInst().show();
+            }
+        }
+
+        function setProdutoDados(campo, id, texto) {
+
+            if (campo === 'Marca') {
+                $('#MarcaId').val(id);
+                $('#NomeMarcaSelecionada').val(texto);
+                fecharModalAux_VoltarProduto('#modalMarcaSelecionar');
+                return;
+            }
+
+            if (campo === 'UnidadeMedida') {
+                $('#UnidadeMedidaId').val(id);
+                $('#NomeUnidadeSelecionada').val(texto);
+                fecharModalAux_VoltarProduto('#modalUnidadeSelecionar');
+                return;
+            }
+
+            if (campo === 'Categoria') {
+                $('#CategoriaId').val(id);
+                $('#NomeCategoriaSelecionada').val(texto);
+                fecharModalAux_VoltarProduto('#modalCategoriaSelecionar');
+                return;
+            }
+        }
+
+        function confirmarFornecedoresProduto() {
+            const ids = [];
+            const nomes = [];
+
+            $('.chk-fornecedor-prod:checked').each(function() {
+                ids.push($(this).val());
+                nomes.push($(this).data('nome'));
+            });
+
+            $('#fornecedoresSelecionados').val(ids.join(','));
+            $('#NomeFornecedorSelecionado').val(nomes.join(', '));
+
+            fecharModalAux_VoltarProduto('#modalFornecedorSelecionarProduto');
+        }
+
+        function filtrarModalSimples(input, tabelaId) {
+            const val = input.value.toLowerCase();
+            $(tabelaId + ' tbody tr').each(function() {
+                const txt = $(this).text().toLowerCase();
+                $(this).toggle(txt.includes(val));
+            });
+        }
+            
+        function abrirModalCidadeParaCliente() {
+            $('#modalNovoCliente').hide();
+
+            new bootstrap.Modal(document.getElementById('modalCidadeParaCadastroCliente')).show();
+        }
+
+        function fecharModalCidade_VoltarCliente() {
+            var modalEl = document.getElementById('modalCidadeParaCadastroCliente');
+            var modal = bootstrap.Modal.getInstance(modalEl);
+            if(modal) modal.hide();
+
+            $('#modalNovoCliente').show();
+        }
+
+        function confirmarCidadeParaCliente(id, nome) {
+            $('#Cliente_IdCidade').val(id);
+            $('#Cliente_NomeCidade').val(nome);
+
+            fecharModalCidade_VoltarCliente();
+        }
+
+        function filtrarTabelaCidadeClienteMain() {
+            const filtro = $('#filtroCidadeClienteMain').val().toLowerCase();
+            $('#tabelaCidadesClienteMain tbody tr').each(function () {
+                const texto = $(this).text().toLowerCase();
+                $(this).toggle(texto.includes(filtro));
+            });
+        }
+
+        function abrirModalCondicaoParaCliente() {
+            $('#modalNovoCliente').hide();
+            new bootstrap.Modal(document.getElementById('modalCondicaoParaCadastroCliente')).show();
+        }
+
+        function fecharModalCondicao_VoltarCliente() {
+            var modalEl = document.getElementById('modalCondicaoParaCadastroCliente');
+            var modal = bootstrap.Modal.getInstance(modalEl);
+            if(modal) modal.hide();
+
+            $('#modalNovoCliente').show();
+        }
+
+        function confirmarCondicaoParaCliente(id, nome) {
+            $('#Cliente_IdCondPgto').val(id);
+            $('#Cliente_NomeCondicao').val(nome);
+
+            fecharModalCondicao_VoltarCliente();
+        }
+
+        function filtrarTabelaCondicaoClienteMain() {
+            const filtro = $('#filtroCondicaoClienteMain').val().toLowerCase();
+            $('#tabelaCondicoesClienteMain tbody tr').each(function () {
+                const texto = $(this).text().toLowerCase();
+                $(this).toggle(texto.includes(filtro));
+            });
+        }
+
+
+
+
+
+        document.addEventListener('DOMContentLoaded', function() {
+
+            function getFormattedDate(date) {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            }
+
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const formattedToday = getFormattedDate(today);
+
+            const dataEmissaoInput = document.getElementById('DataEmissao');
+
+            if (dataEmissaoInput) {
+                dataEmissaoInput.max = formattedToday;
+
+                dataEmissaoInput.addEventListener('blur', function() {
+                    if (!this.value) return;                     
+
+                    const parts = this.value.split('-');
+                    if (parts.length === 3) {
+                        const inputDate = new Date(Date.UTC(parts[0], parts[1] - 1, parts[2]));
+
+                        if (inputDate > today) {
+                            alert('A Data de Emissão não pode ser futura. A data será corrigida para hoje.');
+                            this.value = formattedToday;       
+                        }
+                    } else {
+                        alert('Data inválida.');
+                        this.value = formattedToday;
+                    }
+                });
+            }
+        });
+
+
+
+
+        const modo = "@modo";
+
+        const condicoesMap = {};
+        @if (ViewBag.CondicoesPagamento != null)
+        {               
+            foreach (var c in ViewBag.CondicoesPagamento as List<Pagamento.Models.CondicaoPagamento>)                
+            {                       
+                @:condicoesMap[@c.IdCondPgto] = "@Html.Raw(c.Descricao)";
+            }
+        }
+
+        $.validator.methods.number = function (value, element) {
+            return this.optional(element) || /^-?(?:\d+|\d{1,3}(?:\.\d{3})*)(?:,\d*)?$/.test(value);
+        };
+        $.validator.methods.range = function (value, element, param) {
+            if (!value) return true;
+            var globalizedValue = value.replace(/\./g, "").replace(",", ".");
+            return this.optional(element) || (parseFloat(globalizedValue) >= param[0] && parseFloat(globalizedValue) <= param[1]);
+        };
+
+        if (modo === "Criar") {
+
+
+                    
+        $(document).on('submit', '#formCadastrarFormaPgto', function (e) {
+            e.preventDefault();
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("FormModal", "FormaPagamento")',
+                data: $(this).serialize(),
+                success: function (res) {
+
+                    if (res && res.sucesso) {
+
+                        const novaEl = document.getElementById('modalNovaForma');
+                        const novaInst = bootstrap.Modal.getInstance(novaEl);
+                        if (novaInst) novaInst.hide();
+
+                        const id = res.forma.id;
+                        const nome = res.forma.nome;
+
+                        const nomeEsc = (nome || '')
+                            .replace(/\\/g, '\\\\')
+                            .replace(/'/g, "\\'")
+                            .replace(/\n/g, ' ');
+
+                        const novaLinha = `
+                            <tr class="table-success">
+                                <td>${nomeEsc}</td>
+                                <td>
+                                    <button type="button"
+                                            class="btn btn-sm btn-primary btn-select-forma"
+                                            data-id="${id}"
+                                            data-nome="${nomeEsc}">
+                                        Selecionar
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+
+                        $('#tabFormaAux tbody').append(novaLinha);
+
+                    } else {
+                        $('#modalNovaFormaContent').html(res);
+                    }
+                },
+                error: function () {
+                    alert("Erro ao salvar forma de pagamento.");
+                }
+            });
+        });
+
+            function abrirFormNovoFuncionario() {
+                $.get('@Url.Action("FormModal", "Funcionario")', function (html) {
+                    $('#modalNovoFuncionarioContent').html(html);
+
+                    new bootstrap.Modal(document.getElementById('modalNovoFuncionario')).show();
+                });
+            }
+
+            $(document).on('submit', '#formCadastrarFuncionarioModal', function (e) {
+                e.preventDefault();
+
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("FormModal", "Funcionario")',
+                    data: $(this).serialize(),
+                    success: function (res) {
+                        if (res.sucesso) {
+                            var modalCadEl = document.getElementById('modalNovoFuncionario');
+                            var modalCad = bootstrap.Modal.getInstance(modalCadEl);
+                            modalCad.hide();
+
+                            modalCadEl.addEventListener('hidden.bs.modal', function () {
+                                $('.modal-backdrop').remove();
+                                $('body').removeClass('modal-open').css('overflow', '');
+
+                                var modalSelEl = document.getElementById('modalSelecionarFuncionario');
+                                var modalSel = new bootstrap.Modal(modalSelEl);
+                                modalSel.show();
+
+                            }, { once: true });
+
+                            const novaLinha = `
+                                <tr class="table-success">
+                                    <td>${res.funcionario.idFuncionario}</td>
+                                    <td>${res.funcionario.nome_RazaoSocial}</td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-sm btn-primary"
+                                            onclick="selecionarFuncionario(${res.funcionario.idFuncionario}, '${res.funcionario.nome_RazaoSocial}')">
+                                            <i class="fa fa-check"></i> Selecionar
+                                        </button>
+                                    </td>
+                                </tr>`;
+
+                            $('#tabelaFuncionarios tbody').append(novaLinha);
+
+                        } else {
+                            $('#modalNovoFuncionarioContent').html(res);
+                        }
+                    },
+                    error: function() { alert("Erro ao salvar funcionário."); }
+                });
+            });
+
+            document.getElementById('modalNovoFuncionario').addEventListener('hidden.bs.modal', function () {
+                document.getElementById('modalNovoFuncionarioContent').innerHTML = '';
+            });
+
+            function abrirModalCidadeParaFuncionario() {
+                $('#modalNovoFuncionario').hide();
+                new bootstrap.Modal(document.getElementById('modalCidadeParaCadastroFuncionario')).show();
+            }
+
+            function fecharModalCidade_VoltarFuncionario() {
+                var modalEl = document.getElementById('modalCidadeParaCadastroFuncionario');
+                var modal = bootstrap.Modal.getInstance(modalEl);
+                if(modal) modal.hide();
+                $('#modalNovoFuncionario').show();
+            }
+
+            function confirmarCidadeParaFuncionario(id, nome) {
+                $('#Funcionario_IdCidade').val(id);
+                $('#Funcionario_NomeCidade').val(nome);
+                fecharModalCidade_VoltarFuncionario();
+            }
+
+            function filtrarTabelaCidadeFuncMain() {
+                const filtro = $('#filtroCidadeFuncMain').val().toLowerCase();
+                $('#tabelaCidadesFuncMain tbody tr').each(function () {
+                    const texto = $(this).text().toLowerCase();
+                    $(this).toggle(texto.includes(filtro));
+                });
+            }
+
+
+
+
+        function abrirFormNovoCliente() {
+            $.get('@Url.Action("FormModal", "Cliente")', function (html) {
+                $('#modalNovoClienteContent').html(html);
+
+                new bootstrap.Modal(document.getElementById('modalNovoCliente')).show();
+            });
+        }
+
+        $(document).on('submit', '#formCadastrarClienteModal', function (e) {
+            e.preventDefault();           
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("FormModal", "Cliente")',
+                data: $(this).serialize(),
+                success: function (res) {
+                    if (res.sucesso) {
+                        var modalCadastroEl = document.getElementById('modalNovoCliente');
+                        var modalCadastro = bootstrap.Modal.getInstance(modalCadastroEl);
+                        modalCadastro.hide();
+
+                        modalCadastroEl.addEventListener('hidden.bs.modal', function () {
+
+                            $('.modal-backdrop').remove();
+                            $('body').removeClass('modal-open').css('overflow', '');     
+
+                            var modalSelecaoEl = document.getElementById('modalCliente');
+                            var modalSelecao = new bootstrap.Modal(modalSelecaoEl);
+                            modalSelecao.show();
+
+                        }, { once: true });                     
+
+                        const novaLinha = `
+                            <tr class="table-success">
+                                <td>${res.cliente.id}</td>
+                                <td>${res.cliente.nome}</td>
+                                <td>${res.cliente.doc}</td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-primary"
+                                        onclick="selecionarCliente(${res.cliente.id}, '${res.cliente.nome}', ${res.cliente.condicaoId || 0})">
+                                        Selecionar
+                                    </button>
+                                </td>
+                            </tr>`;
+
+                        $('#tabelaClientesModal tbody').append(novaLinha);
+
+                    } else {
+                        $('#modalNovoClienteContent').html(res);
+                    }
+                },
+                error: function () {
+                    alert("Erro ao cadastrar cliente. Tente novamente.");
+                }
+            });
+        });
+
+        document.getElementById('modalNovoCliente').addEventListener('hidden.bs.modal', function () {
+            document.getElementById('modalNovoClienteContent').innerHTML = '';
+        });
+
+
+
+
+        async function verificarChaveDuplicada() {
+            const modeloInput = document.getElementById('Modelo');
+            const serieInput = document.getElementById('Serie');
+            const numeroNotaInput = document.getElementById('NumeroNota');
+            const clienteIdInput = document.getElementById('ClienteId');       
+
+            const modelo = modeloInput?.value?.trim() || '';
+            const serie = serieInput?.value?.trim() || '';
+            const numeroNota = numeroNotaInput?.value?.trim() || '';
+            const clienteId = parseInt(clienteIdInput?.value || '0');
+
+            if (modelo && serie && numeroNota && clienteId > 0) {
+                console.log('Verificando chave Venda:', modelo, serie, numeroNota, clienteId);
+
+                try {
+                    const url = `@Url.Action("VerificarDuplicidade", "Venda")?modelo=${encodeURIComponent(modelo)}&serie=${encodeURIComponent(serie)}&numeroNota=${encodeURIComponent(numeroNota)}&clienteId=${clienteId}`;
+
+                    const response = await fetch(url);
+                    if (!response.ok) throw new Error("Erro na requisição");
+
+                    const resultado = await response.json();
+
+                    if (resultado.existe) {
+                        const venda = resultado.venda;
+
+                        document.getElementById('venda-existente-modelo').textContent = venda.modelo || '-';
+                        document.getElementById('venda-existente-serie').textContent = venda.serie || '-';
+                        document.getElementById('venda-existente-numero').textContent = venda.numeroNota || '-';
+                        document.getElementById('venda-existente-cliente').textContent = `${venda.clienteId} - ${venda.nomeCliente || 'N/A'}`;
+                        document.getElementById('venda-existente-emissao').textContent = formatarDataString(venda.dataEmissao);
+                        document.getElementById('venda-existente-funcionario').textContent = venda.funcionario || '-';
+                        document.getElementById('venda-existente-total').textContent = venda.total || '-';
+                        document.getElementById('venda-existente-obs').textContent = venda.observacoes || '(Nenhuma)';
+
+                        const modalEl = document.getElementById('modalVendaExistente');
+                        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+                        modal.show();
+
+                        modeloInput.value = '';
+                        serieInput.value = '';
+                        numeroNotaInput.value = '';
+
+                        clienteIdInput.value = '';
+                        document.getElementById('tabela-cliente-selecionado').innerHTML = '';
+                        document.getElementById('cliente-id-input').value = '';
+                       
+
+                        modeloInput.focus();
+                    }
+
+                } catch (error) {
+                    console.error('Erro ao verificar duplicidade:', error);
+                }
+            }
+        }
+
+
+            function selecionarCliente(id, nome, idCondPgto) {
+                document.getElementById('ClienteId').value = id;
+                document.getElementById('tabela-cliente-selecionado').innerHTML = `<tr><td style="width: 60px;">${id}</td><td>${nome}</td></tr>`;
+
+                if (idCondPgto && idCondPgto > 0 && condicoesMap[idCondPgto]) {
+                    document.getElementById('CondicaoPagamentoVendaId').value = idCondPgto;
+                    document.getElementById('NomeCondicaoVenda').value = condicoesMap[idCondPgto];
+                } else {
+                    document.getElementById('CondicaoPagamentoVendaId').value = '';
+                    document.getElementById('NomeCondicaoVenda').value = '';
+                }
+
+                document.getElementById('tabela-parcelas').innerHTML = '';
+
+
+
+                var modalEl = document.getElementById('modalCliente');
+                if (modalEl) {
+                    var modal = bootstrap.Modal.getInstance(modalEl);
+                    if (modal) modal.hide();
+                }
+
+                document.getElementById('fieldset-lista-produtos').disabled = false;
+
+                verificarChaveDuplicada();
+            }
+
+                document.addEventListener('DOMContentLoaded', function() {
+                    const camposChave = ['Modelo', 'Serie', 'NumeroNota'];
+
+                    camposChave.forEach(id => {
+                        const el = document.getElementById(id);
+                        if(el) {
+                            el.addEventListener('blur', verificarChaveDuplicada);
+                        }
+                    });
+                });
+
+                function formatarDataString(dataString) {
+                    if (!dataString || !dataString.includes('-')) return '-';
+                    const [ano, mes, dia] = dataString.split('-');
+                    return `${dia}/${mes}/${ano}`;         
+                }
+
+
+            document.getElementById('btn-buscar-cliente-id').addEventListener('click', async function() {
+                const id = document.getElementById('cliente-id-input').value;
+                if(!id) return;
+                try {
+                    const res = await fetch(`@Url.Action("BuscarPorIdJSON", "Cliente")?id=${id}`);
+                    if(!res.ok) throw new Error("Cliente não encontrado");
+                    const cliente = await res.json();
+                    selecionarCliente(cliente.idPessoa, cliente.nome_RazaoSocial, cliente.condicaoPagamentoId);
+                } catch(e) { alert(e.message); }
+            });
+
+            function filtrarTabelaCliente() {
+                const filtro = $('#filtroCliente').val().toLowerCase();
+                $('#tabelaClientesModal tbody tr').each(function () {
+                    const texto = $(this).text().toLowerCase();
+                    $(this).toggle(texto.includes(filtro));
+                });
+            }
+
+            function selecionarProduto(id, descricao, unidade, precoVenda,estoque) {
+                document.getElementById('IdProdutoSelecionado').value = id;
+                document.getElementById('NomeProdutoSelecionado').value = descricao;
+                document.getElementById('UnidadeProdutoSelecionado').value = unidade;
+                document.getElementById('produto-unidade').value = unidade;
+
+                document.getElementById('produto-valor').value = formatarMoeda(precoVenda);
+
+
+                document.getElementById('EstoqueProdutoSelecionado').value = estoque;
+
+                
+
+                var modalEl = document.getElementById('modalProduto');
+                var modal = bootstrap.Modal.getInstance(modalEl);
+                if (modal) {
+                    modal.hide();
+                }
+
+
+
+                document.getElementById('fieldset-dados-nota').disabled = true;
+
+                calcularTotalItem();
+            }
+
+             document.getElementById('btn-buscar-produto-por-id').addEventListener('click', async function() {
+                const id = document.getElementById('produto-id-input').value;
+                if(!id) return;
+                try {
+                    const res = await fetch(`@Url.Action("BuscarPorIdJSON", "Produto")?id=${id}`);
+                    if(!res.ok) throw new Error("Produto não encontrado");
+                    const prod = await res.json();
+                    selecionarProduto(prod.idProduto, prod.descricao, prod.nomeUnidade, prod.valorVenda, prod.estoque);
+                } catch(e) { alert(e.message); }
+            });
+
+            document.getElementById('btn-adicionar-produto').addEventListener('click', function() {
+                const id = document.getElementById('IdProdutoSelecionado').value;
+                const nome = document.getElementById('NomeProdutoSelecionado').value;
+                const un = document.getElementById('UnidadeProdutoSelecionado').value;
+                const qtd = parseFloat(document.getElementById('produto-quantidade').value);
+                const valorStr = document.getElementById('produto-valor').value;
+                const valor = parseMoeda(valorStr);
+
+                const estoqueDisponivel = parseFloat(document.getElementById('EstoqueProdutoSelecionado').value) || 0;
+            
+                if(!id || !qtd || !valor) { alert("Preencha o produto corretamente."); return; }
+
+                const total = qtd * valor;
+                const tbody = document.getElementById('tabela-produtos');
+
+                if([...tbody.querySelectorAll('tr')].some(tr => tr.dataset.id === id)) {
+                    alert("Produto já adicionado."); return;
+                }
+
+                if (qtd > estoqueDisponivel) {
+                    alert(`Estoque insuficiente! Você tentou adicionar ${qtd}, mas só existem ${estoqueDisponivel} unidades disponíveis.`);
+                    return;               
+                }
+                const tr = document.createElement('tr');
+                tr.dataset.id = id;
+                tr.dataset.qtd = qtd;
+                tr.dataset.valor = valor;
+
+                tr.innerHTML = `
+                    <td>${id}</td>
+                    <td>${nome}</td>
+                    <td>${un}</td>
+                    <td>${qtd}</td>
+                    <td>${formatarMoeda(valor)}</td>
+                    <td>${formatarMoeda(total)}</td>
+                    <td><button type="button" class="btn btn-sm btn-danger btn-remover">Remover</button></td>
+                `;
+                tbody.appendChild(tr);
+
+                limparInputsProduto();
+
+                document.getElementById('fieldset-financeiro').disabled = false;
+                atualizarTotais();
+            });
+
+            document.getElementById('tabela-produtos').addEventListener('click', function(e) {
+                if(e.target.classList.contains('btn-remover')) {
+                    e.target.closest('tr').remove();
+                    atualizarTotais();
+
+                    if(document.getElementById('tabela-produtos').rows.length === 0) {
+                         document.getElementById('fieldset-financeiro').disabled = true;
+                         document.getElementById('fieldset-dados-nota').disabled = false;
+                    }
+                }
+            });
+
+            document.getElementById('btn-limpar-produtos').addEventListener('click', function() {
+                 document.getElementById('tabela-produtos').innerHTML = '';
+                 limparInputsProduto();
+                 atualizarTotais();
+                 document.getElementById('fieldset-financeiro').disabled = true;
+                 document.getElementById('fieldset-dados-nota').disabled = false;
+            });
+
+
+            document.getElementById('btn-buscar-funcionario-id').addEventListener('click', async function() {
+                const id = document.getElementById('funcionario-id-input').value;
+                if(!id) return;
+                try {
+                    const res = await fetch(`@Url.Action("BuscarPorIdJSON", "Funcionario")?id=${id}`);
+                    if(!res.ok) throw new Error("Funcionário não encontrado");
+
+                    const func = await res.json();
+
+                    selecionarFuncionario(func.idFuncionario, func.nome_RazaoSocial);
+
+                } catch(e) { alert(e.message); }
+            });
+
+
+
+            function selecionarCondicaoVenda(id, descricao) {
+                document.getElementById('CondicaoPagamentoVendaId').value = id;
+                document.getElementById('NomeCondicaoVenda').value = descricao;
+                bootstrap.Modal.getInstance(document.getElementById('modalCondicaoVenda')).hide();
+                document.getElementById('tabela-parcelas').innerHTML = '';
+            }
+
+            document.getElementById('btn-gerar-parcelas').addEventListener('click', async function() {
+                const idCondicao = document.getElementById('CondicaoPagamentoVendaId').value;
+                const total = parseMoeda(document.getElementById('total-nota').value);
+                const emissao = document.getElementById('DataEmissao').value;
+
+                if(!idCondicao || total <= 0 || !emissao) {
+                    alert("Selecione a condição, preencha a data de emissão e adicione produtos."); return;
+                }
+
+                try {
+                    const res = await fetch(`@Url.Action("ObterDetalhes", "CondicaoPagamento")?id=${idCondicao}`);
+                    if(!res.ok) throw new Error("Erro ao buscar condição");
+                    const condicao = await res.json();
+
+                    const tbody = document.getElementById('tabela-parcelas');
+                    tbody.innerHTML = '';
+                    const dataBase = new Date(emissao);
+
+                    const totalEmCentavos = Math.round(total * 100);
+                    let somaCentavos = 0;
+
+                    condicao.parcelas.forEach((p, index) => {
+
+
+                        let valorCentavos = Math.round(totalEmCentavos * (p.valorPercentual / 100));
+                        somaCentavos += valorCentavos;
+
+                        if (index === condicao.parcelas.length - 1) {
+                            const resto = totalEmCentavos - somaCentavos;
+                            valorCentavos += resto;
+                        }
+
+                        const valorParcela = valorCentavos / 100;
+
+
+                        const dataVenc = new Date(dataBase);
+                        dataVenc.setDate(dataVenc.getDate() + p.diasAposVenda + 1);           
+
+                        const tr = `<tr>
+                            <td>${p.numeroParcela}</td>
+                            <td>${formatarMoeda(valorParcela)}</td>
+                            <td>${dataVenc.toLocaleDateString('pt-BR')}</td>
+                            <td>${p.nomeFormaPagamento || '-'}</td>
+                        </tr>`;
+                        tbody.insertAdjacentHTML('beforeend', tr);
+                    });
+
+                    document.getElementById('fieldset-lista-produtos').disabled = true;
+
+                } catch(e) { console.error(e); alert("Erro ao gerar parcelas"); }
+            });
+
+
+        function filtrarTabelaFuncionarios() {
+            var input, filter, table, tr, tds, i, j, txtValue, found;
+            input = document.getElementById("filtroFuncionarioInput");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("tabelaFuncionarios");
+            tr = table.getElementsByTagName("tr");
+
+            for (i = 1; i < tr.length; i++) {               
+                tds = tr[i].getElementsByTagName("td");
+                found = false;
+                for (j = 1; j <= 3; j++) {
+                    if (tds[j]) {
+                        txtValue = tds[j].textContent || tds[j].innerText;
+                        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                            found = true;
+                            break;                 
+                        }
+                    }
+                }
+                tr[i].style.display = found ? "" : "none";
+            }
+        }
+
+        function selecionarFuncionario(id, nome) {
+            document.getElementById('FuncionarioIdInput').value = id;
+
+            document.getElementById('tabela-funcionario-selecionado').innerHTML =
+                `<tr><td style="width: 60px;">${id}</td><td>${nome}</td></tr>`;
+
+            var modalEl = document.getElementById('modalSelecionarFuncionario');
+            var modal = bootstrap.Modal.getInstance(modalEl);
+            if (modal) {
+                modal.hide();
+            }
+        }
+
+
+            document.getElementById('btn-limpar-parcelas').addEventListener('click', function() {
+                 document.getElementById('tabela-parcelas').innerHTML = '';
+                 document.getElementById('fieldset-lista-produtos').disabled = false;
+            });
+
+            document.getElementById('form-venda').addEventListener('submit', function(e) {
+
+                if (modo === "Criar") {
+                    this.querySelectorAll('fieldset:disabled')
+                        .forEach(fs => fs.disabled = false);
+
+                    this.querySelectorAll('[disabled]')
+                        .forEach(el => el.disabled = false);
+                }
+
+
+                const itens = [];
+                document.querySelectorAll('#tabela-produtos tr').forEach(tr => {
+                    itens.push({
+                        ProdutoId: parseInt(tr.dataset.id),
+                        Quantidade: parseFloat(tr.dataset.qtd),
+                        ValorUnitario: parseFloat(tr.dataset.valor)
+                    });
+                });
+
+                if(itens.length === 0) {
+                    alert("Adicione produtos à venda.");
+                    e.preventDefault(); return;
+                }
+                document.getElementById('itens-json').value = JSON.stringify(itens);
+            });
+        }
+
+        function formatarMoeda(val) {
+            return val.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+        }
+        function parseMoeda(str) {
+            return parseFloat(str.replace('R$', '').trim().replace(/\./g, '').replace(',', '.')) || 0;
+        }
+        function calcularTotalItem() {
+            const qtd = parseFloat(document.getElementById('produto-quantidade').value) || 0;
+            const valor = parseMoeda(document.getElementById('produto-valor').value);
+            document.getElementById('produto-total').value = formatarMoeda(qtd * valor);
+        }
+        function atualizarTotais() {
+            let total = 0;
+            document.querySelectorAll('#tabela-produtos tr').forEach(tr => {
+                total += (parseFloat(tr.dataset.qtd) * parseFloat(tr.dataset.valor));
+            });
+            document.getElementById('total-nota').value = formatarMoeda(total);
+        }
+        function limparInputsProduto() {
+            document.getElementById('IdProdutoSelecionado').value = '';
+            document.getElementById('NomeProdutoSelecionado').value = '';
+            document.getElementById('NomeProdutoSelecionado').placeholder = '-';
+            document.getElementById('UnidadeProdutoSelecionado').value = '';
+            document.getElementById('produto-unidade').value = '';
+            document.getElementById('produto-quantidade').value = '1';
+            document.getElementById('produto-valor').value = '';
+            document.getElementById('produto-total').value = '';
+            document.getElementById('EstoqueProdutoSelecionado').value = '';
+            
+        }
+
+        if(modo === "Criar") {
+            ['produto-quantidade', 'produto-valor'].forEach(id => {
+                document.getElementById(id).addEventListener('input', calcularTotalItem);
+            });
+        }
+
+         function filtrarTabelaProduto() {
+            const filtro = $('#filtroProduto').val().toLowerCase();
+            $('#tabelaProdutosModal tbody tr').each(function () {
+                const texto = $(this).text().toLowerCase();
+                $(this).toggle(texto.includes(filtro));
+            });
+        }
+        function filtrarTabelaCondicao() {
+             const filtro = $('#filtroCondicao').val().toLowerCase();
+             $('#tabelaCondicoesModal tbody tr').each(function () {
+                 const texto = $(this).text().toLowerCase();
+                 $(this).toggle(texto.includes(filtro));
+             });
+        }
+
+        if (modo === "Cancelar") {
+             document.getElementById('btn-confirmar-envio-cancelamento').addEventListener('click', function() {
+                 if(!document.getElementById('motivoCancelamentoInput').value.trim()) {
+                     alert("Informe o motivo."); return;
+                 }
+                 document.getElementById('form-venda').submit();
+             });
+        }
+    </script>
+}

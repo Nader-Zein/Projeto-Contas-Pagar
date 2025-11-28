@@ -1,27 +1,23 @@
-﻿@model List<Pagamento.Models.ContaAPagar>
+﻿@model List<Pagamento.Models.ContaAReceber>
 
 @{
-    ViewData["Title"] = "Contas a Pagar";
+    ViewData["Title"] = "Contas a Receber";
 }
 
 <h1>@ViewData["Title"]</h1>
 
-<p>
-    <a asp-action="CriarAvulsa" class="btn btn-primary">Nova Conta </a>
-</p>
 
 @if (TempData["SuccessMessage"] != null)
 {
     <div class="alert alert-success">@TempData["SuccessMessage"]</div>
 }
 
-
 <div class="card">
     <div class="card-body">
         <table class="table table-hover">
             <thead>
                 <tr>
-                    <th>Fornecedor</th>
+                    <th>Cliente</th>
                     <th>Vencimento</th>
                     <th>Valor</th>
                     <th>Situação</th>
@@ -36,23 +32,27 @@
                 {
                     string trClass = "";
 
+                    var situacao = (item.Situacao ?? "").Trim().ToUpperInvariant();
+                    bool recebido = situacao == "RECEBIDO" || situacao == "RECEBIDA";
+                    bool aReceber = situacao == "A RECEBER";
+
                     if (!item.Status)
                     {
                         trClass = "table-secondary text-decoration-line-through";
                     }
                     else
                     {
-                        bool vencidaEmAberto = item.Situacao == "A PAGAR"
-                                               && item.DataVencimento.Date < DateTime.Today;
+                                 
+                        bool vencidaEmAberto = aReceber && item.DataVencimento.Date < DateTime.Today;
 
-                        DateTime? dataPagamento = item.DataPagamento;                      
-                        bool pagaAtrasada = item.Situacao == "PAGO"
-                                            && dataPagamento.HasValue
-                                            && dataPagamento.Value.Date > item.DataVencimento.Date;
+                                          
+                        bool recebidaAtrasada = recebido
+                                                && item.DataPagamento.HasValue
+                                                && item.DataPagamento.Value.Date > item.DataVencimento.Date;
 
-                        if (item.Situacao == "PAGO")
+                        if (recebido)
                         {
-                            trClass = pagaAtrasada ? "table-danger" : "table-success";
+                            trClass = recebidaAtrasada ? "table-danger" : "table-success";
                         }
                         else if (vencidaEmAberto)
                         {
@@ -60,21 +60,20 @@
                         }
                     }
 
+
                     <tr class="@trClass">
-                        <td>@item.NomeFornecedor</td>
+                        <td>@item.NomeCliente</td>
                         <td>@item.DataVencimento.ToString("dd/MM/yyyy")</td>
-                        <td title="@(item.ValorPago.HasValue ? "Valor pago" : "Valor da parcela")">
+                        <td title="@(item.ValorPago.HasValue ? "Valor recebido" : "Valor da parcela")">
                             @{
+                                                
                                 decimal valor = item.ValorPago.GetValueOrDefault(item.ValorParcela);
                             }
                             @valor.ToString("C2")
-
-
-
                         </td>
                         <td>
                             <span class="badge
-                                    @(item.Situacao == "PAGO" ? "bg-success" : (item.Situacao == "A PAGAR" ? "bg-warning text-dark" : "bg-secondary"))">
+                                    @(item.Situacao == "RECEBIDO" ? "bg-success" : (item.Situacao == "A RECEBER" ? "bg-warning text-dark" : "bg-secondary"))">
                                 @item.Situacao
                             </span>
                         </td>
@@ -96,56 +95,58 @@
                         </td>
                         <td>
                             @{
-                                string baixarDisabled = (item.Situacao != "A PAGAR" || item.Status == false) ? "disabled" : "";
-                                string cancelarDisabled = (item.Situacao == "PAGO" || item.Status == false) ? "disabled" : "";
+                                          
+                                        
+                                string baixarDisabled = (item.Situacao != "A RECEBER" || item.Status == false) ? "disabled" : "";
+                                bool cancelarDisabled =
+                                                        (item.Situacao ?? "").Trim().Equals("RECEBIDA", StringComparison.OrdinalIgnoreCase)
+                                                        || item.Status == false;
                             }
-                            <a asp-action="Detalhes"
-                               asp-route-modelo="@item.Modelo"
-                               asp-route-serie="@item.Serie"
-                               asp-route-numeroNota="@item.NumeroNota"
-                               asp-route-fornecedorId="@item.FornecedorId"
-                               asp-route-numeroParcela="@item.NumeroParcela"
-                               class="btn btn-sm btn-info"
-                               title="Ver Detalhes">
+                            
+                            @*                        *@
+                            <button type="button"
+                                    class="btn btn-sm btn-primary"
+                                    onclick="location.href='@Url.Action("Criar", new {
+                                        modelo = item.Modelo,
+                                        serie = item.Serie,
+                                        numeroNota = item.NumeroNota,
+                                        clienteId = item.ClienteId,
+                                        numeroParcela = item.NumeroParcela,
+                                        apenasDetalhes = true
+                                    })'">
                                 Detalhes
-                            </a>
-                            @*   
-                                            
-                                             
-                            *@
+                            </button>
+
+                            @*                        *@
                             <button type="button"
                                     class="btn btn-sm btn-primary btn-verificar-baixa @baixarDisabled"
-                                    title="Pagar/Baixar"
+                                    title="Receber/Baixar"
                                     data-modelo="@item.Modelo"
                                     data-serie="@item.Serie"
                                     data-numero-nota="@item.NumeroNota"
-                                    data-fornecedor-id="@item.FornecedorId"
+                                    data-cliente-id="@item.ClienteId"
                                     data-numero-parcela="@item.NumeroParcela"
-                                    data-url-baixar="@Url.Action("Baixar", new { 
+                                    data-url-baixar="@Url.Action("Criar", new { 
                                         modelo = item.Modelo, 
                                         serie = item.Serie, 
                                         numeroNota = item.NumeroNota, 
-                                        fornecedorId = item.FornecedorId, 
+                                        clienteId = item.ClienteId, 
                                         numeroParcela = item.NumeroParcela 
                                     })">
-                                Baixar
+                                Receber
                             </button>
-
                             @*   
-                                       
+                                            
                                
-                                       
+                                            
                             *@
-                            <a asp-action="Cancelar"
-                               asp-route-modelo="@item.Modelo"
-                               asp-route-serie="@item.Serie"
-                               asp-route-numeroNota="@item.NumeroNota"
-                               asp-route-fornecedorId="@item.FornecedorId"
-                               asp-route-numeroParcela="@item.NumeroParcela"
-                               class="btn btn-sm btn-danger @cancelarDisabled"
-                               title="Cancelar Conta">
-                                Cancelar
-                            </a>
+                            <button type="button" 
+                            class="btn btn-sm btn-danger"
+                             disabled="@cancelarDisabled" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#modalAvisoCancelamento">
+                        Cancelar
+                    </button>
                         </td>
                     </tr>
                 }
@@ -153,6 +154,8 @@
         </table>
     </div>
 </div>
+
+@*                                                    *@
 
 <div class="modal fade" id="modalAvisoPendencia" tabindex="-1" aria-labelledby="modalAvisoLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -171,7 +174,6 @@
     </div>
 </div>
 
-
 <div class="modal fade" id="modalAvisoErro" tabindex="-1" aria-labelledby="modalAvisoErroLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -188,35 +190,51 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="modalAvisoCancelamento" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title">Ação não permitida</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <p class="fw-bold">Não é possível cancelar esta conta por aqui.</p>
+                <p>Como esta conta foi gerada automaticamente por uma Venda, você deve realizar o cancelamento diretamente na tela de Vendas.</p>
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Entendido</button>
+            </div>
+        </div>
+    </div>
+</div>
 @section Scripts {
     <script>
-
         $(document).ready(function () {
-                      
             var mensagemErro = '@TempData["ErrorMessage"]';
-
-                            
             if (mensagemErro && mensagemErro.trim() !== "") {
                 var myModal = new bootstrap.Modal(document.getElementById('modalAvisoErro'));
                 myModal.show();
             }
         });
 
-
         document.addEventListener('DOMContentLoaded', function () {
+            
             const modalElement = document.getElementById('modalAvisoPendencia');
             const modalAviso = new bootstrap.Modal(modalElement);
             const modalBody = document.getElementById('modalAvisoPendenciaBody');
+
             document.querySelectorAll('.btn-verificar-baixa').forEach(button => {
                 
                 button.addEventListener('click', async function () {
                     
-                                  
                     const dataset = this.dataset;
                     const modelo = dataset.modelo || '';
                     const serie = dataset.serie || '';
                     const numeroNota = dataset.numeroNota || 0;
-                    const fornecedorId = dataset.fornecedorId || 0;
+                          
+                    const clienteId = dataset.clienteId || 0; 
                     const numeroParcela = dataset.numeroParcela || 0;
                     
                     if (modelo === '') {
@@ -224,11 +242,10 @@
                         return;
                     }
 
-                                
-                    const urlVerificar = `@Url.Action("VerificarPendenciaParcela", "ContaAPagar")?modelo=${encodeURIComponent(modelo)}&serie=${encodeURIComponent(serie)}&numeroNota=${numeroNota}&fornecedorId=${fornecedorId}&numeroParcela=${numeroParcela}`;
+                            
+                    const urlVerificar = `@Url.Action("VerificarPendenciaParcela", "ContaAReceber")?modelo=${encodeURIComponent(modelo)}&serie=${encodeURIComponent(serie)}&numeroNota=${numeroNota}&clienteId=${clienteId}&numeroParcela=${numeroParcela}`;
 
                     try {
-                                  
                         const response = await fetch(urlVerificar);
                         if (!response.ok) {
                             throw new Error('Erro ao conectar com o servidor.');
@@ -237,16 +254,13 @@
                         const data = await response.json();
 
                         if (data.temPendencia) {
-                                            
                             modalBody.textContent = data.mensagem;
                             modalAviso.show();
                         } else {
-                                                
                             window.location.href = dataset.urlBaixar;
                         }
 
                     } catch (error) {
-                                    
                         modalBody.textContent = 'Erro ao verificar parcela: ' + error.message;
                         modalAviso.show();
                     }

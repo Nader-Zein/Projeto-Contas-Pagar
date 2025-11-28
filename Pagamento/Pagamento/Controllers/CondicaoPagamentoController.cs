@@ -237,7 +237,20 @@ namespace Pagamento.Controllers
             }
         }
 
+        [HttpGet]
+        public IActionResult BuscarPorIdJSON(int id)
+        {
+            var cond = condicaodao.BuscarPorId(id);     
 
+            if (cond == null)
+                return NotFound(new { mensagem = "Condição não encontrada." });
+
+            return Json(new
+            {
+                idCondPgto = cond.IdCondPgto,
+                descricao = cond.Descricao
+            });
+        }
 
     }
 }

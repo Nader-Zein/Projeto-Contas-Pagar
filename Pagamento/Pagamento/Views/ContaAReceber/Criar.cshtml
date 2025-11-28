@@ -1,0 +1,582 @@
+﻿@model Pagamento.Models.ContaAReceber
+
+@{
+    string modo = ViewData["Modo"]?.ToString();
+    bool isDetalhes = modo == "Detalhes";
+    bool isBaixa = modo == "Baixar";
+
+    ViewData["Title"] = isDetalhes ? "Detalhes da Conta" : "Baixa de Conta a Receber";
+    bool mostrarCamposBaixa = isBaixa || (isDetalhes && Model.Situacao == "RECEBIDA");
+
+    string disabledAttr = isDetalhes ? "disabled" : "";
+}
+
+<h1>@ViewData["Title"]</h1>
+<hr />
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span>Dados da Parcela Nizam</span>
+                <div class="form-check form-switch">
+                    @*                                 *@
+                    <input asp-for="Status" class="form-check-input" type="checkbox" role="switch" disabled>
+                    <label asp-for="Status" class="form-check-label">Ativo</label>
+                </div>
+            </div>
+            <div class="card-body">
+                <form asp-action="Criar">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    @*                        *@
+                    @*                           *@
+                    <input type="hidden" asp-for="Modelo" />
+                    <input type="hidden" asp-for="Serie" />
+                    <input type="hidden" asp-for="NumeroNota" />
+                    <input type="hidden" asp-for="ClienteId" />
+                    <input type="hidden" asp-for="NumeroParcela" />
+
+                    @*                           *@
+                    <input type="hidden" asp-for="DataEmissao" id="DataEmissaoHidden" value="@Model.DataEmissao.ToString("yyyy-MM-dd")" />
+                    @*                     *@
+                    <input type="hidden" asp-for="DataVencimento" id="DataVencimentoHidden" value="@Model.DataVencimento.ToString("yyyy-MM-dd")" />
+
+                    @*                                    *@
+                    <input type="hidden" id="ValorParcelaHidden" value="@Model.ValorParcela" />
+
+                    @*                        *@
+                    <div class="row mb-3">
+                        
+                        <div class="col-md-2">
+                            <label asp-for="Modelo" class="form-label"></label>
+                            <input asp-for="Modelo" class="form-control" disabled readonly />
+                        </div>
+                        <div class="col-md-2">
+                            <label asp-for="Serie" class="form-label">Série</label>
+                            <input asp-for="Serie" class="form-control" disabled readonly />
+                        </div>
+                        <div class="col-md-2">
+                            <label asp-for="NumeroNota" class="form-label">Nº Nota</label>
+                            <input asp-for="NumeroNota" class="form-control" disabled readonly />
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Cliente</label>
+                            <input class="form-control" value="@Model.NomeCliente" disabled readonly />
+                        </div>
+                    </div>
+
+                    @*                *@
+                    <div class="row mb-3">
+                        <div class="col-md-2">
+                            <label asp-for="NumeroParcela" class="form-label">Parcela</label>
+                            <input asp-for="NumeroParcela" class="form-control" disabled readonly />
+                        </div>
+                        <div class="col-md-2">
+                            <label asp-for="DataEmissao" class="form-label">Emissão</label>
+                            <input asp-for="DataEmissao" type="date" class="form-control" disabled readonly />
+                        </div>
+                        <div class="col-md-2">
+                            <label asp-for="DataVencimento" class="form-label">Vencimento</label>
+                            <input asp-for="DataVencimento" type="date" class="form-control" disabled readonly />
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label ">Valor da Parcela</label>
+                            <div class="input-group">
+                                <span class="input-group-text">R$</span>
+                                <input asp-for="ValorParcela" class="form-control " disabled readonly />
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr />
+                    <h5 class="text-muted">Dados do Pagamento</h5>
+
+                    @*                *@
+                    <div class="row mb-3">
+                        @if (mostrarCamposBaixa)
+                        {
+                            <div class="col-md-2">
+                                <label asp-for="DataPagamento" class="form-label">Data do Pagamento</label>
+                                <input asp-for="DataPagamento" type="date" class="form-control" id="DataPagamento"  disabled="@isDetalhes" />
+                                @*        *@
+                            </div>
+                        }
+                        <div class="col-md-5">
+                            <label asp-for="IdFormaPgto" class="form-label">Forma de Pagamento</label>
+
+                            <div class="input-group">
+                                @*                        *@
+                                @*                              *@
+                                <input type="hidden" asp-for="IdFormaPgto" id="IdFormaPgto" />
+
+                                @*                *@
+                                <input type="number" id="FormaPgtoIdInput" class="form-control" placeholder="ID" style="max-width: 80px;"
+                                       disabled="@isDetalhes" />
+
+                                @*              *@
+                                <button class="btn btn-primary" type="button" id="btnBuscarFormaPgtoPorId" disabled="@isDetalhes">Buscar ID</button>
+
+                                @*                *@
+                                <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#modalFormaPagamento" disabled="@isDetalhes">Buscar</button>
+
+                                @*                        *@
+                                <input type="text" id="NomeFormaPgto" asp-for="NomeFormaPgto" class="form-control" placeholder="Nenhuma forma selecionada" readonly />
+                            </div>
+                            <span asp-validation-for="IdFormaPgto" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-2">
+                            <label asp-for="Situacao" class="form-label">Situação Atual</label>
+                            <input asp-for="Situacao" class="form-control bg-light" readonly />
+                        </div>
+                    </div>
+
+
+                    @*                *@
+                    <div class="row mb-1">
+                        <div class="col-md-12">
+                            <h6 class="text-muted small mb-1">Taxas Configuradas na Venda (%)</h6>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-2">
+                            <label asp-for="Juros" class="form-label small">Juros (%)</label>
+                            @*            *@
+                            <input asp-for="Juros" id="JurosPercentual" class="form-control bg-light form-control-sm" readonly />
+                        </div>
+                        <div class="col-md-2">
+                            <label asp-for="Multa" class="form-label small">Multa (%)</label>
+                            @*            *@
+                            <input asp-for="Multa" id="MultaPercentual" class="form-control bg-light form-control-sm" readonly />
+                        </div>
+                        <div class="col-md-2">
+                            <label asp-for="Desconto" class="form-label small">Desconto (%)</label>
+                            @*            *@
+                            <input asp-for="Desconto" id="DescontoPercentual" class="form-control bg-light form-control-sm" readonly />
+                        </div>
+                        <div class="col-md-3">
+                        </div>
+                    </div>
+
+                    @if (mostrarCamposBaixa)
+                    {
+                    @*                    *@
+                    <div class="row mb-1">
+                        <div class="col-md-12">
+                            <h6 class="text-primary small mb-1">Valores Calculados (R$)</h6>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-md-2">
+                            <label asp-for="ValJuros" class="form-label">Juros (R$)</label>
+                            @*                  *@
+                            <input asp-for="ValJuros" id="ValJuros" type="text" class="form-control money" oninput="somarTotalFinal()" disabled="@isDetalhes" />
+                        </div>
+                        <div class="col-md-2">
+                            <label asp-for="ValMulta" class="form-label">Multa (R$)</label>
+                            <input asp-for="ValMulta" id="ValMulta" type="text" class="form-control money" oninput="somarTotalFinal()" disabled="@isDetalhes" />
+                        </div>
+                        <div class="col-md-2">
+                            <label asp-for="ValDesconto" class="form-label">Desconto (R$)</label>
+                            <input asp-for="ValDesconto" id="ValDesconto" type="text" class="form-control money" oninput="somarTotalFinal()" disabled="@isDetalhes" />
+                        </div>
+                        <div class="col-md-2">
+                            <label asp-for="ValorPago" class="form-label ">Valor Total Pago</label>
+                            <div class="input-group">
+                                <span class="input-group-text">R$</span>
+
+                                @*        *@
+                                <input type="text" id="ValorPagoDisplay" class="form-control " readonly />
+
+                                @*                    *@
+                                <input asp-for="ValorPago" type="hidden" id="ValorPagoHidden" />
+                            </div>
+                            <span asp-validation-for="ValorPago" class="text-danger"></span>
+                        </div>
+                    </div>
+                    }
+
+                    @*                        *@
+                    @if (isDetalhes && Model.Status == false)
+                    {
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <div class="alert alert-danger">
+                                    <label asp-for="MotivoCancelamento" class="form-label fw-bold">Motivo do Cancelamento:</label>
+                                    <textarea asp-for="MotivoCancelamento" class="form-control" rows="2" readonly></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    @*            *@
+                    <div class="row mt-4">
+                        <div class="col-md-12 d-flex justify-content-end gap-2">
+                            <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+
+                            @if (isBaixa)
+                            {
+                                <button type="submit" class="btn btn-success">Confirmar Recebimento</button>
+                            }
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modalFormaPagamento" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Selecionar Forma de Pagamento</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="filtroFormaPgto" class="form-control mb-3" placeholder="Digite para buscar..." onkeyup="filtrarTabelaFormaPgto()" />
+
+                <table class="table table-bordered table-hover" id="tabelaFormasPagamento">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Descrição</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (ViewBag.FormasPagamento != null)
+                        {
+                            @foreach (var forma in (List<Pagamento.Models.FormaPagamento>)ViewBag.FormasPagamento)
+                            {
+                                <tr>
+                                    <td>@forma.IdFormaPgto</td>
+                                    <td>@forma.Descricao</td>
+                                    <td>
+                                        <button type="button" class="btn btn-sm btn-primary"
+                                                onclick="selecionarFormaPgto(@forma.IdFormaPgto, '@forma.Descricao')">
+                                            Selecionar
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+
+                <button class="btn btn-success" type="button" onclick="abrirFormNovaFormaPagamento()">
+                    + Cadastrar Nova Forma
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalNovaFormaPagamento" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" id="modalNovaFormaPagamentoContent">
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    
+
+    <script>
+
+        $.validator.methods.number = function (value, element) {
+            return this.optional(element) || /^-?(?:\d+|\d{1,3}(?:\.\d{3})+)(?:,\d+)?$/.test(value);
+        };
+        $.validator.methods.range = function (value, element, param) {
+            var globalizedValue = value.replace(".", "").replace(",", ".");
+            return this.optional(element) || (globalizedValue >= param[0] && globalizedValue <= param[1]);
+        };
+        const modo = "@modo";    
+   
+
+
+              
+      
+        function getTodayString() {
+            const hoje = new Date();
+            const ano = hoje.getFullYear();
+            const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+            const dia = String(hoje.getDate()).padStart(2, '0');
+            return `${ano}-${mes}-${dia}`;
+        }
+           
+               
+       
+        function parseValor(valorString) {
+            if (!valorString) return 0;
+            let v = String(valorString).replace(/\./g, '').replace(',', '.');           
+            if (isNaN(v)) {     
+               v = String(valorString).replace(',', '.');
+            }
+            return parseFloat(v) || 0;
+        }
+        
+        function formatarMoeda(valor) {
+            const n = parseFloat(valor) || 0;
+            return n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+         
+        function formatarDecimal(valor) {
+            const n = parseFloat(valor) || 0;
+            return n.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function calcularValorPago() {
+                              
+            if (modo !== "Baixar") return;
+                                            
+            const valorOriginalStr = document.getElementById('ValorParcelaHidden').value;
+            const valorBase = parseValor(valorOriginalStr);
+
+                        
+            const jurosPercent = parseValor(document.getElementById('JurosPercentual').value);
+            const multaPercent = parseValor(document.getElementById('MultaPercentual').value);
+            const descontoPercent = parseValor(document.getElementById('DescontoPercentual').value);
+            const dataPagamentoInput = document.getElementById('DataPagamento');
+
+                                                  
+            const dataVencimentoInput = document.getElementById('DataVencimento');
+
+            let valJuros = 0;
+            let valMulta = 0;
+            let valDesconto = 0;
+
+                              
+            if (dataPagamentoInput && dataPagamentoInput.value && dataVencimentoInput && dataVencimentoInput.value) {
+                const dataPag = new Date(dataPagamentoInput.value + 'T00:00:00');
+                const dataVenc = new Date(dataVencimentoInput.value + 'T00:00:00');
+
+                if (dataPag > dataVenc) {
+                          
+
+                              
+                    valMulta = valorBase * (multaPercent / 100);
+
+                    const diffTime = Math.abs(dataPag - dataVenc);
+                    const diasDeAtraso = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                                  
+                    const valorJurosPorDia = (valorBase * (jurosPercent / 100));
+                    valJuros = valorJurosPorDia * diasDeAtraso;
+
+                    valDesconto = 0;     
+                } else {
+                        
+                    valDesconto = valorBase * (descontoPercent / 100);
+
+                    valJuros = 0;
+                    valMulta = 0;
+                }
+            }
+            document.getElementById('ValJuros').value = formatarDecimal(valJuros);
+            document.getElementById('ValMulta').value = formatarDecimal(valMulta);
+            document.getElementById('ValDesconto').value = formatarDecimal(valDesconto);
+
+                      
+            somarTotalFinal();
+        }
+
+                 
+         
+        function somarTotalFinal() {
+            const valorBase = parseValor(document.getElementById('ValorParcelaHidden').value);
+
+                                    
+            const vJuros = parseValor(document.getElementById('ValJuros').value);
+            const vMulta = parseValor(document.getElementById('ValMulta').value);
+            const vDesconto = parseValor(document.getElementById('ValDesconto').value);
+            let total = valorBase + vJuros + vMulta - vDesconto;
+            if (total < 0) total = 0;
+
+            const display = document.getElementById('ValorPagoDisplay');
+            const hidden = document.getElementById('ValorPagoHidden');
+            if (display && hidden) {
+                display.value = formatarMoeda(total);       
+
+                                  
+                hidden.value = total.toLocaleString('pt-BR', { minimumFractionDigits: 2, useGrouping: false });
+            }
+        }
+
+         
+        document.addEventListener('DOMContentLoaded', function () {
+
+                      
+                    
+            if (modo === "Baixar") {
+            const dataPagamentoInput = document.getElementById('DataPagamento');
+            const dataEmissaoInput = document.getElementById('DataEmissaoHidden');
+            const todayString = getTodayString();
+
+                                
+            if (dataPagamentoInput) {
+                dataPagamentoInput.max = todayString;
+                    
+                if (dataEmissaoInput && dataEmissaoInput.value) {
+                    dataPagamentoInput.min = dataEmissaoInput.value;    
+                }
+
+                          
+                if (!dataPagamentoInput.value) {
+                    dataPagamentoInput.value = todayString;
+                }
+            }
+
+                            
+            if (dataPagamentoInput) {
+                                    
+                dataPagamentoInput.addEventListener('change', calcularValorPago);
+
+                            
+                dataPagamentoInput.addEventListener('blur', function() {
+                    const pagValue = dataPagamentoInput.value;
+                    const emissaoValue = dataEmissaoInput ? dataEmissaoInput.value : '';
+                    let dataAlterada = false;
+                    if (pagValue > todayString) {
+                        alert('A Data de Pagamento não pode ser futura. Ajustando para hoje.');
+                        dataPagamentoInput.value = todayString;
+                        dataAlterada = true;
+                    }
+
+                              
+                    if (pagValue && emissaoValue && pagValue < emissaoValue) {
+                        alert('A Data de Pagamento não pode ser anterior à Data de Emissão. Ajustando para hoje.');
+                        dataPagamentoInput.value = todayString;
+                        dataAlterada = true;
+                    }
+
+                                                  
+                    if (dataAlterada) {
+                        dataPagamentoInput.dispatchEvent(new Event('change'));
+                    }
+
+                                                
+                    calcularValorPago();
+                });
+            }
+
+                            
+            const inputsManuais = ['ValJuros', 'ValMulta', 'ValDesconto'];
+            inputsManuais.forEach(id => {
+                const el = document.getElementById(id);
+                if(el) el.addEventListener('input', somarTotalFinal);
+            });
+            calcularValorPago();
+        }
+
+            if (modo === "Detalhes") {
+                const hidden = document.getElementById('ValorPagoHidden');
+                const display = document.getElementById('ValorPagoDisplay');
+                if (hidden && display && hidden.value) {
+                                  
+                    display.value = formatarMoeda(parseValor(hidden.value));
+                }
+            }
+        });
+                    
+        
+        function selecionarFormaPgto(id, nome) {
+            document.getElementById('IdFormaPgto').value = id;
+            document.getElementById('NomeFormaPgto').value = nome;
+            const modalEl = document.getElementById('modalFormaPagamento');
+            const modalInstance = bootstrap.Modal.getInstance(modalEl);
+            if (modalInstance) modalInstance.hide();
+        }
+
+              
+      
+        function filtrarTabelaFormaPgto() {
+            var filtro = document.getElementById("filtroFormaPgto").value.toLowerCase();
+            document.querySelectorAll("#tabelaFormasPagamento tbody tr").forEach(function(linha) {
+                var nome = linha.cells[1].textContent.toLowerCase();
+                linha.style.display = nome.includes(filtro) ? "" : "none";
+            });
+        }
+
+               
+       
+        async function buscarFormaPgtoPorId() {
+            const idInput = document.getElementById('FormaPgtoIdInput');
+            const id = parseInt(idInput.value);
+
+            if (!id || id <= 0) {
+                alert('Por favor, digite um ID válido.');
+                return;
+            }
+
+            try {
+                const response = await fetch(`@Url.Action("BuscarPorIdJSON", "FormaPagamento")?id=${id}`);
+                if (!response.ok) {
+                    alert('Forma de Pagamento não encontrada.');
+                    return;
+                }
+
+                const forma = await response.json();
+                selecionarFormaPgto(forma.idFormaPgto, forma.descricao);                 
+                idInput.value = '';
+
+            } catch (error) {
+                console.error('Erro ao buscar forma de pagamento:', error);
+                alert('Erro ao buscar ID.');
+            }
+        }
+            
+        function abrirFormNovaFormaPagamento() {
+            $.get('@Url.Action("FormModal", "FormaPagamento")', function (html) {
+                $('#modalNovaFormaPagamentoContent').html(html);
+                new bootstrap.Modal(document.getElementById('modalNovaFormaPagamento')).show();
+            });
+        }
+
+            
+    
+        $(document).on('submit', '#formCadastrarFormaPgto', function (e) {
+            e.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("FormModal", "FormaPagamento")',
+                data: $(this).serialize(),
+                success: function (response) {
+                    if (response.sucesso) {
+                            
+                        bootstrap.Modal.getInstance(document.getElementById('modalNovaFormaPagamento')).hide();
+                        const novaLinha = `
+                          <tr>
+                            <td>${response.forma.id}</td>
+                            <td>${response.forma.nome}</td>
+                            <td><button type='button' class='btn btn-sm btn-primary' onclick='selecionarFormaPgto(${response.forma.id}, "${response.forma.nome}")'>Selecionar</button></td>
+                          </tr>`;
+                        $('#tabelaFormasPagamento tbody').append(novaLinha);
+
+                          
+                            
+                    } else {
+                        $('#modalNovaFormaPagamentoContent').html(response);
+                    }
+                }
+            });
+        });
+
+              
+      
+        document.addEventListener('DOMContentLoaded', function () {
+            const btnBuscar = document.getElementById('btnBuscarFormaPgtoPorId');
+            if(btnBuscar) {
+                btnBuscar.addEventListener('click', buscarFormaPgtoPorId);
+            }
+        });
+
+
+        
+    </script>
+}

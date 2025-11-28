@@ -25,7 +25,13 @@ namespace Pagamento.Controllers
                 Text = c.NomeCidade
             }).ToList();
 
-            return View();
+            var funcionario = new Funcionario
+            {
+                Status = true,               
+                TipoPessoa = "Física"       
+            };
+
+            return View(funcionario);
         }
 
         [HttpPost]
@@ -156,6 +162,60 @@ namespace Pagamento.Controllers
             }
 
             return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public IActionResult BuscarPorIdJSON(int id)
+        {
+            var funcionario = _funcionarioDAO.BuscarPorId(id);
+            if (funcionario == null)
+            {
+                return NotFound(new { mensagem = "Funcionário não encontrado." });
+            }
+
+            return Json(new
+            {
+                idFuncionario = funcionario.IdPessoa,
+                nome_RazaoSocial = funcionario.Nome_RazaoSocial
+            });
+        }
+
+        public IActionResult FormModal()
+        {
+            var cidades = _cidadeDAO.Listar();
+            ViewBag.Cidades = cidades.Select(c => new SelectListItem(c.NomeCidade, c.IdCidade.ToString())).ToList();
+
+            return PartialView("FormFuncionarioModal", new Funcionario { Status = true });
+        }
+
+        [HttpPost]
+        public IActionResult FormModal(Funcionario funcionario)
+        {
+            if (string.IsNullOrEmpty(funcionario.Nome_RazaoSocial))
+                ModelState.AddModelError("Nome_RazaoSocial", "O nome é obrigatório.");
+
+            if (funcionario.IdCidade == 0)
+                ModelState.AddModelError("IdCidade", "A cidade é obrigatória.");
+
+            if (ModelState.IsValid)
+            {
+                _funcionarioDAO.Inserir(funcionario);
+
+                return Json(new
+                {
+                    sucesso = true,
+                    funcionario = new
+                    {
+                        idFuncionario = funcionario.IdPessoa,       
+                        nome_RazaoSocial = funcionario.Nome_RazaoSocial.ToUpper()
+                    }
+                });
+            }
+
+            var cidades = _cidadeDAO.Listar();
+            ViewBag.Cidades = cidades.Select(c => new SelectListItem(c.NomeCidade, c.IdCidade.ToString())).ToList();
+
+            return PartialView("FormFuncionarioModal", funcionario);
         }
     }
 }

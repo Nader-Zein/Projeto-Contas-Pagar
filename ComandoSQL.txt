@@ -174,7 +174,7 @@ CREATE TABLE Produto (
     CategoriaId INT NOT NULL,
     ValorVenda DECIMAL(10,2) NOT NULL,
     CustoMedio DECIMAL(10,2) NOT NULL DEFAULT 0, 
-    CustoUltimaCompra DECIMAL(10,2) NOT NULL DEFAULT 0, 
+    CustoUltimaCompraDECIMAL(10,2) NOT NULL DEFAULT 0, 
     Quantidade INT NOT NULL,
     QuantidadeMinima INT NOT NULL,
     PercentualLucro DECIMAL(10,2) NOT NULL,
@@ -190,7 +190,7 @@ CREATE TABLE Produto (
 CREATE TABLE ProdutoFornecedor (
     IdProduto INT NOT NULL,
     IdFornecedor INT NOT NULL,
-    CustoUltimaCompra DECIMAL(10,2) NOT NULL DEFAULT 0, rateio
+    CustoUltimaCompra DECIMAL(10,2) NOT NULL DEFAULT 0, 
     DataUltimaCompra DATETIME NULL,
     Observacao VARCHAR(40) NULL,
     PRIMARY KEY (IdProduto, IdFornecedor),
@@ -207,7 +207,7 @@ CREATE TABLE Compra (
     NumeroNota INT NOT NULL,
     FornecedorId INT NOT NULL,
     
-   
+    
     DataEmissao DATETIME NOT NULL,
     DataChegada DATETIME NOT NULL,
     CondicaoPagamentoId INT NOT NULL,
@@ -216,7 +216,8 @@ CREATE TABLE Compra (
     Despesas DECIMAL(10,2) DEFAULT 0,
     Status BOOLEAN NOT NULL,
     Observacao VARCHAR(40) NULL,
-    -- Campos de Auditoria
+    MotivoCancelamento VARCHAR(40) NULL,
+    
     DataCriacao DATETIME NOT NULL,
     
 
@@ -235,7 +236,7 @@ CREATE TABLE ItemCompra (
     CompraNumeroNota INT NOT NULL,
     CompraFornecedorId INT NOT NULL,
 
-   
+    
     ProdutoId INT NOT NULL,
 
     
@@ -249,7 +250,7 @@ CREATE TABLE ItemCompra (
     
     FOREIGN KEY (CompraModelo, CompraSerie, CompraNumeroNota, CompraFornecedorId) 
         REFERENCES Compra(Modelo, Serie, NumeroNota, FornecedorId) 
-        ON DELETE CASCADE, 
+        ON DELETE CASCADE, -- Se a compra for deletada, os itens são deletados juntos.
     FOREIGN KEY (ProdutoId) REFERENCES Produto(IdProduto)
 );
 
@@ -259,7 +260,7 @@ CREATE TABLE Conta_a_Pagar (
     Modelo VARCHAR(10) NOT NULL,        
     Serie VARCHAR(10) NOT NULL,         
     NumeroNota INT NOT NULL,            
-    FornecedorId INT NOT NULL,         
+    FornecedorId INT NOT NULL,          
     NumeroParcela INT NOT NULL,         
 
     Status BOOLEAN NOT NULL, 
@@ -267,20 +268,115 @@ CREATE TABLE Conta_a_Pagar (
     ValorParcela DECIMAL(10,2) NOT NULL, 
     DataVencimento DATE NOT NULL,         
     DataEmissao DATE NOT NULL,            
+
+    -- Campos relacionados ao pagamento efetivo
+    DataPagamento DATE NULL,              
+    Juros DECIMAL(10,2) NULL DEFAULT 0.00,  
+    Multa DECIMAL(10,2) NULL DEFAULT 0.00,  
+    Desconto DECIMAL(10,2) NULL DEFAULT 0.00, 
+    ValJuros DECIMAL(18, 2) DEFAULT 0,
+    ValMulta DECIMAL(18, 2) DEFAULT 0,
+    ValDesconto DECIMAL(18, 2) DEFAULT 0,
+    ValorPago DECIMAL(10,2) NULL,         
+    IdFormaPgto INT NOT NULL,                 
+    MotivoCancelamento VARCHAR(40) NULL,
+    
+    PRIMARY KEY (Modelo, Serie, NumeroNota, FornecedorId, NumeroParcela),
+
+    FOREIGN KEY (FornecedorId) REFERENCES Fornecedor(IdFornecedor)
+	ON DELETE RESTRICT ON UPDATE CASCADE,
+    FOREIGN KEY (IdFormaPgto) REFERENCES FormaPagamento(IdFormaPgto)
+	ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+
+
+
+
+CREATE TABLE Venda (
+    
+    Modelo VARCHAR(10) NOT NULL,
+    Serie VARCHAR(10) NOT NULL,
+    NumeroNota INT NOT NULL,
+    ClienteId INT NOT NULL,
+    
+    
+    DataEmissao DATETIME NOT NULL,
+    CondicaoPagamentoId INT NOT NULL,
+    FuncionarioId INT NOT NULL,
+    Status BOOLEAN NOT NULL,
+    Observacao VARCHAR(40) NULL,
+    MotivoCancelamento VARCHAR(40) NULL,
+    
+    DataCriacao DATETIME NOT NULL,
+    
+
+    
+    PRIMARY KEY (Modelo, Serie, NumeroNota, ClienteId),
+    FOREIGN KEY (ClienteId) REFERENCES Cliente(IdCliente),
+    FOREIGN KEY (CondicaoPagamentoId) REFERENCES CondicaoPagamento(IdCondPgto),
+    FOREIGN KEY (FuncionarioId) REFERENCES Funcionario(IdFuncionario)
+);
+
+
+
+CREATE TABLE ItemVenda (
+    
+    VendaModelo VARCHAR(10) NOT NULL,
+    VendaSerie VARCHAR(10) NOT NULL,
+    VendaNumeroNota INT NOT NULL,
+    VendaClienteId INT NOT NULL,
+
+    
+    ProdutoId INT NOT NULL,
+
+    
+    Quantidade INT NOT NULL,
+    ValorUnitario DECIMAL(10,2) NOT NULL,
+    CustoUnitario DECIMAL(18,2) NOT NULL, 
+	
+    
+    PRIMARY KEY (VendaModelo, VendaSerie, VendaNumeroNota, VendaClienteId, ProdutoId),
+
+    
+    FOREIGN KEY (VendaModelo, VendaSerie, VendaNumeroNota, VendaClienteId) 
+        REFERENCES Venda(Modelo, Serie, NumeroNota, ClienteId) 
+        ON DELETE CASCADE, -- Se a compra for deletada, os itens são deletados juntos.
+    FOREIGN KEY (ProdutoId) REFERENCES Produto(IdProduto)
+);
+
+
+
+CREATE TABLE Conta_a_Receber (
+    Modelo VARCHAR(10) NOT NULL,        
+    Serie VARCHAR(10) NOT NULL,         
+    NumeroNota INT NOT NULL,            
+    ClienteId INT NOT NULL,          
+    NumeroParcela INT NOT NULL,         
+
+    Status BOOLEAN NOT NULL, 
+    Situacao  VARCHAR(25) NULL,
+    ValorParcela DECIMAL(10,2) NOT NULL, 
+    DataVencimento DATE NOT NULL,         
+    DataEmissao DATE NOT NULL,            
+
    
     DataPagamento DATE NULL,              
     Juros DECIMAL(10,2) NULL DEFAULT 0.00,  
     Multa DECIMAL(10,2) NULL DEFAULT 0.00,  
     Desconto DECIMAL(10,2) NULL DEFAULT 0.00, 
-    ValorPago DECIMAL(10,2) NULL,         
-    IdFormaPgto INT NULL,                 
+    ValJuros DECIMAL(18, 2) DEFAULT 0,
+    ValMulta DECIMAL(18, 2) DEFAULT 0,
+    ValDesconto DECIMAL(18, 2) DEFAULT 0,
+    ValorPago DECIMAL(10,2) NULL,         -
+    IdFormaPgto INT NOT NULL,                 
+    MotivoCancelamento VARCHAR(40) NULL,
 
-    
-    PRIMARY KEY (Modelo, Serie, NumeroNota, FornecedorId, NumeroParcela),
+   
+    PRIMARY KEY (Modelo, Serie, NumeroNota, ClienteId, NumeroParcela),
 
-    
-    FOREIGN KEY (Modelo, Serie, NumeroNota, FornecedorId) 
-        REFERENCES Compra(Modelo, Serie, NumeroNota, FornecedorId) 
-        ON DELETE CASCADE, 
+    FOREIGN KEY (ClienteId) REFERENCES Cliente(IdCliente)
+	ON DELETE RESTRICT ON UPDATE CASCADE,
     FOREIGN KEY (IdFormaPgto) REFERENCES FormaPagamento(IdFormaPgto)
+	ON DELETE RESTRICT ON UPDATE CASCADE
 );

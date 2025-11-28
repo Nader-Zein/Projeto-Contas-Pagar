@@ -272,7 +272,8 @@ namespace Pagamento.Controllers
                     {
                         id = produto.IdProduto,
                         nome = produto.Descricao.ToUpper(),
-                        unidade = _unidadeMedidaDAO.BuscarPorId(produto.UnidadeMedidaId)?.Descricao
+                        unidade = _unidadeMedidaDAO.BuscarPorId(produto.UnidadeMedidaId)?.Descricao,
+                        valorVenda = produto.ValorVenda
                     }
                 });
             }
@@ -296,7 +297,9 @@ namespace Pagamento.Controllers
             {
                 idProduto = produto.IdProduto,
                 descricao = produto.Descricao,
-                nomeUnidade = produto.NomeUnidade     
+                nomeUnidade = produto.NomeUnidade,     
+                valorVenda = produto.ValorVenda,
+                estoque = produto.Quantidade
             });
         }
     }

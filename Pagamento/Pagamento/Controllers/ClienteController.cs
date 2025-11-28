@@ -188,5 +188,83 @@ namespace Pagamento.Controllers
 
             return RedirectToAction("Index");
         }
+
+        [HttpGet]
+        public IActionResult BuscarPorIdJSON(int id)
+        {
+            var cliente = _clienteDAO.BuscarPorId(id);
+            if (cliente == null)
+            {
+                return NotFound(new { mensagem = "Cliente não encontrado." });
+            }
+
+            return Json(new
+            {
+                idPessoa = cliente.IdPessoa,
+                nome_RazaoSocial = cliente.Nome_RazaoSocial,
+                condicaoPagamentoId = cliente.IdCondPgto
+            });
+        }
+
+
+        public IActionResult FormModal()
+        {
+            var cidades = _cidadeDAO.Listar();
+            ViewBag.Cidades = cidades.Select(c => new SelectListItem(c.NomeCidade, c.IdCidade.ToString())).ToList();
+
+            var condicoes = _condicaoPagamentoDAO.Listar();
+            ViewBag.CondicoesPagamento = condicoes.Select(c => new SelectListItem(c.Descricao, c.IdCondPgto.ToString())).ToList();
+
+            return PartialView("FormClienteModal", new Cliente { TipoPessoa = "Física", Status = true });
+        }
+
+        [HttpPost]
+        public IActionResult FormModal(Cliente cliente)
+        {
+            if (cliente.IdCondPgto == 0)
+            {
+                ModelState.AddModelError("IdCondPgto", "Selecione uma condição de pagamento.");
+            }
+
+            if (cliente.IdCidade == 0)
+            {
+                ModelState.AddModelError("IdCidade", "Selecione uma cidade.");
+            }
+            else
+            {
+                bool estrangeiro = _cidadeDAO.CidadeEstrangeira(cliente.IdCidade);
+
+                if (!estrangeiro)
+                {
+                    if (string.IsNullOrWhiteSpace(cliente.CPF_CNPJ))
+                    {
+                        ModelState.AddModelError("CPF_CNPJ", "O CPF/CNPJ é obrigatório para clientes brasileiros.");
+                    }
+                    else if (_clienteDAO.ExisteCpfCnpj(cliente.CPF_CNPJ))
+                    {
+                        ModelState.AddModelError("CPF_CNPJ", "Já existe um cliente com este CPF ou CNPJ.");
+                    }
+                }
+            }
+
+            if (ModelState.IsValid)
+            {
+                _clienteDAO.Inserir(cliente);          
+
+                return Json(new
+                {
+                    sucesso = true,
+                    cliente = new
+                    {
+                        id = cliente.IdPessoa,
+                        nome = cliente.Nome_RazaoSocial.ToUpper(),
+                        doc = cliente.CPF_CNPJ,
+                        condicaoId = cliente.IdCondPgto
+                    }
+                });
+            }
+
+            return PartialView("FormClienteModal", cliente);
+        }
     }
 }
