@@ -7,7 +7,12 @@ namespace Pagamento.DAO
 {
     public class CidadeDAO
     {
-        private string connectionString = "server=localhost;database=pagamento;user=User;password=Na@der!1234";
+        private readonly string connectionString;
+
+        public CidadeDAO(IConfiguration configuration)
+        {
+            connectionString = configuration.GetConnectionString("PagamentoDB");
+        }
 
         public List<Cidade> Listar()
         {

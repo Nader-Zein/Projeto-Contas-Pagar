@@ -7,12 +7,25 @@ namespace Pagamento.Controllers
 {
     public class ContaAReceberController : Controller
     {
-        private readonly ContaAReceberDAO _contaAReceberDAO = new ContaAReceberDAO();
-        private readonly ClienteDAO _clienteDAO = new ClienteDAO();
-        private readonly FormaPagamentoDAO _formaPagamentoDAO = new FormaPagamentoDAO();
-        private readonly CidadeDAO _cidadeDAO = new CidadeDAO();
-        private readonly CondicaoPagamentoDAO _condicaoPagamentoDAO = new CondicaoPagamentoDAO();
+        private readonly ContaAReceberDAO _contaAReceberDAO;
+        private readonly ClienteDAO _clienteDAO;
+        private readonly FormaPagamentoDAO _formaPagamentoDAO;
+        private readonly CidadeDAO _cidadeDAO;
+        private readonly CondicaoPagamentoDAO _condicaoPagamentoDAO;
 
+        public ContaAReceberController(
+            ContaAReceberDAO contaAReceberDAO,
+            ClienteDAO clienteDAO,
+            FormaPagamentoDAO formaPagamentoDAO,
+            CidadeDAO cidadeDAO,
+            CondicaoPagamentoDAO condicaoPagamentoDAO)
+        {
+            _contaAReceberDAO = contaAReceberDAO;
+            _clienteDAO = clienteDAO;
+            _formaPagamentoDAO = formaPagamentoDAO;
+            _cidadeDAO = cidadeDAO;
+            _condicaoPagamentoDAO = condicaoPagamentoDAO;
+        }
         public IActionResult Index()
         {
             try

@@ -7,10 +7,19 @@ namespace Pagamento.Controllers
 {
     public class FornecedorController : Controller
     {
-        private readonly FornecedorDAO _fornecedorDAO = new FornecedorDAO();
-        private readonly CidadeDAO _cidadeDAO = new CidadeDAO();
-        private readonly CondicaoPagamentoDAO _condicaoPagamentoDAO = new CondicaoPagamentoDAO(); 
+        private readonly FornecedorDAO _fornecedorDAO;
+        private readonly CidadeDAO _cidadeDAO;
+        private readonly CondicaoPagamentoDAO _condicaoPagamentoDAO;
 
+        public FornecedorController(
+            FornecedorDAO fornecedorDAO,
+            CidadeDAO cidadeDAO,
+            CondicaoPagamentoDAO condicaoPagamentoDAO)
+        {
+            _fornecedorDAO = fornecedorDAO;
+            _cidadeDAO = cidadeDAO;
+            _condicaoPagamentoDAO = condicaoPagamentoDAO;
+        }
         public IActionResult Index()
         {
             var lista = _fornecedorDAO.Listar();
@@ -68,6 +77,8 @@ namespace Pagamento.Controllers
             if (ModelState.IsValid)
             {
                 _fornecedorDAO.Inserir(fornecedor);
+                TempData["SuccessMessage"] = "Fornecedor cadastrado com sucesso!";
+
                 return RedirectToAction("Index");
             }
 
@@ -128,6 +139,8 @@ namespace Pagamento.Controllers
             if (ModelState.IsValid)
             {
                 _fornecedorDAO.Atualizar(fornecedor);
+                TempData["SuccessMessage"] = "Fornecedor atualizado com sucesso!";
+
                 return RedirectToAction("Index");
             }
 

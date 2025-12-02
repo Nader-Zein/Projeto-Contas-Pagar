@@ -7,9 +7,14 @@ namespace Pagamento.Controllers
 {
     public class CidadeController : Controller
     {
-        private readonly CidadeDAO _cidadeDAO = new CidadeDAO();
-        private readonly EstadoDAO _estadoDAO = new EstadoDAO();
+        private readonly CidadeDAO _cidadeDAO;
+        private readonly EstadoDAO _estadoDAO;
 
+        public CidadeController(CidadeDAO cidadeDAO, EstadoDAO estadoDAO)
+        {
+            _cidadeDAO = cidadeDAO;
+            _estadoDAO = estadoDAO;
+        }
         public IActionResult Index()
         {
             var lista = _cidadeDAO.Listar();
@@ -54,6 +59,7 @@ namespace Pagamento.Controllers
             if (ModelState.IsValid)
             {
                 _cidadeDAO.Inserir(cidade);
+                TempData["SuccessMessage"] = "Cidade cadastrada com sucesso!";
                 return RedirectToAction("Index");
             }
 
@@ -132,6 +138,8 @@ namespace Pagamento.Controllers
             {
                 
                 _cidadeDAO.Atualizar(cidade);
+                TempData["SuccessMessage"] = "Cidade atualizada com sucesso!";
+
                 return RedirectToAction("Index");
             }
 

@@ -5,8 +5,12 @@ namespace Pagamento.DAO
 {
     public class MarcaDAO
     {
-        private readonly string connectionString = "server=localhost;database=pagamento;user=User;password=Na@der!1234";
+        private readonly string connectionString;
 
+        public MarcaDAO(IConfiguration configuration)
+        {
+            connectionString = configuration.GetConnectionString("PagamentoDB");
+        }
         public List<Marca> Listar()
         {
             List<Marca> lista = new List<Marca>();

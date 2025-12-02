@@ -6,8 +6,12 @@ namespace Pagamento.Controllers
 {
     public class UnidadeMedidaController : Controller
     {
-        private readonly UnidadeMedidaDAO _unidadeDAO = new UnidadeMedidaDAO();
+        private readonly UnidadeMedidaDAO _unidadeDAO;
 
+        public UnidadeMedidaController(UnidadeMedidaDAO unidadeDAO)
+        {
+            _unidadeDAO = unidadeDAO;
+        }
         public IActionResult Index()
         {
             var lista = _unidadeDAO.Listar();
@@ -30,6 +34,8 @@ namespace Pagamento.Controllers
             if (ModelState.IsValid)
             {
                 _unidadeDAO.Inserir(unidade);
+                TempData["SuccessMessage"] = "Unidade de medida cadastrada com sucesso!";
+
                 return RedirectToAction("Index");
             }
             return View(unidade);
@@ -48,6 +54,8 @@ namespace Pagamento.Controllers
             if (ModelState.IsValid)
             {
                 _unidadeDAO.Atualizar(unidade);
+                TempData["SuccessMessage"] = "Unidade de medida atualizada com sucesso!";
+
                 return RedirectToAction("Index");
             }
             return View(unidade);

@@ -8,9 +8,14 @@ namespace Pagamento.Controllers
 {
     public class FuncionarioController : Controller
     {
-        private readonly FuncionarioDAO _funcionarioDAO = new FuncionarioDAO();
-        private readonly CidadeDAO _cidadeDAO = new CidadeDAO();
+        private readonly FuncionarioDAO _funcionarioDAO;
+        private readonly CidadeDAO _cidadeDAO;
 
+        public FuncionarioController(FuncionarioDAO funcionarioDAO, CidadeDAO cidadeDAO)
+        {
+            _funcionarioDAO = funcionarioDAO;
+            _cidadeDAO = cidadeDAO;
+        }
         public IActionResult Index()
         {
             var lista = _funcionarioDAO.Listar();
@@ -62,6 +67,8 @@ namespace Pagamento.Controllers
             if (ModelState.IsValid)
             {
                 _funcionarioDAO.Inserir(funcionario);
+                TempData["SuccessMessage"] = "Funcionario cadastrado com sucesso!";
+
                 return RedirectToAction("Index");
             }
 
@@ -112,6 +119,8 @@ namespace Pagamento.Controllers
             if (ModelState.IsValid)
             {
                 _funcionarioDAO.Atualizar(funcionario);
+                TempData["SuccessMessage"] = "Funcionario atualizado com sucesso!";
+
                 return RedirectToAction("Index");
             }
 

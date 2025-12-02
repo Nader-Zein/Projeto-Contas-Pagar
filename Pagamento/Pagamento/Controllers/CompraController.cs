@@ -10,17 +10,39 @@ namespace Pagamento.Controllers
 {
     public class CompraController : Controller
     {
-        private readonly FornecedorDAO _fornecedorDAO = new FornecedorDAO();
-        private readonly ProdutoDAO _produtoDAO = new ProdutoDAO();
-        private readonly CondicaoPagamentoDAO _condicaoPagamentoDAO = new CondicaoPagamentoDAO();
-        private readonly CompraDAO _compraDAO = new CompraDAO();        
-        private readonly ContaAPagarDAO _contaAPagarDAO = new ContaAPagarDAO();
+        private readonly FornecedorDAO _fornecedorDAO;
+        private readonly ProdutoDAO _produtoDAO;
+        private readonly CondicaoPagamentoDAO _condicaoPagamentoDAO;
+        private readonly CompraDAO _compraDAO;
+        private readonly ContaAPagarDAO _contaAPagarDAO;
 
+        private readonly CidadeDAO _cidadeDAO;
+        private readonly MarcaDAO _marcaDAO;
+        private readonly UnidadeMedidaDAO _unidadeMedidaDAO;
+        private readonly CategoriaDAO _categoriaDAO;
 
-        private readonly CidadeDAO _cidadeDAO = new CidadeDAO();
-        private readonly MarcaDAO _marcaDAO = new MarcaDAO();
-        private readonly UnidadeMedidaDAO _unidadeMedidaDAO = new UnidadeMedidaDAO();
-        private readonly CategoriaDAO _categoriaDAO = new CategoriaDAO();
+        public CompraController(
+            FornecedorDAO fornecedorDAO,
+            ProdutoDAO produtoDAO,
+            CondicaoPagamentoDAO condicaoPagamentoDAO,
+            CompraDAO compraDAO,
+            ContaAPagarDAO contaAPagarDAO,
+            CidadeDAO cidadeDAO,
+            MarcaDAO marcaDAO,
+            UnidadeMedidaDAO unidadeMedidaDAO,
+            CategoriaDAO categoriaDAO)
+        {
+            _fornecedorDAO = fornecedorDAO;
+            _produtoDAO = produtoDAO;
+            _condicaoPagamentoDAO = condicaoPagamentoDAO;
+            _compraDAO = compraDAO;
+            _contaAPagarDAO = contaAPagarDAO;
+            _cidadeDAO = cidadeDAO;
+            _marcaDAO = marcaDAO;
+            _unidadeMedidaDAO = unidadeMedidaDAO;
+            _categoriaDAO = categoriaDAO;
+        }
+
         public IActionResult Index()
         {
             try

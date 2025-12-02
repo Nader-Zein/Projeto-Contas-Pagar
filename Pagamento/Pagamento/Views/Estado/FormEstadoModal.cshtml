@@ -11,13 +11,13 @@
 
     <div class="mb-3">
         <label asp-for="NomeEstado" class="form-label">Nome do Estado*</label>
-        <input asp-for="NomeEstado" class="form-control" required />
+        <input asp-for="NomeEstado" class="form-control" required maxlength="40" oninput="this.value = this.value.replace(/[^a-zA-Z\u00C0-\u00FF ]/g, '')" />
         <span asp-validation-for="NomeEstado" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
         <label asp-for="Uf" class="form-label">UF*</label>
-        <input asp-for="Uf" class="form-control" required />
+        <input asp-for="Uf" class="form-control" required maxlength="5" oninput="this.value = this.value.replace(/[^a-zA-Z\u00C0-\u00FF ]/g, '')" />
     </div>
 
     <div class="mb-3">

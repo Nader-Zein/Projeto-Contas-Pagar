@@ -6,7 +6,12 @@ namespace Pagamento.Controllers
 {
     public class PaisController : Controller
     {
-        private readonly PaisDAO _paisDAO = new PaisDAO();
+        private readonly PaisDAO _paisDAO;
+
+        public PaisController(PaisDAO paisDAO)
+        {
+            _paisDAO = paisDAO;
+        }
 
         public IActionResult Index()
         {
@@ -30,6 +35,8 @@ namespace Pagamento.Controllers
             if (ModelState.IsValid)
             {
                 _paisDAO.Inserir(pais);
+                TempData["SuccessMessage"] = "Pais cadastrado com sucesso!";
+
                 return RedirectToAction("Index");
             }
 
@@ -50,6 +57,8 @@ namespace Pagamento.Controllers
             if (ModelState.IsValid)
             {
                 _paisDAO.Atualizar(pais);
+                TempData["SuccessMessage"] = "Pais editado com sucesso!";
+
                 return RedirectToAction("Index");
             }
             return View(pais);

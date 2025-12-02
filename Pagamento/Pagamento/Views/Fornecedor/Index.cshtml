@@ -21,6 +21,7 @@
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
+                <th>ID</th>
                 <th>Nome</th>
                 <th>Tipo</th>
                 <th>CPF/CNPJ</th>
@@ -37,6 +38,7 @@
                 foreach (var fornecedor in Model)
                 {
                     <tr>
+                        <td>@fornecedor.IdPessoa</td>
                         <td>@fornecedor.Nome_RazaoSocial</td>
                         <td>@fornecedor.TipoPessoa</td>
                         <td>@fornecedor.CPF_CNPJ</td>

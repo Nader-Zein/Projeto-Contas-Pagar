@@ -18,7 +18,7 @@
 
             <div class="col-md-4 mb-3">
                 <label asp-for="Descricao" class="form-label">Descrição</label>
-                <input asp-for="Descricao" class="form-control" />
+                <input asp-for="Descricao" class="form-control" oninput="this.value = this.value.replace(/[0-9]/g, '')" />
                 <span asp-validation-for="Descricao" class="text-danger"></span>
             </div>
 
@@ -97,7 +97,7 @@
 
             <div class="col-md-4 mb-3">
                 <label asp-for="ValorVenda" class="form-label">Valor de Venda</label>
-                <input asp-for="ValorVenda" class="form-control" type="text" />
+                <input asp-for="ValorVenda" class="form-control" type="text" oninput="this.value = this.value.replace(/[^0-9.,]/g, '')" />
                 <span asp-validation-for="ValorVenda" class="text-danger"></span>
             </div>
 

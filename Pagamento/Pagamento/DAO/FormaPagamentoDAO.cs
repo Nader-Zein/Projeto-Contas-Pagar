@@ -5,8 +5,12 @@ namespace Pagamento.DAO
 {
     public class FormaPagamentoDAO
     {
-        private string connectionString = "server=localhost;database=pagamento;user=User;password=Na@der!1234";
+        private readonly string connectionString;
 
+        public FormaPagamentoDAO(IConfiguration configuration)
+        {
+            connectionString = configuration.GetConnectionString("PagamentoDB");
+        }
         public List<FormaPagamento> Listar()
         {
             List<FormaPagamento> lista = new List<FormaPagamento>();

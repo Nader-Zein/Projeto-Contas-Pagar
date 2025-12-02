@@ -5,8 +5,12 @@ namespace Pagamento.DAO
 {
     public class ContaAReceberDAO
     {
-        private readonly string connectionString = "server=localhost;database=pagamento;user=User;password=Na@der!1234";
+        private readonly string connectionString;
 
+        public ContaAReceberDAO(IConfiguration configuration)
+        {
+            connectionString = configuration.GetConnectionString("PagamentoDB");
+        }
         public void Inserir(ContaAReceber conta)
         {
             using (var conexao = new MySqlConnection(connectionString))

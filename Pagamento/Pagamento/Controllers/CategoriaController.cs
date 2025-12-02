@@ -6,8 +6,12 @@ namespace Pagamento.Controllers
 {
     public class CategoriaController : Controller
     {
-        private readonly CategoriaDAO _categoriaDAO = new CategoriaDAO();
+        private readonly CategoriaDAO _categoriaDAO;
 
+        public CategoriaController(CategoriaDAO categoriaDAO)
+        {
+            _categoriaDAO = categoriaDAO;
+        }
         public IActionResult Index()
         {
             var lista = _categoriaDAO.Listar();

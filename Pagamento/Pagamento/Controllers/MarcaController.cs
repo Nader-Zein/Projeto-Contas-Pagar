@@ -6,8 +6,12 @@ namespace Pagamento.Controllers
 {
     public class MarcaController : Controller
     {
-        private readonly MarcaDAO _marcaDAO = new MarcaDAO();
+        private readonly MarcaDAO _marcaDAO;
 
+        public MarcaController(MarcaDAO marcaDAO)
+        {
+            _marcaDAO = marcaDAO;
+        }
         public IActionResult Index()
         {
             var lista = _marcaDAO.Listar();
@@ -29,6 +33,8 @@ namespace Pagamento.Controllers
             if (ModelState.IsValid)
             {
                 _marcaDAO.Inserir(marca);
+                TempData["SuccessMessage"] = "Marca cadastrada com sucesso!";
+
                 return RedirectToAction("Index");
             }
             return View(marca);
@@ -47,6 +53,8 @@ namespace Pagamento.Controllers
             if (ModelState.IsValid)
             {
                 _marcaDAO.Atualizar(marca);
+                TempData["SuccessMessage"] = "Marca atualizada com sucesso!";
+
                 return RedirectToAction("Index");
             }
             return View(marca);

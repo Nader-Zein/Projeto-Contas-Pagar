@@ -9,19 +9,45 @@ namespace Pagamento.Controllers
 {
     public class ProdutoController : Controller
     {
-        private readonly ProdutoDAO _produtoDAO = new ProdutoDAO();
-        private readonly ProdutoFornecedorDAO _produtoFornecedorDAO = new ProdutoFornecedorDAO();
-        private readonly MarcaDAO _marcaDAO = new MarcaDAO();
-        private readonly UnidadeMedidaDAO _unidadeMedidaDAO = new UnidadeMedidaDAO();
-        private readonly FornecedorDAO _fornecedorDAO = new FornecedorDAO(); 
-        private readonly CategoriaDAO _categoriaDAO = new CategoriaDAO();
+        private readonly ProdutoDAO _produtoDAO;
+        private readonly ProdutoFornecedorDAO _produtoFornecedorDAO;
+        private readonly MarcaDAO _marcaDAO;
+        private readonly UnidadeMedidaDAO _unidadeMedidaDAO;
+        private readonly FornecedorDAO _fornecedorDAO;
+        private readonly CategoriaDAO _categoriaDAO;
 
+        private readonly CidadeDAO _cidadeDAO;
+        private readonly CondicaoPagamentoDAO _condicaoPagamentoDAO;
+        private readonly EstadoDAO _estadoDAO;
+        private readonly PaisDAO _paisDAO;
+        private readonly FormaPagamentoDAO _formaPagamentoDAO;
 
-        private readonly CidadeDAO _cidadeDAO = new CidadeDAO();
-        private readonly CondicaoPagamentoDAO _condicaoPagamentoDAO = new CondicaoPagamentoDAO();
-        private readonly EstadoDAO _estadoDAO = new EstadoDAO();    
-        private readonly PaisDAO _paisDAO = new PaisDAO();          
-        private readonly FormaPagamentoDAO _formaPagamentoDAO = new FormaPagamentoDAO();    
+        public ProdutoController(
+            ProdutoDAO produtoDAO,
+            ProdutoFornecedorDAO produtoFornecedorDAO,
+            MarcaDAO marcaDAO,
+            UnidadeMedidaDAO unidadeMedidaDAO,
+            FornecedorDAO fornecedorDAO,
+            CategoriaDAO categoriaDAO,
+            CidadeDAO cidadeDAO,
+            CondicaoPagamentoDAO condicaoPagamentoDAO,
+            EstadoDAO estadoDAO,
+            PaisDAO paisDAO,
+            FormaPagamentoDAO formaPagamentoDAO)
+        {
+            _produtoDAO = produtoDAO;
+            _produtoFornecedorDAO = produtoFornecedorDAO;
+            _marcaDAO = marcaDAO;
+            _unidadeMedidaDAO = unidadeMedidaDAO;
+            _fornecedorDAO = fornecedorDAO;
+            _categoriaDAO = categoriaDAO;
+            _cidadeDAO = cidadeDAO;
+            _condicaoPagamentoDAO = condicaoPagamentoDAO;
+            _estadoDAO = estadoDAO;
+            _paisDAO = paisDAO;
+            _formaPagamentoDAO = formaPagamentoDAO;
+        }
+
         public IActionResult Index()
         {
             var lista = _produtoDAO.Listar();
@@ -70,13 +96,13 @@ namespace Pagamento.Controllers
                         .Select(int.Parse)
                         .ToList();
 
-                    var produtoFornecedorDAO = new ProdutoFornecedorDAO();
 
                     foreach (var idFornecedor in fornecedores)
                     {
-                        produtoFornecedorDAO.InserirOuAtualizarAssociacao(produto.IdProduto, idFornecedor,produto.Observacoes);
+                        _produtoFornecedorDAO.InserirOuAtualizarAssociacao(produto.IdProduto, idFornecedor,produto.Observacoes);
                     }
                 }
+                TempData["SuccessMessage"] = "Produto cadastrado com sucesso!";
 
                 return RedirectToAction("Index");
             }
@@ -94,8 +120,8 @@ namespace Pagamento.Controllers
 
             CarregarSelectLists();
 
-            var produtoFornecedorDAO = new ProdutoFornecedorDAO();
-            ViewBag.FornecedoresSelecionadosIds = produtoFornecedorDAO.ListarFornecedoresIds(id);
+           
+            ViewBag.FornecedoresSelecionadosIds = _produtoFornecedorDAO.ListarFornecedoresIds(id);
 
             ViewBag.NomeMarca = _marcaDAO.BuscarPorId(produto.MarcaId)?.Descricao ?? "Não encontrado";
             ViewBag.NomeUnidade = _unidadeMedidaDAO.BuscarPorId(produto.UnidadeMedidaId)?.Descricao ?? "Não encontrado";
@@ -108,7 +134,6 @@ namespace Pagamento.Controllers
             ViewBag.NomesFornecedoresSelecionados = string.Join(", ", fornecedoresSelecionados);
             return View(produto);
         }
-
 
 
         [HttpPost]
@@ -143,21 +168,20 @@ namespace Pagamento.Controllers
 
             _produtoDAO.Atualizar(produto);
 
-            var pfDao = new ProdutoFornecedorDAO();
-
             if (fornecedores.Count == 0)
             {
-                pfDao.RemoverTodos(produto.IdProduto);
+                _produtoFornecedorDAO.RemoverTodos(produto.IdProduto);
             }
             else
             {
-                pfDao.RemoverNaoSelecionados(produto.IdProduto, fornecedores);
+                _produtoFornecedorDAO.RemoverNaoSelecionados(produto.IdProduto, fornecedores);
 
                 foreach (var idFornecedor in fornecedores)
                 {
-                    pfDao.InserirOuAtualizarAssociacao(produto.IdProduto, idFornecedor, produto.Observacoes);
+                    _produtoFornecedorDAO.InserirOuAtualizarAssociacao(produto.IdProduto, idFornecedor, produto.Observacoes);
                 }
             }
+            TempData["SuccessMessage"] = "Produto atualizado com sucesso!";
 
             return RedirectToAction("Index");
         }

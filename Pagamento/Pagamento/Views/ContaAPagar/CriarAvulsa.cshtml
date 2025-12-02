@@ -25,7 +25,7 @@
 
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-           
+          
             <input type="hidden" asp-for="FornecedorId" id="FornecedorId" />
             <input type="hidden" asp-for="IdFormaPgto" id="IdFormaPgto" />
 
@@ -42,6 +42,7 @@
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span>Dados da Conta</span>
                     <div class="form-check form-switch">
+                       
                         <input asp-for="Status" class="form-check-input" type="checkbox" role="switch" disabled="@isReadOnly">
                         <label asp-for="Status" class="form-check-label">Ativo</label>
                     </div>
@@ -51,11 +52,11 @@
                     <div class="row mb-3">
                         <div class="col-md-2">
                             <label asp-for="Modelo" class="form-label">Modelo*</label>
-                            <input asp-for="Modelo" class="form-control" readonly="@isReadOnly" />
+                            <input asp-for="Modelo" class="form-control" readonly="@isReadOnly" oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
                         </div>
                         <div class="col-md-2">
                             <label asp-for="Serie" class="form-label">Série*</label>
-                            <input asp-for="Serie" class="form-control" readonly="@isReadOnly" />
+                            <input asp-for="Serie" class="form-control" readonly="@isReadOnly" oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
                         </div>
                         <div class="col-md-2">
                             <label asp-for="NumeroNota" class="form-label">Nº Nota*</label>
@@ -110,7 +111,7 @@
 
                         <div class="col-md-2">
                             <label asp-for="ValorParcela" class="form-label">Valor da Parcela*</label>
-                            <input asp-for="ValorParcela" class="form-control" type="text" id="ValorParcela" readonly="@isReadOnly" />
+                            <input asp-for="ValorParcela" class="form-control" type="text" id="ValorParcela" readonly="@isReadOnly" oninput="this.value = this.value.replace(/[^0-9,.]/g, '')" />
                             <span asp-validation-for="ValorParcela" class="text-danger"></span>
                         </div>
                     </div>
@@ -139,17 +140,17 @@
                         <div class="col-md-2">
                             <label asp-for="Juros" class="form-label small">Juros (%)</label>
                             <input asp-for="Juros" class="form-control bg-light" type="text"  placeholder="0,00" id="JurosPercentual"
-                                   readonly="@(isBaixar || isCancelar || isDetalhes)" />
+                                   readonly="@(isBaixar || isCancelar || isDetalhes)" oninput="this.value = this.value.replace(/[^0-9,.]/g, '')" />
                         </div>
                         <div class="col-md-2">
                             <label asp-for="Multa" class="form-label small">Multa (%)</label>
                             <input asp-for="Multa" class="form-control bg-light" type="text"  placeholder="0,00" id="MultaPercentual"
-                                   readonly="@(isBaixar || isCancelar || isDetalhes)" />
+                                   readonly="@(isBaixar || isCancelar || isDetalhes)" oninput="this.value = this.value.replace(/[^0-9,.]/g, '')" />
                         </div>
                         <div class="col-md-2">
                             <label asp-for="Desconto" class="form-label small">Desconto (%)</label>
                             <input asp-for="Desconto" class="form-control bg-light" type="text"  placeholder="0,00" id="DescontoPercentual"
-                                   readonly="@(isBaixar || isCancelar || isDetalhes)" />
+                                   readonly="@(isBaixar || isCancelar || isDetalhes)" oninput="this.value = this.value.replace(/[^0-9,.]/g, '')" />
                         </div>
                     </div>
 
@@ -163,15 +164,15 @@
                         <div class="row mb-3">
                             <div class="col-md-2">
                                 <label asp-for="ValJuros" class="form-label fw-bold">Valor Juros (R$)</label>
-                                <input asp-for="ValJuros" type="text" class="form-control money" oninput="somarTotalFinal()" readonly="@(isDetalhes)" />
+                                <input asp-for="ValJuros" type="text" class="form-control money" oninput="this.value = this.value.replace(/[^0-9,.]/g, ''); somarTotalFinal()" readonly="@(isDetalhes)" />
                             </div>
                             <div class="col-md-2">
                                 <label asp-for="ValMulta" class="form-label fw-bold">Valor Multa (R$)</label>
-                                <input asp-for="ValMulta" type="text" class="form-control money" oninput="somarTotalFinal()" readonly="@(isDetalhes)" />
+                                <input asp-for="ValMulta" type="text" class="form-control money" oninput="this.value = this.value.replace(/[^0-9,.]/g, ''); somarTotalFinal()" readonly="@(isDetalhes)" />
                             </div>
                             <div class="col-md-2">
                                 <label asp-for="ValDesconto" class="form-label fw-bold text-nowrap">Valor Desconto (R$)</label>
-                                <input asp-for="ValDesconto" type="text" class="form-control money" oninput="somarTotalFinal()" readonly="@(isDetalhes)" />
+                                <input asp-for="ValDesconto" type="text" class="form-control money" oninput="this.value = this.value.replace(/[^0-9,.]/g, ''); somarTotalFinal()" readonly="@(isDetalhes)" />
                             </div>
                             @if (isBaixar || (isDetalhes && Model.Situacao == "PAGO"))
                             {
@@ -249,7 +250,7 @@
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Voltar</button>
 
-                                <button type="button" class="btn btn-danger" id="btn-confirmar-envio-cancelamento">Confirmar Cancelamento</button>
+                                <button type="button" class="btn btn-danger" id="btn-confirmar-envio-cancelamento" disable>Confirmar Cancelamento</button>
                             </div>
                         </div>
                     </div>
@@ -259,8 +260,6 @@
 
 
 
-            @* --- ADICIONE ESTE NOVO BLOCO --- *@
-            @* 8. BLOCO DE CANCELAMENTO (Aparece no "Detalhes" se estiver Cancelada) *@
             @if (isDetalhes && Model.Status == false)
             {
                 <div class="card mt-3">
@@ -277,7 +276,7 @@
                     </div>
                 </div>
             }
-           
+          
             <div class="card mt-3">
                 <div class="card-footer text-end">
                     <a asp-action="Index" class="btn btn-secondary">Voltar</a>
@@ -600,9 +599,7 @@
                     </tbody>
                 </table>
 
-                <button class="btn btn-success" type="button" onclick="abrirFormNovaCidadeFornecedor()">
-                    + Cadastrar Nova Cidade excluir
-                </button>
+                
             </div>
         </div>
     </div>
@@ -650,9 +647,7 @@
                     </tbody>
                 </table>
 
-                <button class="btn btn-success" type="button" onclick="abrirFormNovaCondicaoFornecedor()">
-                    + Cadastrar Nova Condição excluir
-                </button>
+                
             </div>
         </div>
     </div>
@@ -1327,7 +1322,7 @@
         }
 
 
-        document.addEventListener('DOMContentLoaded', function () {
+                document.addEventListener('DOMContentLoaded', function () {
 
             if (modo === "Cancelar") {
 
@@ -1335,36 +1330,46 @@
                 const modalConfirmButton = document.getElementById('btn-confirmar-envio-cancelamento');
                 const modalTextarea = document.getElementById('motivoCancelamentoInput');
                 const hiddenInput = document.getElementById('Motivo_Cancelamento_Hidden');
+                const contadorEl = document.getElementById('contador-caracteres');
                 const validationMessage = document.getElementById('validation-motivo-modal');
 
-                if (modalConfirmButton) {
+                if (modalTextarea && modalConfirmButton) {
+
+                    modalTextarea.addEventListener('input', function() {
+                        const texto = this.value.trim();           
+                        const qtdCaracteres = texto.length;
+
+                        if (contadorEl) contadorEl.textContent = qtdCaracteres;
+
+                        if (qtdCaracteres >= 20) {
+                            modalConfirmButton.disabled = false;       
+                            if (validationMessage) validationMessage.style.display = 'none';
+                            this.classList.remove('is-invalid');
+                            this.classList.add('is-valid');
+                        } else {
+                            modalConfirmButton.disabled = true;       
+                            this.classList.remove('is-valid');
+                        }
+                    });
 
                     modalConfirmButton.addEventListener('click', function() {
                         const motivo = modalTextarea.value.trim();
 
-                        if (motivo === "") {
-                            validationMessage.style.display = 'block';
+                        if (motivo.length < 20) {
+                            if (validationMessage) validationMessage.style.display = 'block';
                             modalTextarea.focus();
                             return;       
                         }
 
-                        validationMessage.style.display = 'none';
+                        if (hiddenInput) hiddenInput.value = motivo;
 
-                        hiddenInput.value = motivo;
+                        this.disabled = true;
+                        this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processando...';
 
                         form.submit();
                     });
                 }
-
-                if (modalTextarea) {
-                    modalTextarea.addEventListener('input', function() {
-                        if (validationMessage.style.display === 'block') {
-                            validationMessage.style.display = 'none';
-                        }
-                    });
-                }
             }
-
         });             
 
 

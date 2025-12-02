@@ -16,7 +16,7 @@
     <div class="modal-body">
         <div class="col-md-5">
             <label asp-for="Descricao" class="form-label">Descrição da Categoria*</label>
-            <input asp-for="Descricao" class="form-control" />
+            <input asp-for="Descricao" class="form-control" maxlength="40" oninput="this.value = this.value.replace(/[0-9]/g, '')" />
             <span asp-validation-for="Descricao" class="text-danger"></span>
         </div>
         

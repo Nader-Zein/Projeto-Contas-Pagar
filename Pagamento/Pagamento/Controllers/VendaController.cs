@@ -8,20 +8,47 @@ namespace Pagamento.Controllers
 {
     public class VendaController : Controller
     {
-        private readonly VendaDAO _vendaDAO = new VendaDAO();
-        private readonly ClienteDAO _clienteDAO = new ClienteDAO();
-        private readonly FuncionarioDAO _funcionarioDAO = new FuncionarioDAO();
-        private readonly ProdutoDAO _produtoDAO = new ProdutoDAO();
-        private readonly CondicaoPagamentoDAO _condicaoPagamentoDAO = new CondicaoPagamentoDAO();
-        private readonly ContaAReceberDAO _contaAReceberDAO = new ContaAReceberDAO();
+        private readonly VendaDAO _vendaDAO;
+        private readonly ClienteDAO _clienteDAO;
+        private readonly FuncionarioDAO _funcionarioDAO;
+        private readonly ProdutoDAO _produtoDAO;
+        private readonly CondicaoPagamentoDAO _condicaoPagamentoDAO;
+        private readonly ContaAReceberDAO _contaAReceberDAO;
+        private readonly FornecedorDAO _fornecedorDAO;
+        private readonly MarcaDAO _marcaDAO;
+        private readonly UnidadeMedidaDAO _unidadeMedidaDAO;
+        private readonly CategoriaDAO _categoriaDAO;
+        private readonly FormaPagamentoDAO _formaPagamentoDAO;
+        private readonly CidadeDAO _cidadeDAO;
 
-        private readonly FornecedorDAO _fornecedorDAO = new FornecedorDAO();
-        private readonly MarcaDAO _marcaDAO = new MarcaDAO();
-        private readonly UnidadeMedidaDAO _unidadeMedidaDAO = new UnidadeMedidaDAO();
-        private readonly CategoriaDAO _categoriaDAO = new CategoriaDAO();
-        private readonly FormaPagamentoDAO _formaPagamentoDAO = new FormaPagamentoDAO();
+        public VendaController(
+            VendaDAO vendaDAO,
+            ClienteDAO clienteDAO,
+            FuncionarioDAO funcionarioDAO,
+            ProdutoDAO produtoDAO,
+            CondicaoPagamentoDAO condicaoPagamentoDAO,
+            ContaAReceberDAO contaAReceberDAO,
+            FornecedorDAO fornecedorDAO,
+            MarcaDAO marcaDAO,
+            UnidadeMedidaDAO unidadeMedidaDAO,
+            CategoriaDAO categoriaDAO,
+            FormaPagamentoDAO formaPagamentoDAO,
+            CidadeDAO cidadeDAO)
+        {
+            _vendaDAO = vendaDAO;
+            _clienteDAO = clienteDAO;
+            _funcionarioDAO = funcionarioDAO;
+            _produtoDAO = produtoDAO;
+            _condicaoPagamentoDAO = condicaoPagamentoDAO;
+            _contaAReceberDAO = contaAReceberDAO;
+            _fornecedorDAO = fornecedorDAO;
+            _marcaDAO = marcaDAO;
+            _unidadeMedidaDAO = unidadeMedidaDAO;
+            _categoriaDAO = categoriaDAO;
+            _formaPagamentoDAO = formaPagamentoDAO;
+            _cidadeDAO = cidadeDAO;
+        }
 
-        private readonly CidadeDAO _cidadeDAO = new CidadeDAO();
         public IActionResult Index()
         {
             try
@@ -72,6 +99,7 @@ namespace Pagamento.Controllers
                 {
                     _vendaDAO.Inserir(venda);
 
+                    TempData["SuccessMessage"] = "Venda cadastrada com sucesso!";
                     return RedirectToAction("Index");
                 }
             }

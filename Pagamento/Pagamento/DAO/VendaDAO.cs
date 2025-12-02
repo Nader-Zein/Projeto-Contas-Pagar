@@ -5,14 +5,27 @@ namespace Pagamento.DAO
 {
     public class VendaDAO
     {
-        private readonly string connectionString = "server=localhost;database=pagamento;user=User;password=Na@der!1234";
+        private readonly string connectionString;
 
-        private readonly ProdutoDAO _produtoDAO = new ProdutoDAO();
-        private readonly ParcelaCondicaoPagamentoDAO _parcelaCondPgtoDAO = new ParcelaCondicaoPagamentoDAO();
-        private readonly CondicaoPagamentoDAO _condicaoPagamentoDAO = new CondicaoPagamentoDAO();
+        private readonly ProdutoDAO _produtoDAO;
+        private readonly ParcelaCondicaoPagamentoDAO _parcelaCondPgtoDAO;
+        private readonly CondicaoPagamentoDAO _condicaoPagamentoDAO;
+        private readonly ContaAReceberDAO _contaAReceberDAO;
 
-        private readonly ContaAReceberDAO _contaAReceberDAO = new ContaAReceberDAO();
+        public VendaDAO(
+            IConfiguration configuration,
+            ProdutoDAO produtoDAO,
+            ParcelaCondicaoPagamentoDAO parcelaCondPgtoDAO,
+            CondicaoPagamentoDAO condicaoPagamentoDAO,
+            ContaAReceberDAO contaAReceberDAO)
+        {
+            connectionString = configuration.GetConnectionString("PagamentoDB");
 
+            _produtoDAO = produtoDAO;
+            _parcelaCondPgtoDAO = parcelaCondPgtoDAO;
+            _condicaoPagamentoDAO = condicaoPagamentoDAO;
+            _contaAReceberDAO = contaAReceberDAO;
+        }
         public List<Venda> Listar()
         {
             var lista = new List<Venda>();

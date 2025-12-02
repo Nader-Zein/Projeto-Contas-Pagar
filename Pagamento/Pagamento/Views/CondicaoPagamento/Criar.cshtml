@@ -277,15 +277,22 @@
             document.getElementById("DiasAposVenda").value = "";
         });
 
+                
         document.querySelector("form").addEventListener("submit", function (e) {
 
             let total = parcelas.reduce((sum, p) => sum + p.valorPercentual, 0);
 
-            if (total !== 100) {
-                e.preventDefault();           
-                alert("A soma das porcentagens das parcelas deve ser exatamente 100%. Total atual: " + total + "%.");
+            if (Math.abs(total - 100) > 0.1) {
+                e.preventDefault();       
+                alert("A soma das porcentagens das parcelas deve ser 100%. Total atual: " + total.toFixed(2) + "%.");
                 return;
             }
+
+            let inputExistente = this.querySelector("input[name='ParcelasJson']");
+            if (inputExistente) {
+                inputExistente.remove();
+            }
+
             let input = document.createElement("input");
             input.type = "hidden";
             input.name = "ParcelasJson";

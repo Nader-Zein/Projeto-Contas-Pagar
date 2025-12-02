@@ -5,9 +5,12 @@ namespace Pagamento.DAO
 {
     public class EstadoDAO
     {
-        private string connectionString = "server=localhost;database=pagamento;user=User;password=Na@der!1234";
+        private readonly string connectionString;
 
-
+        public EstadoDAO(IConfiguration configuration)
+        {
+            connectionString = configuration.GetConnectionString("PagamentoDB");
+        }
         public List<Estado> Listar()
         {
             List<Estado> lista = new List<Estado>();
@@ -77,7 +80,7 @@ namespace Pagamento.DAO
                 string sql = "INSERT INTO Estado (NomeEstado, Uf, Status, IdPais, DataCriacao) VALUES (@NomeEstado, @Uf, @Status, @IdPais, @DataCriacao)";
                 MySqlCommand cmd = new MySqlCommand(sql, conexao);
                 cmd.Parameters.AddWithValue("@NomeEstado", estado.NomeEstado.ToUpper());
-                cmd.Parameters.AddWithValue("@Uf", estado.Uf);
+                cmd.Parameters.AddWithValue("@Uf", estado.Uf.ToUpper());
                 cmd.Parameters.AddWithValue("@Status", estado.Status);
                 cmd.Parameters.AddWithValue("@IdPais", estado.IdPais);
                 cmd.Parameters.AddWithValue("@DataCriacao", DateTime.Now); 
@@ -97,7 +100,7 @@ namespace Pagamento.DAO
                 string sql = "UPDATE Estado SET NomeEstado = @NomeEstado, Uf = @Uf, Status = @Status, IdPais = @IdPais, DataEdicao = @DataEdicao WHERE IdEstado = @IdEstado";
                 MySqlCommand cmd = new MySqlCommand(sql, conexao);
                 cmd.Parameters.AddWithValue("@NomeEstado", estado.NomeEstado.ToUpper());
-                cmd.Parameters.AddWithValue("@Uf", estado.Uf);
+                cmd.Parameters.AddWithValue("@Uf", estado.Uf.ToUpper());
                 cmd.Parameters.AddWithValue("@Status", estado.Status);
                 cmd.Parameters.AddWithValue("@IdPais", estado.IdPais);
                 cmd.Parameters.AddWithValue("@DataEdicao", DateTime.Now); 

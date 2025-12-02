@@ -31,12 +31,12 @@
                     <div class="row">
                         <div class="col-md-2">
                             <label asp-for="Modelo" class="form-label">Modelo*</label>
-                            <input asp-for="Modelo" class="form-control" />
+                            <input asp-for="Modelo" class="form-control" oninput="this.value = this.value.replace(/[^0-9]/g, '')"/>
                             <span asp-validation-for="Modelo" class="text-danger"></span>
                         </div>
                         <div class="col-md-2">
                             <label asp-for="Serie" class="form-label">Serie*</label>
-                            <input asp-for="Serie" class="form-control" />
+                            <input asp-for="Serie" class="form-control" oninput="this.value = this.value.replace(/[^0-9]/g, '')"/>
                             <span asp-validation-for="Serie" class="text-danger"></span>
                         </div>
                         <div class="col-md-2">
@@ -147,11 +147,11 @@
                             </div>
                             <div class="col-md-1">
                                 <label class="form-label">Qtd*</label>
-                                <input id="produto-quantidade" type="number" class="form-control" value="1" min="1" />
+                                <input id="produto-quantidade" type="number" class="form-control" value="1" min="1" step="1" oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
                             </div>
                             <div style="width: 10%;">
                                 <label class="form-label">Valor (R$)*</label>
-                                <input id="produto-valor" type="text" class="form-control" />
+                                <input id="produto-valor" type="text" class="form-control" oninput="this.value = this.value.replace(/[^0-9,]/g, '')" />
                             </div>
                             <div style="width: 12.5%;">
                                 <label class="form-label">Total</label>
@@ -326,6 +326,7 @@
     <div class="mt-4 text-end">
         @if (modo == "Criar")
         {
+            @* Alterado de submit para button para validar parcelas via JS *@
             <button type="button" class="btn btn-success" onclick="verificarParcelasAntesDeSalvar()">Finalizar Venda</button>
             <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
         }
@@ -475,12 +476,10 @@
 <div class="modal fade" id="modalNovaCondicao" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-xl">
         <div class="modal-content" id="modalNovaCondicaoContent">
-            <!-- Conteúdo do FormCondicaoPagamento.cshtml será carregado aqui -->
         </div>
     </div>
 </div>
 
-<!-- 2. Modal Auxiliar: Seleção de Forma de Pagamento (Para a Nova Condição) -->
 <div class="modal fade" id="modalFormaPgtoSelect" tabindex="-1" data-bs-backdrop="static">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -494,7 +493,6 @@
                     <table class="table table-hover" id="tabFormaAux">
                         <thead><tr><th>Descrição</th><th>Ação</th></tr></thead>
                         <tbody>
-                            <!-- PREENCHIDO PELO CONTROLLER -->
                             @if (ViewBag.FormasPagamentoItens != null)
                             {
                                 foreach (var f in ViewBag.FormasPagamentoItens as List<SelectListItem>)
@@ -522,6 +520,7 @@
     </div>
 </div>
 
+<!-- 3. Container para Cadastro de Nova Forma (Opcional) -->
 <div class="modal fade" id="modalNovaForma" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog">
         <div class="modal-content" id="modalNovaFormaContent"></div>
@@ -1775,8 +1774,8 @@
                         clienteIdInput.value = '';
                         document.getElementById('tabela-cliente-selecionado').innerHTML = '';
                         document.getElementById('cliente-id-input').value = '';
-                       
 
+                        verificarBloqueioProdutos();
                         modeloInput.focus();
                     }
 
@@ -1786,6 +1785,22 @@
             }
         }
 
+
+                
+        function verificarBloqueioProdutos() {
+            const modelo = document.getElementById('Modelo').value.trim();
+            const serie = document.getElementById('Serie').value.trim();
+            const numero = document.getElementById('NumeroNota').value.trim();
+            const clienteId = document.getElementById('ClienteId').value;
+
+            const todosPreenchidos = (modelo !== "" && serie !== "" && numero !== "" && clienteId !== "" && clienteId !== "0");
+
+            const fieldsetProdutos = document.getElementById('fieldset-lista-produtos');
+
+            if (fieldsetProdutos) {
+                fieldsetProdutos.disabled = !todosPreenchidos;
+            }
+        }
 
             function selecionarCliente(id, nome, idCondPgto) {
                 document.getElementById('ClienteId').value = id;
@@ -1809,21 +1824,29 @@
                     if (modal) modal.hide();
                 }
 
-                document.getElementById('fieldset-lista-produtos').disabled = false;
-
+                verificarBloqueioProdutos();
                 verificarChaveDuplicada();
             }
 
+                   
                 document.addEventListener('DOMContentLoaded', function() {
-                    const camposChave = ['Modelo', 'Serie', 'NumeroNota'];
+                const modeloInput = document.getElementById('Modelo');
+                const serieInput = document.getElementById('Serie');
+                const numeroNotaInput = document.getElementById('NumeroNota');
 
-                    camposChave.forEach(id => {
-                        const el = document.getElementById(id);
-                        if(el) {
-                            el.addEventListener('blur', verificarChaveDuplicada);
-                        }
-                    });
-                });
+                if(modeloInput) {
+                    modeloInput.addEventListener('input', verificarBloqueioProdutos);
+                    modeloInput.addEventListener('blur', verificarChaveDuplicada);
+                }
+                if(serieInput) {
+                    serieInput.addEventListener('input', verificarBloqueioProdutos);
+                    serieInput.addEventListener('blur', verificarChaveDuplicada);
+                }
+                if(numeroNotaInput) {
+                    numeroNotaInput.addEventListener('input', verificarBloqueioProdutos);
+                    numeroNotaInput.addEventListener('blur', verificarChaveDuplicada);
+                }
+        });
 
                 function formatarDataString(dataString) {
                     if (!dataString || !dataString.includes('-')) return '-';

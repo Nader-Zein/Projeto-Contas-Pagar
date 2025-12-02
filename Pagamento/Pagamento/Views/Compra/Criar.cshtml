@@ -3,7 +3,7 @@
 @{
     string modo = ViewData["Modo"] as string ?? "Criar";
     ViewData["Title"] = modo == "Criar" ? "Cadastro de Compra" : (modo == "Detalhes" ? "Detalhes da Compra" : "Cancelar Compra");
-    bool isReadOnly = (modo != "Criar");                
+    bool isReadOnly = (modo != "Criar");           
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -28,11 +28,11 @@
           <fieldset id="fieldset-dados-nota">
             <div class="row">
                 <div class="col-md-2"><label asp-for="Modelo" class="form-label">Modelo*</label>
-                    <input asp-for="Modelo" class="form-control" />
+                    <input asp-for="Modelo" class="form-control" oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
                     <span asp-validation-for="Modelo" class="text-danger"></span>
                     </div>
                 <div class="col-md-2"><label asp-for="Serie" class="form-label">Serie*</label>
-                    <input asp-for="Serie" class="form-control" />
+                    <input asp-for="Serie" class="form-control" oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
                     <span asp-validation-for="Serie" class="text-danger"></span>
                     </div>
                 <div class="col-md-2"><label asp-for="NumeroNota" class="form-label">Número da Nota*</label>
@@ -117,12 +117,12 @@
 
                 <div class="col-md-1">
                     <label class="form-label">Quantidade*</label>
-                    <input id="produto-quantidade" type="number" class="form-control" value="1" />
+                    <input id="produto-quantidade" type="number" class="form-control" value="1" min="1" step="1" oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
                 </div>
 
                 <div class="col-md-1">
                     <label class="form-label">Valor Unitário*</label>
-                    <input id="produto-valor" type="text" class="form-control" />
+                    <input id="produto-valor" type="text" class="form-control" oninput="this.value = this.value.replace(/[^0-9,]/g, '')" />
                 </div>
 
                 <div style="width: 12.5%;">
@@ -183,9 +183,9 @@
             <div class="mb-4">
                     <h5>Valores Totais</h5><hr />
                     <div class="mb-2 row"><label class="col-sm-4 col-form-label">Total Produtos</label><div class="col-sm-2"><input type="text" readonly class="form-control-plaintext" id="total-produtos" value="@(isReadOnly? Model.TotalProdutos.ToString("C2") : "R$ 0,00")"></div></div>
-                    <div class="mb-2 row"><label asp-for="Frete" class="col-sm-4 col-form-label"></label><div class="col-sm-2"><input asp-for="Frete"  type="text" class="form-control" value="@(modo == "Criar" ? "0" : Model.Frete)"  /></div></div>
-                    <div class="mb-2 row"><label asp-for="Seguro" class="col-sm-4 col-form-label"></label><div class="col-sm-2"><input asp-for="Seguro" type="text" class="form-control" value="@(modo == "Criar" ? "0" : Model.Seguro)"  /></div></div>
-                    <div class="mb-2 row"><label asp-for="Despesas" class="col-sm-4 col-form-label"></label><div class="col-sm-2"><input asp-for="Despesas" type="text" class="form-control" value="@(modo == "Criar" ? "0" : Model.Despesas)" /></div></div>
+                        <div class="mb-2 row"><label asp-for="Frete" class="col-sm-4 col-form-label"></label><div class="col-sm-2"><input asp-for="Frete" type="text" class="form-control" value="@(modo == "Criar" ? "0" : Model.Frete)" oninput="this.value = this.value.replace(/[^0-9,]/g, '')" /></div></div>
+                    <div class="mb-2 row"><label asp-for="Seguro" class="col-sm-4 col-form-label"></label><div class="col-sm-2"><input asp-for="Seguro" type="text" class="form-control" value="@(modo == "Criar" ? "0" : Model.Seguro)"  oninput="this.value = this.value.replace(/[^0-9,]/g, '')"/></div></div>
+                        <div class="mb-2 row"><label asp-for="Despesas" class="col-sm-4 col-form-label"></label><div class="col-sm-2"><input asp-for="Despesas" type="text" class="form-control" value="@(modo == "Criar" ? "0" : Model.Despesas)" oninput="this.value = this.value.replace(/[^0-9,]/g, '')" /></div></div>
                     <hr />
                     <div class="mb-2 row fw-bold fs-5"><label class="col-sm-4 col-form-label">Total da Nota</label><div class="col-sm-2"><input type="text" readonly class="form-control-plaintext" id="total-nota" value="@(isReadOnly? Model.TotalNota.ToString("C2") : "R$ 0,00")"></div></div>
                 </div>
@@ -446,7 +446,7 @@
                     </tbody>
                 </table>
                 <hr />
-                    <button class="btn btn-success" type="button" onclick="abrirFormMarca()">+ Cadastrar nova Marca excluir</button>
+                    <button class="btn btn-success" type="button" onclick="abrirFormMarca()">+ Cadastrar nova Marca </button>
             </div>
         </div>
     </div>
@@ -484,7 +484,7 @@
                     </tbody>
                 </table>
                 <hr />
-                    <button class="btn btn-success" type="button" onclick="abrirFormUnidade()">+ Cadastrar nova Unidade excluir</button>
+                    <button class="btn btn-success" type="button" onclick="abrirFormUnidade()">+ Cadastrar nova Unidade </button>
             </div>
         </div>
     </div>
@@ -522,7 +522,7 @@
                     </tbody>
                 </table>
                 <hr />
-                <button class="btn btn-success" type="button" onclick="abrirFormCategoria()">+ Cadastrar nova Categoria excluir</button>
+                <button class="btn btn-success" type="button" onclick="abrirFormCategoria()">+ Cadastrar nova Categoria </button>
             </div>
         </div>
     </div>
@@ -567,7 +567,6 @@
                     <ul id="listaFornecedoresSelecionadosProduto"></ul>
 
                     <hr />
-                    <button class="btn btn-success" type="button" onclick="abrirFormNovoFornecedor()">+ Cadastrar novo Fornecedor excluir</button>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
@@ -629,7 +628,6 @@
                 </table>
 
                 <hr />
-                <button class="btn btn-success" type="button" onclick="abrirFormNovaCidadeFornecedor()">+ Cadastrar nova Cidade excluir</button>
                 <div id="formNovaCidadeContainer"></div>
             </div>
         </div>
@@ -671,7 +669,6 @@
                 </table>
 
                 <hr />
-                <button class="btn btn-success" type="button" onclick="abrirFormNovaCondicaoFornecedor()">+ Cadastrar nova Condição excluir</button>
                 <div id="formNovaCondicaoContainer"></div>
             </div>
         </div>
@@ -1157,6 +1154,8 @@
                                document.getElementById('tabela-parcelas').innerHTML = '';
                                idCondicaoPermitida = 0;         
 
+                                   verificarBloqueioProdutos();
+
                               console.log("Campos do formulário limpos");
                               modeloInput?.focus();
                           }
@@ -1169,14 +1168,39 @@
             } 
         }
 
+                
+        function verificarBloqueioProdutos() {
+            const modelo = document.getElementById('Modelo').value.trim();
+            const serie = document.getElementById('Serie').value.trim();
+            const numero = document.getElementById('NumeroNota').value.trim();
+            const fornecedorId = document.getElementById('FornecedorId').value;
+
+            const todosPreenchidos = (modelo !== "" && serie !== "" && numero !== "" && fornecedorId !== "" && fornecedorId !== "0");
+
+            const fieldsetProdutos = document.getElementById('fieldset-lista-produtos');
+
+            if (fieldsetProdutos) {
+                fieldsetProdutos.disabled = !todosPreenchidos;             
+            }
+        }
+
+
         document.addEventListener('DOMContentLoaded', function() {
             const modeloInput = document.getElementById('Modelo');
             const serieInput = document.getElementById('Serie');
             const numeroNotaInput = document.getElementById('NumeroNota');
-            if(modeloInput) modeloInput.addEventListener('blur', verificarChaveDuplicada);
-            if(serieInput) serieInput.addEventListener('blur', verificarChaveDuplicada);
-            if(numeroNotaInput) numeroNotaInput.addEventListener('blur', verificarChaveDuplicada);
-
+            if(modeloInput) {
+                modeloInput.addEventListener('input', verificarBloqueioProdutos);           
+                modeloInput.addEventListener('blur', verificarChaveDuplicada);
+            }
+            if(serieInput) {
+                serieInput.addEventListener('input', verificarBloqueioProdutos);
+                serieInput.addEventListener('blur', verificarChaveDuplicada);
+            }
+            if(numeroNotaInput) {
+                numeroNotaInput.addEventListener('input', verificarBloqueioProdutos);
+                numeroNotaInput.addEventListener('blur', verificarChaveDuplicada);
+            }
         });
 
         
@@ -1365,7 +1389,7 @@
 
             const quantidade = parseFloat(qtdInput.value) || 0;
 
-            const valorUnitario = parseFloat((valorInput.value || '0').replace(',', '.')) || 0;
+            const valorUnitario = parseMoeda(valorInput.value);
 
             const total = quantidade * valorUnitario;
 
@@ -1453,7 +1477,8 @@
 
 
         
-            document.getElementById('fieldset-lista-produtos').disabled = false;
+
+            verificarBloqueioProdutos();
 
             verificarChaveDuplicada();
 
@@ -2173,8 +2198,14 @@
          
         function parseMoeda(valorString) {
             if (!valorString) return 0;
-            let valorNumerico = valorString.replace('R$', '').trim().replace(/\./g, '').replace(',', '.');
-            return parseFloat(valorNumerico) || 0;
+            let v = String(valorString);
+            v = v.replace('R$', '').trim();
+            v = v.replace(/\./g, '');
+                                  
+            v = v.replace(',', '.');
+
+                            
+            return parseFloat(v) || 0;
         }
          
                  
@@ -2276,8 +2307,8 @@
                         }
                                   
 
-                    const quantidade   = parseFloat(quantidadeInput.value);
-                    const valorUnitario= parseFloat((valorInput.value || '').replace(',', '.'));
+                        const quantidade   = parseFloat(quantidadeInput.value);
+                        const valorUnitario = parseMoeda(valorInput.value);
 
                     if (!(quantidade > 0) || !(valorUnitario > 0)) {
                         alert('A quantidade e o valor devem ser maiores que zero.');

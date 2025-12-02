@@ -7,13 +7,22 @@ namespace Pagamento.Controllers
 {
     public class CondicaoPagamentoController : Controller
     {
-        private readonly CondicaoPagamentoDAO condicaodao = new CondicaoPagamentoDAO();
-        private readonly FormaPagamentoDAO formaPgtoDAO = new FormaPagamentoDAO(); 
-        private readonly ParcelaCondicaoPagamentoDAO parcelaDAO = new ParcelaCondicaoPagamentoDAO();
+        private readonly CondicaoPagamentoDAO _condicaoDAO;
+        private readonly FormaPagamentoDAO _formaPgtoDAO;
+        private readonly ParcelaCondicaoPagamentoDAO _parcelaDAO;
 
+        public CondicaoPagamentoController(
+            CondicaoPagamentoDAO condicaoDAO,
+            FormaPagamentoDAO formaPgtoDAO,
+            ParcelaCondicaoPagamentoDAO parcelaDAO)
+        {
+            _condicaoDAO = condicaoDAO;
+            _formaPgtoDAO = formaPgtoDAO;
+            _parcelaDAO = parcelaDAO;
+        }
         public IActionResult Index()
         {
-            List<CondicaoPagamento> lista = condicaodao.Listar();
+            List<CondicaoPagamento> lista = _condicaoDAO.Listar();
             return View(lista);
         }
 
@@ -23,7 +32,7 @@ namespace Pagamento.Controllers
         {
             var model = new CondicaoPagamento
             {
-                FormasPagamento = formaPgtoDAO.Listar() ?? new List<FormaPagamento>() 
+                FormasPagamento = _formaPgtoDAO.Listar() ?? new List<FormaPagamento>() 
             };
 
             return View(model);
@@ -33,28 +42,36 @@ namespace Pagamento.Controllers
         public IActionResult Criar(CondicaoPagamento condicaoPagamento, string ParcelasJson)
         {
 
-            if (condicaodao.ExisteCondicao(condicaoPagamento.Descricao))
+            if (_condicaoDAO.ExisteCondicao(condicaoPagamento.Descricao))
             {
                 ModelState.AddModelError("Descricao", "Esta condição de pagamento já está cadastrada!");
-                condicaoPagamento.FormasPagamento = formaPgtoDAO.Listar() ?? new List<FormaPagamento>();
+                condicaoPagamento.FormasPagamento = _formaPgtoDAO.Listar() ?? new List<FormaPagamento>();
+                return View(condicaoPagamento);
+            }
+
+
+            if (string.IsNullOrEmpty(ParcelasJson))
+            {
+                ModelState.AddModelError("", "É necessário adicionar pelo menos uma parcela.");
+                condicaoPagamento.FormasPagamento = _formaPgtoDAO.Listar() ?? new List<FormaPagamento>();
                 return View(condicaoPagamento);
             }
             if (ModelState.IsValid)
             {
-                condicaoPagamento.IdCondPgto = condicaodao.Inserir(condicaoPagamento);
+                condicaoPagamento.IdCondPgto = _condicaoDAO.Inserir(condicaoPagamento);
 
                 List<ParcelaCondicaoPagamento> parcelas = JsonConvert.DeserializeObject<List<ParcelaCondicaoPagamento>>(ParcelasJson);
 
                 foreach (var parcela in parcelas)
                 {
-                    parcela.IdCondPgto = condicaoPagamento.IdCondPgto; 
-                    parcelaDAO.Inserir(parcela); 
+                    parcela.IdCondPgto = condicaoPagamento.IdCondPgto;
+                    _parcelaDAO.Inserir(parcela); 
                 }
-
+                TempData["SuccessMessage"] = "Condição de pagamento cadastrada com sucesso!";
                 return RedirectToAction("Index");
             }
 
-            condicaoPagamento.FormasPagamento = formaPgtoDAO.Listar() ?? new List<FormaPagamento>();
+            condicaoPagamento.FormasPagamento = _formaPgtoDAO.Listar() ?? new List<FormaPagamento>();
             return View(condicaoPagamento);
         }
 
@@ -65,11 +82,11 @@ namespace Pagamento.Controllers
         [HttpGet]
         public IActionResult Editar(int id)
         {
-            var condicao = condicaodao.BuscarPorId(id);
+            var condicao = _condicaoDAO.BuscarPorId(id);
             if (condicao == null) return NotFound();
 
-            condicao.Parcelas = parcelaDAO.ListarPorCondicaoPagamento(id);
-            condicao.FormasPagamento = formaPgtoDAO.Listar();
+            condicao.Parcelas = _parcelaDAO.ListarPorCondicaoPagamento(id);
+            condicao.FormasPagamento = _formaPgtoDAO.Listar();
 
             return View(condicao);
         }
@@ -80,10 +97,20 @@ namespace Pagamento.Controllers
         [HttpPost]
         public IActionResult Editar(CondicaoPagamento condicao, string ParcelasJson)
         {
-            condicaodao.Atualizar(condicao);
+
+            if (string.IsNullOrEmpty(ParcelasJson))
+            {
+                ModelState.AddModelError("", "As parcelas não foram enviadas corretamente. Verifique se o JavaScript está habilitado.");
+
+                condicao.FormasPagamento = _formaPgtoDAO.Listar() ?? new List<FormaPagamento>();
+                condicao.Parcelas = _parcelaDAO.ListarPorCondicaoPagamento(condicao.IdCondPgto);
+
+                return View(condicao);
+            }
+            _condicaoDAO.Atualizar(condicao);
 
             var novasParcelas = JsonConvert.DeserializeObject<List<ParcelaCondicaoPagamento>>(ParcelasJson);
-            var parcelasAtuais = parcelaDAO.ListarPorCondicaoPagamento(condicao.IdCondPgto);
+            var parcelasAtuais = _parcelaDAO.ListarPorCondicaoPagamento(condicao.IdCondPgto);
 
             foreach (var nova in novasParcelas)
             {
@@ -97,12 +124,12 @@ namespace Pagamento.Controllers
                     if (existente.ValorPercentual != nova.ValorPercentual ||
                         existente.DiasAposVenda != nova.DiasAposVenda)
                     {
-                        parcelaDAO.Atualizar(nova); 
+                        _parcelaDAO.Atualizar(nova); 
                     }
                 }
                 else
                 {
-                    parcelaDAO.Inserir(nova); 
+                    _parcelaDAO.Inserir(nova); 
                 }
             }
 
@@ -114,9 +141,11 @@ namespace Pagamento.Controllers
 
                 if (!aindaExiste)
                 {
-                    parcelaDAO.Excluir(antiga.IdCondPgto, antiga.NumeroParcela, antiga.IdFormaPgto);
+                    _parcelaDAO.Excluir(antiga.IdCondPgto, antiga.NumeroParcela, antiga.IdFormaPgto);
                 }
             }
+
+            TempData["SuccessMessage"] = "Condição de pagamento atualizada com sucesso!";
 
             return RedirectToAction("Index");
         }
@@ -126,10 +155,10 @@ namespace Pagamento.Controllers
 
         public IActionResult Excluir(int id)
         {
-            var condicao = condicaodao.BuscarPorId(id);
+            var condicao = _condicaoDAO.BuscarPorId(id);
             if (condicao == null) return NotFound();
 
-            condicao.Parcelas = parcelaDAO.ListarPorCondicaoPagamento(id); 
+            condicao.Parcelas = _parcelaDAO.ListarPorCondicaoPagamento(id); 
 
             return View(condicao);
         }
@@ -139,7 +168,7 @@ namespace Pagamento.Controllers
         {
              try
             {
-                condicaodao.Excluir(condicao.IdCondPgto);
+                _condicaoDAO.Excluir(condicao.IdCondPgto);
 
                 TempData["SuccessMessage"] = "Condicao de pagamento excluída com sucesso!";
             }
@@ -167,7 +196,7 @@ namespace Pagamento.Controllers
         {
             var condicao = new CondicaoPagamento
             {
-                FormasPagamento = formaPgtoDAO.Listar() ?? new List<FormaPagamento>()
+                FormasPagamento = _formaPgtoDAO.Listar() ?? new List<FormaPagamento>()
             };
 
             return PartialView("FormCondicaoPagamento", condicao);
@@ -180,7 +209,7 @@ namespace Pagamento.Controllers
         public IActionResult FormModal(CondicaoPagamento condicao, string ParcelasJson)
         {
 
-            if (condicaodao.ExisteCondicao(condicao.Descricao))
+            if (_condicaoDAO.ExisteCondicao(condicao.Descricao))
             {
                 ModelState.AddModelError("Descricao", "Esta condição de pagamento já está cadastrada!");
                 
@@ -188,20 +217,20 @@ namespace Pagamento.Controllers
 
             if (!ModelState.IsValid)
             {
-                condicao.FormasPagamento = formaPgtoDAO.Listar() ?? new List<FormaPagamento>();
+                condicao.FormasPagamento = _formaPgtoDAO.Listar() ?? new List<FormaPagamento>();
 
                 ViewBag.ParcelasJson = ParcelasJson;
 
                 return PartialView("FormCondicaoPagamento", condicao);
             }
 
-            condicao.IdCondPgto = condicaodao.Inserir(condicao);
+            condicao.IdCondPgto = _condicaoDAO.Inserir(condicao);
 
             var parcelas = JsonConvert.DeserializeObject<List<ParcelaCondicaoPagamento>>(ParcelasJson);
             foreach (var parcela in parcelas)
             {
                 parcela.IdCondPgto = condicao.IdCondPgto;
-                parcelaDAO.Inserir(parcela);
+                _parcelaDAO.Inserir(parcela);
             }
 
             return Json(new
@@ -221,13 +250,13 @@ namespace Pagamento.Controllers
         {
             try
             {
-                var condicao = condicaodao.BuscarPorId(id);
+                var condicao = _condicaoDAO.BuscarPorId(id);
                 if (condicao == null)
                 {
                     return NotFound();        
                 }
 
-                condicao.Parcelas = parcelaDAO.ListarPorCondicaoPagamento(id);
+                condicao.Parcelas = _parcelaDAO.ListarPorCondicaoPagamento(id);
 
                 return Json(condicao);
             }
@@ -240,7 +269,7 @@ namespace Pagamento.Controllers
         [HttpGet]
         public IActionResult BuscarPorIdJSON(int id)
         {
-            var cond = condicaodao.BuscarPorId(id);     
+            var cond = _condicaoDAO.BuscarPorId(id);     
 
             if (cond == null)
                 return NotFound(new { mensagem = "Condição não encontrada." });

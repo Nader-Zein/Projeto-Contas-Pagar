@@ -16,13 +16,13 @@
 
     <div class="col-md-3">
         <label asp-for="NomeEstado" class="form-label">Nome*</label>
-        <input asp-for="NomeEstado" class="form-control" required maxlength="40" />
+        <input asp-for="NomeEstado" class="form-control" required maxlength="40" oninput="this.value = this.value.replace(/[^a-zA-Z\u00C0-\u00FF ]/g, '')" />
         <span asp-validation-for="NomeEstado" class="text-danger"></span>
     </div>
 
     <div class="col-md-1">
         <label asp-for="Uf" class="form-label">UF*</label>
-        <input asp-for="Uf" class="form-control" required />
+        <input asp-for="Uf" class="form-control" maxlength="5" required oninput="this.value = this.value.replace(/[^a-zA-Z\u00C0-\u00FF ]/g, '')" />
         <span asp-validation-for="Uf" class="text-danger"></span>
 
     </div>

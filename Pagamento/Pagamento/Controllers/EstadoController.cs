@@ -7,9 +7,14 @@ namespace Pagamento.Controllers
 {
     public class EstadoController : Controller
     {
-        private readonly EstadoDAO _estadoDAO = new EstadoDAO();
-        private readonly PaisDAO _paisDAO = new PaisDAO();
+        private readonly EstadoDAO _estadoDAO;
+        private readonly PaisDAO _paisDAO;
 
+        public EstadoController(EstadoDAO estadoDAO, PaisDAO paisDAO)
+        {
+            _estadoDAO = estadoDAO;
+            _paisDAO = paisDAO;
+        }
         public IActionResult Index()
         {
             var lista = _estadoDAO.Listar();
@@ -45,6 +50,8 @@ namespace Pagamento.Controllers
             if (ModelState.IsValid)
             {
                 _estadoDAO.Inserir(estado);
+                TempData["SuccessMessage"] = "Estado cadastrado com sucesso!";
+
                 return RedirectToAction("Index");
             }
 
@@ -82,6 +89,8 @@ namespace Pagamento.Controllers
             if (ModelState.IsValid)
             {
                 _estadoDAO.Atualizar(estado);
+                TempData["SuccessMessage"] = "Estado editado com sucesso!";
+
                 return RedirectToAction("Index");
             }
             ViewBag.Paises = _paisDAO.Listar();

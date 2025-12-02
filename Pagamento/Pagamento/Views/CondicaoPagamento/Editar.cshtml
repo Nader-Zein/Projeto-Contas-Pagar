@@ -17,6 +17,11 @@
     </div>
     <div class="row g-3">
         <div class="col-md-2">
+            <label asp-for="IdCondPgto" class="form-label">ID</label>
+            <input asp-for="IdCondPgto" class="form-control" disabled />
+        </div>
+
+        <div class="col-md-2">
             <label asp-for="Descricao" class="form-label">Descrição*</label>
             <input asp-for="Descricao" class="form-control" required />
         </div>
@@ -179,7 +184,8 @@
         document.querySelectorAll("#tabelaParcelas tbody tr").forEach(row => {
             const numero = parseInt(row.dataset.numero);
             const idFormaPgto = parseInt(row.dataset.idforma);
-            const valor = parseFloat(row.dataset.valor);
+            let valorString = row.dataset.valor ? row.dataset.valor.toString() : "0";
+            const valor = parseFloat(valorString.replace(',', '.'));
             const dias = parseInt(row.dataset.dias);
             parcelas.push({ numeroParcela: numero, idFormaPgto, valorPercentual: valor, diasAposVenda: dias });
 
@@ -287,19 +293,25 @@
             document.getElementById("DiasAposVenda").value = "";
         });
 
-        document.querySelector("form").addEventListener("submit", function () {
+                
+        document.querySelector("form").addEventListener("submit", function (e) {             
 
             let total = parcelas.reduce((sum, p) => sum + p.valorPercentual, 0);
 
-            if (total !== 100) {
-                e.preventDefault();           
-                alert("A soma das porcentagens das parcelas deve ser exatamente 100%. Total atual: " + total + "%.");
+            if (Math.abs(total - 100) > 0.01) {
+                e.preventDefault();               
+                alert("A soma das porcentagens das parcelas deve ser exatamente 100%. Total atual: " + total.toFixed(2) + "%.");
                 return;
+            }
+
+            let inputExistente = this.querySelector("input[name='ParcelasJson']");
+            if (inputExistente) {
+                inputExistente.remove();
             }
 
             const input = document.createElement("input");
             input.type = "hidden";
-            input.name = "ParcelasJson";
+            input.name = "ParcelasJson";               
             input.value = JSON.stringify(parcelas);
             this.appendChild(input);
         });

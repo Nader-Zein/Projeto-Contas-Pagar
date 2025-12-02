@@ -4,7 +4,12 @@ namespace Pagamento.DAO
 {
     public class ProdutoFornecedorDAO
     {
-        private readonly string connectionString = "server=localhost;database=pagamento;user=User;password=Na@der!1234";
+        private readonly string connectionString;
+
+        public ProdutoFornecedorDAO(IConfiguration configuration)
+        {
+            connectionString = configuration.GetConnectionString("PagamentoDB");
+        }
 
         public void InserirOuAtualizarAssociacao(int idProduto, int idFornecedor, string? observacao)
         {

@@ -21,6 +21,7 @@
     <table class="table table-bordered table-striped">
         <thead class="table-light">
             <tr>
+                <th>ID</th>
                 <th>Descrição</th>
                 <th>Status</th>
                 <th class="text-center">Ações</th>
@@ -30,6 +31,7 @@
             @foreach (var unidade in Model)
             {
                 <tr>
+                    <td>@unidade.IdUnidadeMedida</td>
                     <td>@unidade.Descricao</td>
                     <td>
                         @if (unidade.Status)

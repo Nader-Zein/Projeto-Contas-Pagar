@@ -7,6 +7,14 @@
 
 <h1>@ViewData["Title"]</h1>
 
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
 <p>
     <a asp-action="Criar" class="btn btn-primary">Cadastrar Nova Compra</a>
 </p>
@@ -29,7 +37,7 @@
             @foreach (var compra in Model)
             {
 
-                string trClass = compra.Status ? "" : "table-danger";          
+                string trClass = compra.Status ? "" : "table-danger"; 
                 <tr class="@trClass">
                     <td>
                         @compra.Modelo / @compra.Serie / @compra.NumeroNota

@@ -5,8 +5,12 @@ namespace Pagamento.DAO
 {
     public class FuncionarioDAO
     {
-        private readonly string connectionString = "server=localhost;database=pagamento;user=User;password=Na@der!1234";
+        private readonly string connectionString;
 
+        public FuncionarioDAO(IConfiguration configuration)
+        {
+            connectionString = configuration.GetConnectionString("PagamentoDB");
+        }
         public List<Funcionario> Listar()
         {
             var lista = new List<Funcionario>();

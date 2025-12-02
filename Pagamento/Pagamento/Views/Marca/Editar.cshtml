@@ -20,10 +20,14 @@
     
 
     <div class="row">
+        <div class="col-md-1">
+            <label asp-for="IdMarca" class="form-label">ID</label>
+            <input asp-for="IdMarca" class="form-control" disabled />
+        </div>
         <div class="col-md-3">
             <div class="mb-3">
                 <label asp-for="Descricao" class="form-label">Descrição</label>
-                <input class="form-control" asp-for="Descricao" required />
+                <input class="form-control" asp-for="Descricao" required maxlength="40" oninput="this.value = this.value.replace(/[0-9]/g, '')" />
                 <span asp-validation-for="Descricao" class="text-danger"></span>
             </div>
         </div>

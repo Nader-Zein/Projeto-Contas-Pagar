@@ -20,6 +20,7 @@
             <div class="card-header d-flex justify-content-between align-items-center">
                 <span>Dados da Parcela Nizam</span>
                 <div class="form-check form-switch">
+                    
                     <input asp-for="Status" class="form-check-input" type="checkbox" role="switch" disabled>
                     <label asp-for="Status" class="form-check-label">Ativo</label>
                 </div>
@@ -28,17 +29,22 @@
                 <form asp-action="Criar">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
+                  
                     <input type="hidden" asp-for="Modelo" />
                     <input type="hidden" asp-for="Serie" />
                     <input type="hidden" asp-for="NumeroNota" />
                     <input type="hidden" asp-for="ClienteId" />
                     <input type="hidden" asp-for="NumeroParcela" />
 
+                    
                     <input type="hidden" asp-for="DataEmissao" id="DataEmissaoHidden" value="@Model.DataEmissao.ToString("yyyy-MM-dd")" />
+                    
                     <input type="hidden" asp-for="DataVencimento" id="DataVencimentoHidden" value="@Model.DataVencimento.ToString("yyyy-MM-dd")" />
 
+                    
                     <input type="hidden" id="ValorParcelaHidden" value="@Model.ValorParcela" />
 
+                   
                     <div class="row mb-3">
                         
                         <div class="col-md-2">
@@ -59,6 +65,7 @@
                         </div>
                     </div>
 
+                    
                     <div class="row mb-3">
                         <div class="col-md-2">
                             <label asp-for="NumeroParcela" class="form-label">Numero da Parcela*</label>
@@ -84,20 +91,24 @@
                     <hr />
                     <h5 class="text-muted">Dados do Pagamento</h5>
 
+                    
                     <div class="row mb-3">
                         @if (mostrarCamposBaixa)
                         {
                             <div class="col-md-2">
                                 <label asp-for="DataPagamento" class="form-label">Data do Pagamento*</label>
                                 <input asp-for="DataPagamento" type="date" class="form-control" id="DataPagamento"  disabled="@isDetalhes" />
+                               
                             </div>
                         }
                         <div class="col-md-5">
                             <label asp-for="IdFormaPgto" class="form-label">Forma de Pagamento*</label>
 
                             <div class="input-group">
+                                
                                 <input type="hidden" asp-for="IdFormaPgto" id="IdFormaPgto" />
 
+                                
                                 <input type="number" id="FormaPgtoIdInput" class="form-control" placeholder="ID" style="max-width: 80px;"
                                        disabled="@isDetalhes" />
 
@@ -109,7 +120,7 @@
                             </div>
                             <span asp-validation-for="IdFormaPgto" class="text-danger"></span>
                         </div>
-                    
+                        
                     </div>
 
 
@@ -144,15 +155,15 @@
                     <div class="row mb-2">
                         <div class="col-md-2">
                             <label asp-for="ValJuros" class="form-label">Juros (R$)</label>
-                            <input asp-for="ValJuros" id="ValJuros" type="text" class="form-control money" oninput="somarTotalFinal()" disabled="@isDetalhes" />
+                            <input asp-for="ValJuros" id="ValJuros" type="text" class="form-control money" oninput="this.value = this.value.replace(/[^0-9,.]/g, ''); somarTotalFinal()" disabled="@isDetalhes" />
                         </div>
                         <div class="col-md-2">
                             <label asp-for="ValMulta" class="form-label">Multa (R$)</label>
-                            <input asp-for="ValMulta" id="ValMulta" type="text" class="form-control money" oninput="somarTotalFinal()" disabled="@isDetalhes" />
+                            <input asp-for="ValMulta" id="ValMulta" type="text" class="form-control money" oninput="this.value = this.value.replace(/[^0-9,.]/g, ''); somarTotalFinal()" disabled="@isDetalhes" />
                         </div>
                         <div class="col-md-2">
                             <label asp-for="ValDesconto" class="form-label">Desconto (R$)</label>
-                            <input asp-for="ValDesconto" id="ValDesconto" type="text" class="form-control money" oninput="somarTotalFinal()" disabled="@isDetalhes" />
+                            <input asp-for="ValDesconto" id="ValDesconto" type="text" class="form-control money" oninput="this.value = this.value.replace(/[^0-9,.]/g, ''); somarTotalFinal()" disabled="@isDetalhes" />
                         </div>
                         <div class="col-md-2">
                             <label asp-for="ValorPago" class="form-label ">Valor Total Pago</label>
@@ -180,6 +191,7 @@
                         </div>
                     }
 
+                   
                     <div class="row mt-4">
                         <div class="col-md-12 d-flex justify-content-end gap-2">
                             <a asp-action="Index" class="btn btn-secondary">Voltar</a>

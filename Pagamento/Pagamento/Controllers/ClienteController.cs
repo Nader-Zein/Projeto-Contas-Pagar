@@ -7,10 +7,19 @@ namespace Pagamento.Controllers
 {
     public class ClienteController : Controller
     {
-        private readonly ClienteDAO _clienteDAO = new ClienteDAO();
-        private readonly CidadeDAO _cidadeDAO = new CidadeDAO();
-        private readonly CondicaoPagamentoDAO _condicaoPagamentoDAO = new CondicaoPagamentoDAO(); 
+        private readonly ClienteDAO _clienteDAO;
+        private readonly CidadeDAO _cidadeDAO;
+        private readonly CondicaoPagamentoDAO _condicaoPagamentoDAO;
 
+        public ClienteController(
+            ClienteDAO clienteDAO,
+            CidadeDAO cidadeDAO,
+            CondicaoPagamentoDAO condicaoPagamentoDAO)
+        {
+            _clienteDAO = clienteDAO;
+            _cidadeDAO = cidadeDAO;
+            _condicaoPagamentoDAO = condicaoPagamentoDAO;
+        }
 
         public IActionResult Index()
         {

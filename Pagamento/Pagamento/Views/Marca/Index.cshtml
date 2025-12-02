@@ -21,6 +21,7 @@
     <table class="table table-bordered table-striped">
         <thead class="table-light">
             <tr>
+                <th>ID</th>
                 <th>Nome</th>
                 <th>Status</th>
                 <th class="text-center">Ações</th>
@@ -30,6 +31,7 @@
             @foreach (var marca in Model)
             {
                 <tr>
+                    <td>@marca.IdMarca</td>
                     <td>@marca.Descricao</td>
                     <td>
                         @if (marca.Status)

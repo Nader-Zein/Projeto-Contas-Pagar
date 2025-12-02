@@ -5,8 +5,12 @@ namespace Pagamento.DAO
 {
     public class ParcelaCondicaoPagamentoDAO
     {
-        private string connectionString = "server=localhost;database=pagamento;user=User;password=Na@der!1234"; 
+        private readonly string connectionString;
 
+        public ParcelaCondicaoPagamentoDAO(IConfiguration configuration)
+        {
+            connectionString = configuration.GetConnectionString("PagamentoDB");
+        }
         public List<ParcelaCondicaoPagamento> ListarPorCondicaoPagamento(int idCondPgto)
         {
             var lista = new List<ParcelaCondicaoPagamento>();

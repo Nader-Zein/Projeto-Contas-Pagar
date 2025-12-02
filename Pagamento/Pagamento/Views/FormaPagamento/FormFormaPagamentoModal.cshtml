@@ -11,7 +11,7 @@
 
     <div class="mb-3">
         <label asp-for="Descricao" class="form-label">Descrição da Forma de Pagamento*</label>
-        <input asp-for="Descricao" class="form-control" required />
+        <input asp-for="Descricao" class="form-control" required oninput="this.value = this.value.replace(/[^a-zA-Z\u00C0-\u00FF ]/g, '')" />
         <span asp-validation-for="Descricao" class="text-danger"></span>
     </div>
 

@@ -18,6 +18,7 @@
 <table class="table table-bordered table-striped">
     <thead>
         <tr>
+            <th>ID</th>
             <th style="width: 200px;">Descrição</th>
             <th>Código de Barras</th>
             <th>Referência</th>
@@ -33,6 +34,7 @@
         @foreach (var produto in Model)
         {
             <tr>
+                <td >@produto.IdProduto</td>
                 <td style="width: 200px;">@produto.Descricao</td>
                 <td>@produto.Codigo_Barras</td>
                 <td>@produto.Referencia</td>

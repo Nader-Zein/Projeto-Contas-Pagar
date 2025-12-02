@@ -5,9 +5,12 @@ namespace Pagamento.DAO
 {
     public class ContaAPagarDAO
     {
-        private readonly string connectionString = "server=localhost;database=pagamento;user=User;password=Na@der!1234";
+        private readonly string connectionString;
 
-
+        public ContaAPagarDAO(IConfiguration configuration)
+        {
+            connectionString = configuration.GetConnectionString("PagamentoDB");
+        }
         public List<ContaAPagar> Listar()
         {
             var lista = new List<ContaAPagar>();

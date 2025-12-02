@@ -19,12 +19,16 @@
 
     </div>
 
-    <div class="col-md-3">
+    <div class="col-md-2">
+        <label asp-for="IdCondPgto" class="form-label">ID</label>
+        <input asp-for="IdCondPgto" class="form-control" disabled />
+    </div>
+    <div class="col-md-2">
         <label class="form-label">Descrição*:</label>
         <input class="form-control" value="@Model.Descricao" disabled />
     </div>
 
-    <div class="col-md-3">
+    <div class="col-md-2">
         <label class="form-label">Quantidade de Parcelas*:</label>
         <input class="form-control" value="@Model.QuantidadeParcelas" disabled />
     </div>

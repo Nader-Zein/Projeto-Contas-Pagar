@@ -7,11 +7,16 @@ namespace Pagamento.Controllers
 {
     public class FormaPagamentoController : Controller
     {
-        private readonly FormaPagamentoDAO _dao = new FormaPagamentoDAO();
+        private readonly FormaPagamentoDAO _formaPagamentoDAO;
+
+        public FormaPagamentoController(FormaPagamentoDAO formaPagamentoDAO)
+        {
+            _formaPagamentoDAO = formaPagamentoDAO;
+        }
 
         public IActionResult FormaPagamento()
         {
-            List<FormaPagamento> lista = _dao.Listar();
+            List<FormaPagamento> lista = _formaPagamentoDAO.Listar();
             return View(lista);
         }
 
@@ -24,14 +29,15 @@ namespace Pagamento.Controllers
         [HttpPost]
         public IActionResult CriarForma(FormaPagamento forma)
         {
-            if (_dao.ExisteForma(forma.Descricao))
+            if (_formaPagamentoDAO.ExisteForma(forma.Descricao))
             {
                 ModelState.AddModelError("Descricao", "Esta forma de pagamento já está cadastrada!");
                 return View(forma);
             }
             if (!string.IsNullOrEmpty(forma.Descricao))
             {
-                _dao.Inserir(forma);
+                _formaPagamentoDAO.Inserir(forma);
+                TempData["SuccessMessage"] = "Forma de pagamento cadastrada com sucesso!";
                 return RedirectToAction("FormaPagamento");
             }
             return View(forma);
@@ -40,7 +46,7 @@ namespace Pagamento.Controllers
         [HttpGet]
         public IActionResult Editar(int id)
         {
-            var forma = _dao.BuscarPorId(id);
+            var forma = _formaPagamentoDAO.BuscarPorId(id);
             if (forma == null) return NotFound();
             return View(forma);
         }
@@ -50,7 +56,8 @@ namespace Pagamento.Controllers
         {
             if (!string.IsNullOrEmpty(forma.Descricao))
             {
-                _dao.Atualizar(forma);
+                _formaPagamentoDAO.Atualizar(forma);
+                TempData["SuccessMessage"] = "Forma de pagamento atualizada com sucesso!";
                 return RedirectToAction("FormaPagamento");
             }
             return View(forma);
@@ -58,7 +65,7 @@ namespace Pagamento.Controllers
 
         public IActionResult Excluir(int id)
         {
-            var forma = _dao.BuscarPorId(id);
+            var forma = _formaPagamentoDAO.BuscarPorId(id);
             if (forma == null) return NotFound();
             return View(forma);
         }
@@ -68,7 +75,7 @@ namespace Pagamento.Controllers
         {
             try
             {
-                _dao.Excluir(forma.IdFormaPgto);
+                _formaPagamentoDAO.Excluir(forma.IdFormaPgto);
 
                 TempData["SuccessMessage"] = "Forma de pagamento excluída com sucesso!";
             }
@@ -101,14 +108,14 @@ namespace Pagamento.Controllers
         public IActionResult FormModal(FormaPagamento forma)
         {
 
-            if (_dao.ExisteForma(forma.Descricao))
+            if (_formaPagamentoDAO.ExisteForma(forma.Descricao))
             {
                 ModelState.AddModelError("Descricao", "Esta forma de pagamento já está cadastrada!");
             }
 
             if (ModelState.IsValid)
             {
-                _dao.Inserir(forma);
+                _formaPagamentoDAO.Inserir(forma);
                 return Json(new
                 {
                     sucesso = true,
@@ -123,7 +130,7 @@ namespace Pagamento.Controllers
         [HttpGet]
         public IActionResult BuscarPorIdJSON(int id)
         {
-            var forma = _dao.BuscarPorId(id);       
+            var forma = _formaPagamentoDAO.BuscarPorId(id);       
             if (forma == null)
             {
                 return NotFound("Forma de Pagamento não encontrada.");

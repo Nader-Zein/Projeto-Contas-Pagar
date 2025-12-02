@@ -5,8 +5,12 @@ namespace Pagamento.DAO
 {
     public class ClienteDAO
     {
-        private readonly string connectionString = "server=localhost;database=pagamento;user=User;password=Na@der!1234";
+        private readonly string connectionString;
 
+        public ClienteDAO(IConfiguration configuration)
+        {
+            connectionString = configuration.GetConnectionString("PagamentoDB");
+        }
         public List<Cliente> Listar()
         {
             var lista = new List<Cliente>();
@@ -104,7 +108,6 @@ namespace Pagamento.DAO
                 cmd.Parameters.AddWithValue("@DataCriacao", DateTime.Now);
                 cmd.ExecuteNonQuery();
 
-                // ✅ ADICIONE ESTA LINHA PARA RECUPERAR O ID GERADO
                 cliente.IdPessoa = (int)cmd.LastInsertedId;
             }
         }

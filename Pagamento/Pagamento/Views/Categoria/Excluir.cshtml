@@ -22,6 +22,11 @@
 
     </div>
 
+    <div class="col-md-1">
+        <label asp-for="IdCategoria" class="form-label">ID</label>
+        <input asp-for="IdCategoria" class="form-control" disabled />
+    </div>
+
     <div class="col-md-2">
         <label>Descrição*</label>
         <input type="text" class="form-control" value="@Model.Descricao" readonly />

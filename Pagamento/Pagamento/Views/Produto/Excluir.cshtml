@@ -20,85 +20,91 @@
 
         </div>
 
-        <div class="col-md-4 mb-3">
+        <div class="col-md-1">
+            <label asp-for="IdProduto" class="form-label">ID</label>
+            <input asp-for="IdProduto" class="form-control" disabled />
+        </div>
+
+        <div class="col-md-3 mb-3">
             <label class="form-label">Descrição</label>
             <input class="form-control" value="@Model.Descricao" readonly />
         </div>
 
-        <div class="col-md-4 mb-3">
+        <div class="col-md-2 mb-3">
             <label class="form-label">Código de Barras</label>
             <input class="form-control" value="@Model.Codigo_Barras" readonly />
         </div>
 
-        <div class="col-md-4 mb-3">
+        <div class="col-md-2 mb-3">
             <label class="form-label">Referência</label>
             <input class="form-control" value="@Model.Referencia" readonly />
         </div>
 
-        <div class="col-md-4 mb-3">
+        <div class="col-md-3 mb-3">
             <label class="form-label">Marca</label>
             <input class="form-control" value="@ViewBag.NomeMarca" readonly />
         </div>
 
-        <div class="col-md-4 mb-3">
+        <div class="col-md-3 mb-3">
             <label class="form-label">Unidade de Medida</label>
             <input class="form-control" value="@ViewBag.NomeUnidade" readonly />
         </div>
 
-        <div class="col-md-4 mb-3">
-            <label class="form-label">Categoria</label>
-            <input class="form-control" value="@ViewBag.NomeCategoria" readonly />
-        </div>
-
-        <div class="col-md-4 mb-3">
+        
+        <div class="col-md-3 mb-3">
             <label class="form-label">Fornecedor</label>
             <input class="form-control" value="@ViewBag.NomesFornecedores" readonly />
         </div>
 
-        <div class="col-md-4 mb-3">
+        <div class="col-md-3 mb-3">
+            <label class="form-label">Categoria</label>
+            <input class="form-control" value="@ViewBag.NomeCategoria" readonly />
+        </div>
+
+        <div class="col-md-2 mb-3">
             <label class="form-label">Custo Medio</label>
             <input class="form-control" value="@Model.CustoMedio" readonly />
         </div>
 
-        <div class="col-md-4 mb-3">
+        <div class="col-md-2 mb-3">
             <label class="form-label">% Lucro</label>
             <input class="form-control" value="@Model.PercentualLucro " %" " readonly   />
         </div>
 
-        <div class="col-md-4 mb-3">
+        <div class="col-md-2 mb-3">
             <label class="form-label">Valor de Venda</label>
             <input class="form-control" value="@Model.ValorVenda.ToString("C2")" readonly />
         </div>
 
-        <div class="col-md-4 mb-3">
+        <div class="col-md-2 mb-3">
             <label class="form-label">Custo Ultima Compra</label>
             <input class="form-control" value="@Model.CustoUltimaCompra" readonly />
         </div>
 
 
-        <div class="col-md-4 mb-3">
+        <div class="col-md-2 mb-3">
             <label class="form-label">Quantidade</label>
             <input class="form-control" value="@Model.Quantidade" readonly />
         </div>
 
-        <div class="col-md-4 mb-3">
+        <div class="col-md-2 mb-3">
             <label class="form-label">Quantidade Mínima</label>
             <input class="form-control" value="@Model.QuantidadeMinima" readonly />
         </div>
 
         
 
-        <div class="col-md-4 mb-3">
+        <div class="col-md-3 mb-3">
             <label class="form-label">Observações</label>
             <textarea class="form-control" readonly>@Model.Observacoes</textarea>
         </div>
 
-        <div class="col-md-4 mb-3">
+        <div class="col-md-2 mb-3">
             <label class="form-label">Data de Criação</label>
             <input type="text" class="form-control" value="@Model.DataCriacao.ToString("dd/MM/yyyy HH:mm")" readonly />
         </div>
 
-        <div class="col-md-4 mb-3">
+        <div class="col-md-2 mb-3">
             <label class="form-label">Última Edição</label>
             <input type="text" class="form-control" value="@(Model.DataEdicao?.ToString("dd/MM/yyyy HH:mm") ?? "Nunca editado")" readonly />
         </div>

@@ -10,7 +10,7 @@
             </div>
         </div>
         <label asp-for="NomePais" class="form-label">Nome do País</label>
-        <input asp-for="NomePais" class="form-control" required />
+        <input asp-for="NomePais" class="form-control" required maxlength="40" oninput="this.value = this.value.replace(/[^a-zA-Z\u00C0-\u00FF ]/g, '')" />
         <span asp-validation-for="NomePais" class="text-danger"></span>
     </div>
 

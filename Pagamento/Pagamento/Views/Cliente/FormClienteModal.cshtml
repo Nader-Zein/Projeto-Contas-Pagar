@@ -26,38 +26,38 @@
 
             <div class="col-md-4 mb-3">
                 <label id="labelNomeRazao_Modal" asp-for="Nome_RazaoSocial" class="form-label">Nome</label>
-                <input asp-for="Nome_RazaoSocial" class="form-control" maxlength="40" />
+                <input asp-for="Nome_RazaoSocial" class="form-control" maxlength="40" oninput="this.value = this.value.replace(/[0-9]/g, '')" />
                 <span asp-validation-for="Nome_RazaoSocial" class="text-danger"></span>
             </div>
 
             <div class="col-md-4 mb-3">
                 <label id="labelApelidoFantasia_Modal" asp-for="Apelido_NomeFantasia" class="form-label">Apelido </label>
-                <input asp-for="Apelido_NomeFantasia" class="form-control" />
+                <input asp-for="Apelido_NomeFantasia" class="form-control" maxlength="40" oninput="this.value = this.value.replace(/[0-9]/g, '')" />
             </div>
 
             <div class="col-md-4 mb-3">
                 <label asp-for="Endereco" class="form-label">Endereço*</label>
-                <input asp-for="Endereco" class="form-control" maxlength="40" />
+                <input asp-for="Endereco" class="form-control" maxlength="40" oninput="this.value = this.value.replace(/[0-9]/g, '')" />
             </div>
 
             <div class="col-md-4 mb-3">
                 <label asp-for="Numero" class="form-label">Número*</label>
-                <input asp-for="Numero" class="form-control" />
+                <input asp-for="Numero" class="form-control" oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
             </div>
 
             <div class="col-md-4 mb-3">
                 <label asp-for="Complemento" class="form-label">Complemento</label>
-                <input asp-for="Complemento" class="form-control" maxlength="40" />
+                <input asp-for="Complemento" class="form-control" maxlength="40" oninput="this.value = this.value.replace(/[0-9]/g, '')" />
             </div>
 
             <div class="col-md-4 mb-3">
                 <label asp-for="Bairro" class="form-label">Bairro*</label>
-                <input asp-for="Bairro" class="form-control" maxlength="40" />
+                <input asp-for="Bairro" class="form-control" maxlength="40" oninput="this.value = this.value.replace(/[0-9]/g, '')" />
             </div>
 
             <div class="col-md-4 mb-3">
                 <label asp-for="Cep" class="form-label">CEP*</label>
-                <input asp-for="Cep" class="form-control" id="Cliente_Cep" />
+                <input asp-for="Cep" class="form-control" id="Cliente_Cep" oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
             </div>
 
             <div class="col-md-4 mb-3">
@@ -80,13 +80,13 @@
 
             <div class="col-md-4 mb-3">
                 <label id="labelCpfCnpj_Modal" asp-for="CPF_CNPJ" class="form-label">CPF</label>
-                <input asp-for="CPF_CNPJ" class="form-control" id="Cliente_CPF_CNPJ" />
+                <input asp-for="CPF_CNPJ" class="form-control" id="Cliente_CPF_CNPJ" oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
                 <span asp-validation-for="CPF_CNPJ" class="text-danger"></span>
             </div>
 
             <div class="col-md-4 mb-3">
                 <label id="labelRgIe_Modal" asp-for="RG_InsEstadual" class="form-label">RG</label>
-                <input asp-for="RG_InsEstadual" class="form-control" />
+                <input asp-for="RG_InsEstadual" class="form-control" oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
             </div>
 
             <div class="col-md-4 mb-3">
@@ -96,7 +96,7 @@
 
             <div class="col-md-4 mb-3">
                 <label asp-for="Telefone" class="form-label">Telefone*</label>
-                <input asp-for="Telefone" class="form-control" id="Cliente_Telefone" />
+                <input asp-for="Telefone" class="form-control" id="Cliente_Telefone" oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
             </div>
 
             <div class="col-md-4 mb-3">
@@ -113,7 +113,7 @@
 
             <div class="col-md-4 mb-3">
                 <label asp-for="LimiteCredito" class="form-label">Limite de Crédito</label>
-                <input asp-for="LimiteCredito" class="form-control" />
+                <input asp-for="LimiteCredito" class="form-control" oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
             </div>
 
             <input type="hidden" asp-for="DataCriacao" value="@DateTime.Now" />

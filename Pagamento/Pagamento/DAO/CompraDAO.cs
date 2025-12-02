@@ -7,13 +7,30 @@ namespace Pagamento.DAO
 {
     public class CompraDAO
     {
-        private readonly string connectionString = "server=localhost;database=pagamento;user=User;password=Na@der!1234";
+        private readonly string connectionString;
 
-        private readonly ParcelaCondicaoPagamentoDAO _parcelaCondPgtoDAO = new ParcelaCondicaoPagamentoDAO();
-        private readonly ContaAPagarDAO _contaAPagarDAO = new ContaAPagarDAO();
-        private readonly CondicaoPagamentoDAO _condicaoPagamentoDAO = new CondicaoPagamentoDAO();
-        private readonly ProdutoDAO _produtoDAO = new ProdutoDAO();
-        private readonly ProdutoFornecedorDAO _produtoFornecedorDAO = new ProdutoFornecedorDAO();
+        private readonly ParcelaCondicaoPagamentoDAO _parcelaCondPgtoDAO;
+        private readonly ContaAPagarDAO _contaAPagarDAO;
+        private readonly CondicaoPagamentoDAO _condicaoPagamentoDAO;
+        private readonly ProdutoDAO _produtoDAO;
+        private readonly ProdutoFornecedorDAO _produtoFornecedorDAO;
+
+        public CompraDAO(
+            IConfiguration configuration,
+            ParcelaCondicaoPagamentoDAO parcelaCondPgtoDAO,
+            ContaAPagarDAO contaAPagarDAO,
+            CondicaoPagamentoDAO condicaoPagamentoDAO,
+            ProdutoDAO produtoDAO,
+            ProdutoFornecedorDAO produtoFornecedorDAO)
+        {
+            connectionString = configuration.GetConnectionString("PagamentoDB");
+
+            _parcelaCondPgtoDAO = parcelaCondPgtoDAO;
+            _contaAPagarDAO = contaAPagarDAO;
+            _condicaoPagamentoDAO = condicaoPagamentoDAO;
+            _produtoDAO = produtoDAO;
+            _produtoFornecedorDAO = produtoFornecedorDAO;
+        }
         public List<Compra> Listar()
         {
             var listaDeCompras = new List<Compra>();
@@ -164,9 +181,6 @@ namespace Pagamento.DAO
                         cmdItem.ExecuteNonQuery();     
                     }
 
-                    var produtoDAO = new ProdutoDAO();           
-                    var produtoFornecedorDAO = new ProdutoFornecedorDAO();
-
                     foreach (var item in compra.Itens)
                     {
                         if (custosRateados.TryGetValue(item.ProdutoId, out decimal custoRealRateado))
@@ -174,12 +188,12 @@ namespace Pagamento.DAO
 
 
 
-                            produtoFornecedorDAO.GarantirAssociacao(item.ProdutoId, compra.FornecedorId);
+                            _produtoFornecedorDAO.GarantirAssociacao(item.ProdutoId, compra.FornecedorId);
 
 
-                            produtoFornecedorDAO.AtualizarDadosCompra(item.ProdutoId, compra.FornecedorId, custoRealRateado, compra.DataEmissao);
+                            _produtoFornecedorDAO.AtualizarDadosCompra(item.ProdutoId, compra.FornecedorId, custoRealRateado, compra.DataEmissao);
 
-                            Produto produtoAtual = produtoDAO.BuscarPorId(item.ProdutoId);
+                            Produto produtoAtual = _produtoDAO.BuscarPorId(item.ProdutoId);
                             if (produtoAtual != null)
                             {
                                 int qtdAntiga = produtoAtual.Quantidade;
@@ -193,7 +207,7 @@ namespace Pagamento.DAO
                                 {
                                     novoCustoMedio = ((qtdAntiga * custoMedioAntigo) + (qtdNova * custoRealRateado)) / novaQtdTotal;
                                 }
-                                produtoDAO.AtualizarEstoqueECusto(item.ProdutoId, novaQtdTotal, novoCustoMedio, custoRealRateado);
+                                _produtoDAO.AtualizarEstoqueECusto(item.ProdutoId, novaQtdTotal, novoCustoMedio, custoRealRateado);
                             }
                         }
                     }

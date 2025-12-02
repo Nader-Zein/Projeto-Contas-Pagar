@@ -15,28 +15,28 @@
             </div>
         </div>
 
-        <div class="col-md-4 mb-3">
+        <div class="col-md-3 mb-3">
             <label asp-for="Descricao" class="form-label">Descrição</label>
-            <input asp-for="Descricao" class="form-control" maxlength="40" />
+            <input asp-for="Descricao" class="form-control" maxlength="40" oninput="this.value = this.value.replace(/[0-9]/g, '')" />
             <span asp-validation-for="Descricao" class="text-danger"></span>
 
         </div>
 
-        <div class="col-md-4 mb-3">
+        <div class="col-md-2 mb-3">
             <label asp-for="Codigo_Barras" class="form-label">Código de Barras</label>
             <input asp-for="Codigo_Barras" class="form-control" />
             <span asp-validation-for="Codigo_Barras" class="text-danger"></span>
 
         </div>
 
-        <div class="col-md-4 mb-3">
+        <div class="col-md-2 mb-3">
             <label asp-for="Referencia" class="form-label">Referência</label>
             <input asp-for="Referencia" class="form-control" />
             <span asp-validation-for="Referencia" class="text-danger"></span>
 
         </div>
 
-        <div class="col-md-4 mb-3">
+        <div class="col-md-3 mb-3">
             <label class="form-label">Marca</label>
             <div class="input-group">
                 <input type="text" id="NomeMarcaSelecionada" class="form-control" placeholder="Nenhuma marca selecionada" readonly />
@@ -48,7 +48,7 @@
             <span asp-validation-for="MarcaId" class="text-danger"></span>
         </div>
 
-        <div class="col-md-4 mb-3">
+        <div class="col-md-3 mb-3">
             <label class="form-label">Unidade de Medida</label>
             <div class="input-group">
                 <input type="text" id="NomeUnidadeSelecionada" class="form-control" placeholder="Nenhuma unidade selecionada" readonly />
@@ -61,7 +61,7 @@
 
         </div>
 
-        <div class="col-md-4 mb-3">
+        <div class="col-md-3 mb-3">
             <label class="form-label">Fornecedores</label>
             <div class="input-group">
                 <input type="text" id="NomeFornecedorSelecionado" class="form-control" placeholder="Nenhum fornecedor selecionado" readonly />
@@ -77,7 +77,7 @@
         <input type="hidden" id="fornecedoresSelecionados" name="FornecedoresSelecionados" />
 
 
-        <div class="col-md-4 mb-3">
+        <div class="col-md-3 mb-3">
             <label class="form-label">Categoria</label>
             <div class="input-group">
                 <input type="text" id="NomeCategoriaSelecionada" class="form-control" placeholder="Nenhuma categoria selecionada" readonly />
@@ -89,37 +89,37 @@
             <span asp-validation-for="CategoriaId" class="text-danger"></span>
 
         </div>
-        <div class="col-md-4 mb-3">
+        <div class="col-md-2 mb-3">
             <label asp-for="CustoMedio" class="form-label">Custo Medio</label>
             <input asp-for="CustoMedio" class="form-control" type="text" disabled />
         </div>
 
-        <div class="col-md-4 mb-3">
+        <div class="col-md-2 mb-3">
             <label asp-for="PercentualLucro" class="form-label">% Lucro</label>
             <input asp-for="PercentualLucro" class="form-control" type="text" readonly />
             <span asp-validation-for="PercentualLucro" class="text-danger"></span>
 
         </div>
 
-        <div class="col-md-4 mb-3">
+        <div class="col-md-2 mb-3">
             <label asp-for="ValorVenda" class="form-label">Valor de Venda</label>
-            <input asp-for="ValorVenda" class="form-control" type="text" />
+            <input asp-for="ValorVenda" class="form-control" type="text" oninput="this.value = this.value.replace(/[^0-9.,]/g, '')" />
             <span asp-validation-for="ValorVenda" class="text-danger"></span>
 
         </div>
 
-        <div class="col-md-4 mb-3">
+        <div class="col-md-2 mb-3">
             <label asp-for="CustoUltimaCompra" class="form-label">Custo Ultima Compra</label>
             <input asp-for="CustoUltimaCompra" class="form-control" type="text" readonly />
 
         </div>
 
-        <div class="col-md-4 mb-3">
+        <div class="col-md-2 mb-3">
             <label asp-for="Quantidade" class="form-label">Quantidade</label>
             <input asp-for="Quantidade" class="form-control" disabled />
         </div>
 
-        <div class="col-md-4 mb-3">
+        <div class="col-md-2 mb-3">
             <label asp-for="QuantidadeMinima" class="form-label">Quantidade Mínima</label>
             <input asp-for="QuantidadeMinima" class="form-control" />
             <span asp-validation-for="QuantidadeMinima" class="text-danger"></span>
@@ -128,17 +128,17 @@
 
         
 
-        <div class="col-md-4 mb-3">
+        <div class="col-md-3 mb-3">
             <label asp-for="Observacoes" class="form-label">Observações</label>
             <textarea asp-for="Observacoes" class="form-control"></textarea>
         </div>
 
-        <div class="col-md-4 mb-3">
+        <div class="col-md-2 mb-3">
             <label class="form-label">Data de Criação</label>
             <input type="text" class="form-control" value="@Model.DataCriacao.ToString("dd/MM/yyyy HH:mm")" readonly />
         </div>
 
-        <div class="col-md-4 mb-3">
+        <div class="col-md-2 mb-3">
             <label class="form-label">Última Edição</label>
             <input type="text" class="form-control" value="@(Model.DataEdicao?.ToString("dd/MM/yyyy HH:mm") ?? "Nunca editado")" readonly />
         </div>
@@ -486,7 +486,8 @@
           }
           bootstrap.Modal.getOrCreateInstance(filho).show();
         }
-                  
+           
+   
         function abrirSelecaoCondicaoDesdeFornecedor() {
           const filho = document.getElementById('modalCondicaoPgtoFornecedor');
           const pai = document.querySelector('#modalFornecedor.show, #modalNovoFornecedor.show, #modalFornecedorProduto.show');
@@ -541,9 +542,7 @@
             bootstrap.Modal.getInstance(document.getElementById('modalCategoriaSelecionar')).hide();
             }
         
-                
-   
-   
+       
             function confirmarSelecaoFornecedor() {
             const selecionados = [];
             const nomes = [];
@@ -743,8 +742,6 @@
             });
 
 
-
-
         function selecionarCidadeFornecedor(id, nome) {         
                                       
             var $formFornecedor = $('#modalFornecedorContent');
@@ -798,7 +795,8 @@
             });
         }
 
-     
+            
+    
 
         function selecionarCondicaoFornecedor(id, nome) {         
                                       
