@@ -83,6 +83,7 @@
                                     </td>
                                     <td class="text-center">
                                         
+                                            @* Botão de Detalhes (Visualizar) *@
                                             <a asp-action="Detalhes"
                                                asp-route-modelo="@venda.Modelo"
                                                asp-route-serie="@venda.Serie"
@@ -92,6 +93,7 @@
                                                 Detalhes
                                             </a>
 
+                                            @* Botão de Cancelar (Apenas se estiver Ativa) *@
                                             @if (venda.Status)
                                             {
                                                 <a asp-action="Cancelar"

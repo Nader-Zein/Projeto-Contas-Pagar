@@ -441,6 +441,7 @@
                 <h5 class="modal-title" id="modalNovaCondicaoFornecedorLabel">Cadastrar Condição</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
             </div>
+            <!-- conteúdo via AJAX -->
         </div>
     </div>
 </div>
@@ -451,6 +452,7 @@
 
 
 
+        // guarda o último modal pai que foi fechado
         let ultimoModalPaiFechado = null;
 
         function fecharModalPaiAtual() {
@@ -469,16 +471,20 @@
           bootstrap.Modal.getOrCreateInstance(el).show();
           ultimoModalPaiFechado = null;
         }
-           
-   
-         
- 
 
+        // wrappers para abrir os seletores (filhos)
+        // function abrirSelecaoCidadeDesdeFornecedor() {
+        //   fecharModalPaiAtual();
+        //   bootstrap.Modal.getOrCreateInstance(document.getElementById('modalCidadeFornecedor')).show();
+        // }
+
+
+         
         function abrirSelecaoCidadeDesdeFornecedor() {
           const filho = document.getElementById('modalCidadeFornecedor');
           const pai = document.querySelector('#modalFornecedor.show, #modalNovoFornecedor.show, #modalFornecedorProduto.show');
           if (pai) {
-                                        
+            // guarda o id do pai no próprio modal filho (evita variável global ficar “velha”)
             filho.dataset.parentModalId = pai.id;
             bootstrap.Modal.getInstance(pai)?.hide();
           } else {
@@ -486,8 +492,12 @@
           }
           bootstrap.Modal.getOrCreateInstance(filho).show();
         }
-           
-   
+        // function abrirSelecaoCondicaoDesdeFornecedor() {
+        //   fecharModalPaiAtual();
+        //   bootstrap.Modal.getOrCreateInstance(document.getElementById('modalCondicaoPgtoFornecedor')).show();
+        // }
+
+                
         function abrirSelecaoCondicaoDesdeFornecedor() {
           const filho = document.getElementById('modalCondicaoPgtoFornecedor');
           const pai = document.querySelector('#modalFornecedor.show, #modalNovoFornecedor.show, #modalFornecedorProduto.show');
@@ -499,20 +509,22 @@
           }
           bootstrap.Modal.getOrCreateInstance(filho).show();
         }
-               
+
+                // 2) Se o usuário fechar o modal filho SEM escolher nada, reabrimos o pai salvo
         ['modalCidadeFornecedor', 'modalCondicaoPgtoFornecedor'].forEach(id => {
           const el = document.getElementById(id);
           if (!el) return;
           el.addEventListener('hidden.bs.modal', function () {
             const parentId = el.dataset.parentModalId;
-            if (!parentId) return;       
+            if (!parentId) return; // nada para reabrir
             const pai = document.getElementById(parentId);
             if (pai) bootstrap.Modal.getOrCreateInstance(pai).show();
-            el.dataset.parentModalId = '';                 
+            el.dataset.parentModalId = ''; // limpa para não “vazar” para a próxima abertura
           });
         });
 
 
+        // intercepta cliques em botões/links que abririam os modais filhos via data-bs-*
         document.addEventListener('click', function(e){
           const t = e.target.closest('[data-bs-target="#modalCidadeFornecedor"]');
           if (t) { e.preventDefault(); abrirSelecaoCidadeDesdeFornecedor(); }
@@ -523,8 +535,7 @@
           if (t) { e.preventDefault(); abrirSelecaoCondicaoDesdeFornecedor(); }
         }, true);
 
-        
-
+        //====================================================================================
             function selecionarMarca(id, nome) {
             $('#MarcaId').val(id);
             $('#NomeMarcaSelecionada').val(nome);
@@ -536,13 +547,29 @@
             $('#NomeUnidadeSelecionada').val(nome);
             bootstrap.Modal.getInstance(document.getElementById('modalUnidadeSelecionar')).hide();
             }
+
             function selecionarCategoria(id, nome) {
             $('#CategoriaId').val(id);
             $('#NomeCategoriaSelecionada').val(nome);
             bootstrap.Modal.getInstance(document.getElementById('modalCategoriaSelecionar')).hide();
             }
-        
-       
+
+
+
+        //     $(document).on('change', '.chk-fornecedor', function () {
+        //     const fornecedoresSelecionados = [];
+        //     const nomesSelecionados = [];
+
+        //     $('.chk-fornecedor:checked').each(function () {
+        //         fornecedoresSelecionados.push($(this).val());
+        //         nomesSelecionados.push($(this).data('nome'));
+        //     });
+
+        //     $('#fornecedoresSelecionados').val(fornecedoresSelecionados.join(','));
+        //     $('#NomeFornecedorSelecionado').val(nomesSelecionados.join(', '));
+        // });
+
+            // function atualizarListaFornecedores() {
             function confirmarSelecaoFornecedor() {
             const selecionados = [];
             const nomes = [];
@@ -556,7 +583,7 @@
 
             document.getElementById('NomeFornecedorSelecionado').value = nomes.join(', ');
 
-                                
+                // 👇 ADICIONE ESTA LINHA para fechar o modal
             bootstrap.Modal.getInstance(document.getElementById('modalFornecedorSelecionar')).hide();
             }
 
@@ -710,6 +737,7 @@
                 $('#modalCategoriaContent').html(res);
             }
             }
+
             });
             });
 
@@ -729,10 +757,13 @@
                                 <td>${res.fornecedor.nome}</td>
                             </tr>
                         `;
+
                         $('#tabelaFornecedores tbody').append(novaLinha);
-                            
-                        $('.chk-fornecedor').off('change');         
-                        confirmarSelecaoFornecedor();         
+                        // $('.chk-fornecedor').off('change').on('change', atualizarListaFornecedores);
+                        // atualizarListaFornecedores();
+                        // ATUALIZE ESTAS DUAS LINHAS:
+                        $('.chk-fornecedor').off('change'); // Remove qualquer listener antigo
+                        confirmarSelecaoFornecedor(); // Chama a nova função
                         bootstrap.Modal.getInstance(document.getElementById('modalFornecedor')).hide();
                     } else {
                         $('#modalFornecedorContent').html(res);
@@ -742,15 +773,22 @@
             });
 
 
-        function selecionarCidadeFornecedor(id, nome) {         
-                                      
+
+        // function selecionarCidade(id, nome) {
+        //     $('#modalFornecedorContent #IdCidade').val(id);
+        //     $('#modalFornecedorContent #NomeCidadeSelecionada').val(nome);
+        //     bootstrap.Modal.getInstance(document.getElementById('modalCidadeFornecedor')).hide();
+        // }
+
+        function selecionarCidadeFornecedor(id, nome) { // Renomeado para clareza (opcional)
+            // Alvo específico: O contêiner onde o form do fornecedor é carregado NESTA tela
             var $formFornecedor = $('#modalFornecedorContent');
 
-                        
+            // Encontra os inputs DENTRO do contêiner
             $formFornecedor.find('#IdCidade').val(id);
             $formFornecedor.find('#NomeCidadeSelecionada').val(nome);
 
-                                            
+            // Fecha o modal de SELEÇÃO de cidade (Use o ID correto do seu modal de SELEÇÃO)
             bootstrap.Modal.getInstance(document.getElementById('modalCidadeFornecedor'))?.hide();
             reabrirModalPai();
         }
@@ -795,18 +833,21 @@
             });
         }
 
-            
-    
+        // function selecionarCondicaoFornecedor(id, nome) {
+        //     $('#modalFornecedorContent #IdCondPgto').val(id);
+        //     $('#modalFornecedorContent #NomeCondicaoSelecionada').val(nome);
+        //     bootstrap.Modal.getInstance(document.getElementById('modalCondicaoPgtoFornecedor')).hide();
+        // }
 
-        function selecionarCondicaoFornecedor(id, nome) {         
-                                      
+        function selecionarCondicaoFornecedor(id, nome) { // Renomeado para clareza (opcional)
+            // Alvo específico: O contêiner onde o form do fornecedor é carregado NESTA tela
             var $formFornecedor = $('#modalFornecedorContent');
 
-                        
+            // Encontra os inputs DENTRO do contêiner
             $formFornecedor.find('#IdCondPgto').val(id);
             $formFornecedor.find('#NomeCondicaoSelecionada').val(nome);
 
-                                            
+            // Fecha o modal de SELEÇÃO de condição (Use o ID correto do seu modal de SELEÇÃO)
             bootstrap.Modal.getInstance(document.getElementById('modalCondicaoPgtoFornecedor'))?.hide();
             reabrirModalPai();
         }
@@ -856,6 +897,7 @@
                 success: function (response) {
                     if (response.sucesso) {
                         $('#modalNovaForma').modal('hide');
+
                         const novaLinha = `
                             <tr>
                                 <td>${response.forma.nome}</td>
@@ -889,15 +931,15 @@
                 return;
             }
 
-                          
-                                          
+            // --- INÍCIO DA VALIDAÇÃO (ADICIONAR ISTO) ---
+            // Calcula quanto já tem cadastrado (somando as parcelas que vieram do banco + as novas)
             let totalAtual = parcelas.reduce((sum, p) => sum + p.valorPercentual, 0);
 
             if (totalAtual + valor > 100) {
                 alert("A soma das parcelas não pode ultrapassar 100%. Total atual: " + totalAtual + "%. Restante permitido: " + (100 - totalAtual) + "%.");
                 return;
             }
-                      
+            // --- FIM DA VALIDAÇÃO ---
 
             if (parcelas.some(p => p.numeroParcela === numeroParcela)) {
                 alert("Já existe uma parcela com esse número.");
@@ -911,6 +953,7 @@
                 valorPercentual: valor,
                 diasAposVenda: dias
             };
+
             parcelas.push(parcela);
 
             const linha = `
@@ -940,14 +983,16 @@
         $(document).on('submit', '#formCadastrarCondicaoPgto', function (e) {
             e.preventDefault();
 
-                          
-                                        
+            // --- INÍCIO DA VALIDAÇÃO (INSIRA AQUI) ---
+            // 1. Soma os valores de todas as parcelas que estão no array global 'parcelas'
             var totalPercentual = parcelas.reduce((soma, p) => soma + (parseFloat(p.valorPercentual) || 0), 0);
+
+            // 2. Verifica se a diferença para 100 é maior que 0.001 (para lidar com imprecisão decimal como 99.999)
             if (Math.abs(totalPercentual - 100) > 0.001) {
                 alert("A soma das parcelas deve ser exatamente 100%. Total atual: " + totalPercentual.toFixed(2) + "%");
-                return;                         
+                return; // <--- O return AQUI impede que o código desça para o $.ajax
             }
-                      
+            // --- FIM DA VALIDAÇÃO ---
 
 
             const formData = $(this).serializeArray();
@@ -975,9 +1020,9 @@
 
                         $('#IdCondPgto').val(response.condicao.id);
                         $('#NomeCondicaoSelecionada').val(response.condicao.nome);
-                                
+                        // ADICIONE ESTA LINHA AQUI:
                         parcelas = [];
-                                                
+                        // Isso limpa a lista para o próximo cadastro sem precisar dar F5
                     } else {
                         $('#modalNovaCondicaoContentFornecedor').html(response);
                     }

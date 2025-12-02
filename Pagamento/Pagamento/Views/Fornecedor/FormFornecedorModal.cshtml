@@ -72,7 +72,7 @@
 
             <div class="col-md-4 mb-3">
                 <label id="labelNascimentoFundacao" asp-for="DataNascimento_Fundacao" class="form-label">Data de Nascimento / Fundação</label>
-                <input asp-for="DataNascimento_Fundacao" type="date" class="form-control" />
+                <input asp-for="DataNascimento_Fundacao" type="date" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" max="@DateTime.Now.ToString("yyyy-MM-dd")" />
             </div>
 
             <div class="col-md-4 mb-3">
@@ -157,6 +157,27 @@
 
             atualizarLabels($('#TipoPessoa').val());
         });
+
+
+            
+        $(document).ready(function () {
+        // Pega a data de hoje no formato YYYY-MM-DD
+        var hoje = new Date().toISOString().split('T')[0];
+
+        // Garante que o atributo max esteja definido via JS também (segurança extra)
+        $('#DataNascimento_Fundacao').attr('max', hoje);
+
+        // Evento para verificar quando o usuário muda a data
+        $('#DataNascimento_Fundacao').on('change blur', function() {
+            var dataSelecionada = $(this).val();
+
+            // Se a data selecionada for maior que hoje
+            if (dataSelecionada && dataSelecionada > hoje) {
+                alert("A data não pode ser futura!");
+                $(this).val(hoje); // Reseta para a data de hoje ou use '' para limpar
+            }
+        });
+    });
 </script>
 
 

@@ -37,7 +37,7 @@
             @foreach (var compra in Model)
             {
 
-                string trClass = compra.Status ? "" : "table-danger"; 
+                string trClass = compra.Status ? "" : "table-danger";          
                 <tr class="@trClass">
                     <td>
                         @compra.Modelo / @compra.Serie / @compra.NumeroNota

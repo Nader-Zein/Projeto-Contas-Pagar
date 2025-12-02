@@ -84,12 +84,21 @@
 
 @section Scripts {
     <script>
+        // Executa este código assim que a página terminar de carregar
         document.addEventListener('DOMContentLoaded', function () {
+
+            // Pega a mensagem de erro que veio do Controller
             const mensagemErro = '@TempData["ErrorMessage"]';
+
+            // Verifica se a mensagem de erro não está vazia
             if (mensagemErro) {
-                                
+                // Coloca a mensagem dentro do corpo do modal
                 document.getElementById('mensagemErroModal').textContent = mensagemErro;
+
+                // Pega a referência do nosso modal
                 const modalErroElement = document.getElementById('modalErro');
+
+                // Cria uma instância do modal do Bootstrap e o exibe
                 const modal = new bootstrap.Modal(modalErroElement);
                 modal.show();
             }

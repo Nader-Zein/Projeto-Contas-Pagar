@@ -96,6 +96,7 @@
             const mensagemErro = '@Html.Raw(TempData["ErrorMessage"])';
 
             if (mensagemErro) {
+                // 👇 A MUDANÇA ESTÁ AQUI 👇
                 document.getElementById('mensagemErroModal').innerHTML = mensagemErro;
 
                 const modalErroElement = document.getElementById('modalErro');

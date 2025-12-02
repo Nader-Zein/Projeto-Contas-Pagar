@@ -9,6 +9,7 @@
     <form id="formCadastrarFuncionarioModal">
         <div class="row">
 
+            <!-- Checkbox Ativo -->
             <div class="d-flex justify-content-end mt-3">
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" asp-for="Status" checked />
@@ -16,18 +17,21 @@
                 </div>
             </div>
 
+            <!-- Tipo Pessoa (Fixo Física) -->
             <div class="col-md-4 mb-3">
                 <label class="form-label">Tipo de Pessoa</label>
                 <input type="text" class="form-control" value="Física" disabled />
                 <input type="hidden" asp-for="TipoPessoa" value="Física" />
             </div>
 
+            <!-- Nome -->
             <div class="col-md-4 mb-3">
                 <label asp-for="Nome_RazaoSocial" class="form-label">Nome</label>
                 <input asp-for="Nome_RazaoSocial" class="form-control" maxlength="40" oninput="this.value = this.value.replace(/[0-9]/g, '')" />
                 <span asp-validation-for="Nome_RazaoSocial" class="text-danger"></span>
             </div>
 
+            <!-- Gênero -->
             <div class="col-md-4 mb-3">
                 <label asp-for="Genero" class="form-label">Gênero</label>
                 <select asp-for="Genero" class="form-control">
@@ -38,31 +42,37 @@
                 </select>
             </div>
 
+            <!-- Matrícula -->
             <div class="col-md-4 mb-3">
                 <label asp-for="Matricula" class="form-label">Matrícula</label>
                 <input asp-for="Matricula" class="form-control" />
             </div>
 
+            <!-- Endereço -->
             <div class="col-md-4 mb-3">
                 <label asp-for="Endereco" class="form-label">Endereço</label>
                 <input asp-for="Endereco" class="form-control" maxlength="40" oninput="this.value = this.value.replace(/[0-9]/g, '')" />
             </div>
 
+            <!-- Número -->
             <div class="col-md-2 mb-3">
                 <label asp-for="Numero" class="form-label">Número</label>
                 <input asp-for="Numero" class="form-control" oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
             </div>
 
+            <!-- Bairro -->
             <div class="col-md-3 mb-3">
                 <label asp-for="Bairro" class="form-label">Bairro</label>
                 <input asp-for="Bairro" class="form-control" maxlength="40" oninput="this.value = this.value.replace(/[0-9]/g, '')" />
             </div>
 
+            <!-- CEP -->
             <div class="col-md-3 mb-3">
                 <label asp-for="Cep" class="form-label">CEP</label>
                 <input asp-for="Cep" class="form-control" id="Funcionario_Cep" oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
             </div>
 
+            <!-- Cidade (Com Busca na Main) -->
             <div class="col-md-4 mb-3">
                 <label class="form-label">Cidade</label>
                 <div class="input-group">
@@ -76,42 +86,50 @@
                 <span asp-validation-for="IdCidade" class="text-danger"></span>
             </div>
 
+            <!-- Data Nascimento -->
             <div class="col-md-4 mb-3">
                 <label asp-for="DataNascimento_Fundacao" class="form-label">Data Nascimento</label>
-                <input asp-for="DataNascimento_Fundacao" type="date" class="form-control" />
+                <input asp-for="DataNascimento_Fundacao" type="date" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" max="@DateTime.Now.ToString("yyyy-MM-dd") />
             </div>
 
+            <!-- CPF -->
             <div class="col-md-4 mb-3">
                 <label asp-for="CPF_CNPJ" class="form-label">CPF</label>
                 <input asp-for="CPF_CNPJ" class="form-control" id="Funcionario_CPF" oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
                 <span asp-validation-for="CPF_CNPJ" class="text-danger"></span>
             </div>
 
+            <!-- RG -->
             <div class="col-md-4 mb-3">
                 <label asp-for="RG_InsEstadual" class="form-label">RG</label>
                 <input asp-for="RG_InsEstadual" class="form-control" oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
             </div>
 
+            <!-- Email -->
             <div class="col-md-4 mb-3">
                 <label asp-for="Email" class="form-label">Email</label>
                 <input asp-for="Email" class="form-control" />
             </div>
 
+            <!-- Telefone -->
             <div class="col-md-4 mb-3">
                 <label asp-for="Telefone" class="form-label">Telefone</label>
                 <input asp-for="Telefone" class="form-control" id="Funcionario_Telefone" oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
             </div>
 
+            <!-- Cargo -->
             <div class="col-md-4 mb-3">
                 <label asp-for="Cargo" class="form-label">Cargo</label>
                 <input asp-for="Cargo" class="form-control" oninput="this.value = this.value.replace(/[0-9]/g, '')" />
             </div>
 
+            <!-- Salário -->
             <div class="col-md-4 mb-3">
                 <label asp-for="Salario" class="form-label">Salário</label>
                 <input asp-for="Salario" class="form-control" type="number" step="0.01" />
             </div>
 
+            <!-- Turno -->
             <div class="col-md-4 mb-3">
                 <label asp-for="Turno" class="form-label">Turno</label>
                 <select asp-for="Turno" class="form-control">
@@ -123,18 +141,20 @@
                 </select>
             </div>
 
+            <!-- Carga Horária -->
             <div class="col-md-4 mb-3">
                 <label asp-for="CargaHoraria" class="form-label">Carga Horária</label>
                 <input asp-for="CargaHoraria" class="form-control" type="number" />
             </div>
 
+            <!-- Datas Adm/Dem -->
             <div class="col-md-4 mb-3">
                 <label asp-for="DataAdmissao" class="form-label">Data Admissão</label>
-                <input asp-for="DataAdmissao" class="form-control" type="date" />
+                <input asp-for="DataAdmissao" class="form-control" type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
             </div>
             <div class="col-md-4 mb-3">
                 <label asp-for="DataDemissao" class="form-label">Data Demissão</label>
-                <input asp-for="DataDemissao" class="form-control" type="date" />
+                <input asp-for="DataDemissao" class="form-control" type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
             </div>
 
             <input type="hidden" asp-for="DataCriacao" value="@DateTime.Now" />
@@ -150,11 +170,32 @@
 <partial name="_ValidationScriptsPartial" />
 <script>
     $(document).ready(function() {
+        // Máscaras
         var maskTel = function (val) { return val.replace(/\D/g, '').length === 11 ? '(00) 00000-0000' : '(00) 0000-00009'; },
             optTel = { onKeyPress: function(val, e, field, options) { field.mask(maskTel.apply({}, arguments), options); } };
 
         $('#Funcionario_Telefone').mask(maskTel, optTel);
         $('#Funcionario_Cep').mask('00000-000');
         $('#Funcionario_CPF').mask('000.000.000-00', {reverse: true});
+    });
+
+
+        $(document).ready(function () {
+        // Pega a data de hoje no formato YYYY-MM-DD
+        var hoje = new Date().toISOString().split('T')[0];
+
+        // Garante que o atributo max esteja definido via JS também (segurança extra)
+        $('#DataNascimento_Fundacao').attr('max', hoje);
+
+        // Evento para verificar quando o usuário muda a data
+        $('#DataNascimento_Fundacao').on('change blur', function() {
+            var dataSelecionada = $(this).val();
+
+            // Se a data selecionada for maior que hoje
+            if (dataSelecionada && dataSelecionada > hoje) {
+                alert("A data não pode ser futura!");
+                $(this).val(hoje); // Reseta para a data de hoje ou use '' para limpar
+            }
+        });
     });
 </script>

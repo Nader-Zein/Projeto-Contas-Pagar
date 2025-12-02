@@ -72,7 +72,7 @@
 
                         <div class="@(modo == "Criar" ? "col-md-3" : "col-md-2")">
                             <label asp-for="DataEmissao" class="form-label">Data de Emissão</label>
-                            <input asp-for="DataEmissao" type="date" class="form-control" id="DataEmissao" />
+                            <input asp-for="DataEmissao" type="date" class="form-control" id="DataEmissao" value="@DateTime.Now.ToString("yyyy-MM-dd")" readonly/>
                         </div>
                         <div class="@(modo == "Criar" ? "col-md-6" : "col-md-2")">
                             <label class="form-label text-nowrap">Funcionário (Vendedor)*</label>
@@ -326,7 +326,7 @@
     <div class="mt-4 text-end">
         @if (modo == "Criar")
         {
-            @* Alterado de submit para button para validar parcelas via JS *@
+            @*           *@
             <button type="button" class="btn btn-success" onclick="verificarParcelasAntesDeSalvar()">Finalizar Venda</button>
             <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
         }
@@ -514,6 +514,7 @@
                     </table>
                 </div>
 
+                <!-- Opcional: Botão para criar NOVA Forma de Pagamento (Nível 4 de Inception!) -->
                 <button class="btn btn-success w-100 mt-2" onclick="abrirFormNovaFormaPgto()">+ Nova Forma</button>
             </div>
         </div>
@@ -569,6 +570,7 @@
                             }
                         </tbody>
                     </table>
+                    <!-- (Adicione o botão logo após a tabela) -->
                     <div class="mt-3 border-top pt-3">
                         <button type="button" class="btn btn-success" onclick="abrirFormNovoFuncionario()">
                             <i class="bi bi-person-plus-fill"></i> Cadastrar Novo Funcionário
@@ -618,6 +620,7 @@
 </div>
 
 
+<!-- Modal Auxiliar: Cidade para Funcionário -->
 <div class="modal fade" id="modalCidadeParaCadastroFuncionario" tabindex="-1" data-bs-backdrop="static">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -873,9 +876,11 @@
 
 
 
+<!-- Container Principal do Cadastro -->
 <div class="modal fade" id="modalNovoFuncionario" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-xl">
         <div class="modal-content" id="modalNovoFuncionarioContent">
+            <!-- AJAX -->
         </div>
     </div>
 </div>

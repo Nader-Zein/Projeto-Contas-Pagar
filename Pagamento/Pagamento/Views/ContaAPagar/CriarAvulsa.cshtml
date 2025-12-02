@@ -19,17 +19,17 @@
 
 <div class="row">
     <div class="col-md-10">
-       
+        @*             *@
         <form asp-action="@(isCriar ? "CriarAvulsa" : (isBaixar ? "Baixar" : "Cancelar"))" method="post" id="form-conta-pagar">
             @Html.AntiForgeryToken()
 
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-          
+            @*               *@
             <input type="hidden" asp-for="FornecedorId" id="FornecedorId" />
             <input type="hidden" asp-for="IdFormaPgto" id="IdFormaPgto" />
 
-           
+            @*        *@
             @if (isBaixar || isCancelar || isDetalhes)
             {
                 <input type="hidden" asp-for="Modelo" />
@@ -42,7 +42,7 @@
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span>Dados da Conta</span>
                     <div class="form-check form-switch">
-                       
+                        @*           *@
                         <input asp-for="Status" class="form-check-input" type="checkbox" role="switch" disabled="@isReadOnly">
                         <label asp-for="Status" class="form-check-label">Ativo</label>
                     </div>
@@ -125,12 +125,14 @@
 
             
 
+            @* 8. O card de "Termos" (Juros, Multa, etc.) é separado *@
             <div class="card mt-3">
                 <div class="card-header">
                     Termos e Forma de Pagamento
                 </div>
                 <div class="card-body">
 
+                    @* --- LINHA 1: PORCENTAGENS (Bloqueadas na Baixa) --- *@
                     <div class="row mb-1">
                         <div class="col-md-12">
                             <h6 class="text-muted">Taxas Configuradas (%)</h6>
@@ -139,6 +141,7 @@
                     <div class="row mb-3">
                         <div class="col-md-2">
                             <label asp-for="Juros" class="form-label small">Juros (%)</label>
+                            @* Note que adicionamos readonly="@isBaixar" aqui *@
                             <input asp-for="Juros" class="form-control bg-light" type="text"  placeholder="0,00" id="JurosPercentual"
                                    readonly="@(isBaixar || isCancelar || isDetalhes)" oninput="this.value = this.value.replace(/[^0-9,.]/g, '')" />
                         </div>
@@ -154,6 +157,8 @@
                         </div>
                     </div>
 
+                    @* --- LINHA 2: VALORES EM REAIS (Editáveis na Baixa) --- *@
+                    @* Estes campos só precisam aparecer na Baixa ou Detalhes *@
                     @if (isBaixar || isDetalhes && Model.Situacao == "PAGO")
                     {
                         <div class="row mb-1">
@@ -164,14 +169,17 @@
                         <div class="row mb-3">
                             <div class="col-md-2">
                                 <label asp-for="ValJuros" class="form-label fw-bold">Valor Juros (R$)</label>
+                                @* Agora usamos asp-for direto na propriedade nova *@
                                 <input asp-for="ValJuros" type="text" class="form-control money" oninput="this.value = this.value.replace(/[^0-9,.]/g, ''); somarTotalFinal()" readonly="@(isDetalhes)" />
                             </div>
                             <div class="col-md-2">
                                 <label asp-for="ValMulta" class="form-label fw-bold">Valor Multa (R$)</label>
+                                @* Agora usamos asp-for direto na propriedade nova *@
                                 <input asp-for="ValMulta" type="text" class="form-control money" oninput="this.value = this.value.replace(/[^0-9,.]/g, ''); somarTotalFinal()" readonly="@(isDetalhes)" />
                             </div>
                             <div class="col-md-2">
                                 <label asp-for="ValDesconto" class="form-label fw-bold text-nowrap">Valor Desconto (R$)</label>
+                                @* Agora usamos asp-for direto na propriedade nova *@
                                 <input asp-for="ValDesconto" type="text" class="form-control money" oninput="this.value = this.value.replace(/[^0-9,.]/g, ''); somarTotalFinal()" readonly="@(isDetalhes)" />
                             </div>
                             @if (isBaixar || (isDetalhes && Model.Situacao == "PAGO"))
@@ -260,6 +268,8 @@
 
 
 
+            @* --- ADICIONE ESTE NOVO BLOCO --- *@
+            @* 8. BLOCO DE CANCELAMENTO (Aparece no "Detalhes" se estiver Cancelada) *@
             @if (isDetalhes && Model.Status == false)
             {
                 <div class="card mt-3">
@@ -276,7 +286,10 @@
                     </div>
                 </div>
             }
-          
+            @* --- FIM DO NOVO BLOCO --- *@
+
+
+            @* 11. O rodapé (botões) muda conforme o modo *@
             <div class="card mt-3">
                 <div class="card-footer text-end">
                     <a asp-action="Index" class="btn btn-secondary">Voltar</a>
@@ -1406,13 +1419,15 @@
             });       
         const modo = "@modo";
 
-        
 
+
+                
         function parseValor(valorString) {
             if (!valorString) return 0;
 
             let valorNumerico = String(valorString)
-                .replace(',', '.');
+                .replace(/\./g, '')  // tira separador de milhar
+                .replace(',', '.');  // converte decimal
 
             return parseFloat(valorNumerico) || 0;
         }
@@ -1422,58 +1437,10 @@
             return n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         }
 
-        function calcularValorPago() {
-            const valorParcelaInput = document.getElementById('ValorParcela');
-            const valorBase = parseValor(valorParcelaInput.value);
-
-            const jurosInput = document.getElementById('Juros');
-            const multaInput = document.getElementById('Multa');
-            const descontoInput = document.getElementById('Desconto');
-
-            const jurosPercentAoDia = parseValor(jurosInput.value);
-            const multaPercent = parseValor(multaInput.value);
-            const descontoPercent = parseValor(descontoInput.value);
-
-            const dataPagamentoInput = document.getElementById('DataPagamento');
-            const dataVencimentoInput = document.getElementById('DataVencimento');
-            let total = valorBase;
-
-            if (dataPagamentoInput.value && dataVencimentoInput.value) {
-
-                const dataPag = new Date(dataPagamentoInput.value + 'T00:00:00');
-                const dataVenc = new Date(dataVencimentoInput.value + 'T00:00:00');
-
-                if (dataPag > dataVenc) {
-                    total += (valorBase * (multaPercent / 100));
-
-                    const diffTime = dataPag - dataVenc;             
-                    const diasDeAtraso = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-                    const valorJurosPorDia = (valorBase * (jurosPercentAoDia / 100));
-
-                    const totalJuros = valorJurosPorDia * diasDeAtraso;
-
-                    total += totalJuros;
-                } else {
-                    total -= (valorBase * (descontoPercent / 100));
-                }
-            }
-
-            const valorPagoDisplayInput = document.getElementById('ValorPagoDisplay');
-            const valorPagoHiddenInput = document.getElementById('ValorPagoHidden');
-
-            if (valorPagoDisplayInput && valorPagoHiddenInput) {
-                valorPagoDisplayInput.value = formatarMoeda(total);
-
-                valorPagoHiddenInput.value = total.toLocaleString('pt-BR', {
-                minimumFractionDigits: 2,
-                useGrouping: false
-                });   
-            }
-        }
+        
 
 
-        document.addEventListener('DOMContentLoaded', function () {
+                document.addEventListener('DOMContentLoaded', function () {
 
             function getTodayString() {
                 const hoje = new Date();
@@ -1488,13 +1455,13 @@
             const dataEmissaoInput = document.getElementById('DataEmissao');
             const dataVencimentoInput = document.getElementById('DataVencimento');
 
+            // --- REGRAS PARA MODO "Criar" (mantive igual, só organizei) ---
             if (modo === "Criar" && dataEmissaoInput && dataVencimentoInput) {
 
                 dataEmissaoInput.max = todayString;
-
                 dataVencimentoInput.min = dataEmissaoInput.value;
 
-                dataEmissaoInput.addEventListener('input', function() {
+                dataEmissaoInput.addEventListener('input', function () {
                     const emissaoValue = dataEmissaoInput.value;
                     dataVencimentoInput.min = emissaoValue;
                     if (dataVencimentoInput.value < emissaoValue) {
@@ -1502,7 +1469,7 @@
                     }
                 });
 
-                dataEmissaoInput.addEventListener('blur', function() {
+                dataEmissaoInput.addEventListener('blur', function () {
                     if (dataEmissaoInput.value > todayString) {
                         alert('A Data de Emissão não pode ser futura. Ajustando para hoje.');
                         dataEmissaoInput.value = todayString;
@@ -1510,7 +1477,7 @@
                     }
                 });
 
-                dataVencimentoInput.addEventListener('blur', function() {
+                dataVencimentoInput.addEventListener('blur', function () {
                     const emissaoValue = dataEmissaoInput.value;
                     const vencimentoValue = dataVencimentoInput.value;
 
@@ -1521,58 +1488,64 @@
                 });
             }
 
-           if (modo === "Baixar") {
-            const dataPagamentoInput = document.getElementById('DataPagamento');
-            const jurosInput = document.getElementById('Juros');
-            const multaInput = document.getElementById('Multa');
-            const descontoInput = document.getElementById('Desconto');
+            // --- REGRAS PARA MODO "Baixar" (AGORA SEM calcularValorPago) ---
+            if (modo === "Baixar") {
 
-            if (dataPagamentoInput) {
-                dataPagamentoInput.max = todayString;
+                const dataPagamentoInput = document.getElementById('DataPagamento');
 
-                if (!dataPagamentoInput.value) {
-                    dataPagamentoInput.value = todayString;
-                }
+                if (dataPagamentoInput) {
+                    dataPagamentoInput.max = todayString;
 
-                dataPagamentoInput.addEventListener('blur', function() {
-                    const dataPagValue = dataPagamentoInput.value;
-                    const dataEmissaoValue = dataEmissaoInput.value;
-
-                    if (dataPagValue && dataEmissaoValue && dataPagValue < dataEmissaoValue) {
-                        alert('A Data de Pagamento não pode ser anterior à Data de Emissão. Ajustando para hoje.');
+                    // se não tiver data, preenche com hoje
+                    if (!dataPagamentoInput.value) {
                         dataPagamentoInput.value = todayString;
-                        dataPagamentoInput.dispatchEvent(new Event('input'));
                     }
 
-                    if (dataPagValue > todayString) {
-                         alert('A Data de Pagamento não pode ser futura. Ajustando para hoje.');
-                         dataPagamentoInput.value = todayString;
-                         dataPagamentoInput.dispatchEvent(new Event('input'));
-                    }
-                });
+                    dataPagamentoInput.addEventListener('blur', function () {
+                        const dataPagValue = dataPagamentoInput.value;
+                        const dataEmissaoValue = dataEmissaoInput ? dataEmissaoInput.value : null;
+
+                        if (dataPagValue && dataEmissaoValue && dataPagValue < dataEmissaoValue) {
+                            alert('A Data de Pagamento não pode ser anterior à Data de Emissão. Ajustando para hoje.');
+                            dataPagamentoInput.value = todayString;
+                        }
+
+                        if (dataPagValue > todayString) {
+                            alert('A Data de Pagamento não pode ser futura. Ajustando para hoje.');
+                            dataPagamentoInput.value = todayString;
+                        }
+
+                        // sempre que a data de pagamento for ajustada, recalcula juros/multa/desconto e total
+                        calcularValoresIniciais();
+                    });
+                }
+
+                // se o usuário editar os valores em R$ manualmente, recalcula o total
+                const valJurosInput    = document.getElementById('ValJuros');
+                const valMultaInput    = document.getElementById('ValMulta');
+                const valDescontoInput = document.getElementById('ValDesconto');
+
+                if (valJurosInput)    valJurosInput.addEventListener('input', somarTotalFinal);
+                if (valMultaInput)    valMultaInput.addEventListener('input', somarTotalFinal);
+                if (valDescontoInput) valDescontoInput.addEventListener('input', somarTotalFinal);
+
+                // cálculo inicial ao carregar a tela de baixa
+                calcularValoresIniciais();
             }
 
-            if (dataPagamentoInput) dataPagamentoInput.addEventListener('input', calcularValorPago);
-            if (jurosInput)        jurosInput.addEventListener('input', calcularValorPago);
-            if (multaInput)        multaInput.addEventListener('input', calcularValorPago);
-            if (descontoInput)     descontoInput.addEventListener('input', calcularValorPago);
-
-            calcularValorPago();
-        }
-
-
+            // --- REGRAS PARA MODO "Detalhes" (só formata o que veio do banco) ---
             if (modo === "Detalhes") {
-            const valorPagoHiddenInput = document.getElementById('ValorPagoHidden');
-            const valorPagoDisplayInput = document.getElementById('ValorPagoDisplay');
+                const valorPagoHiddenInput  = document.getElementById('ValorPagoHidden');
+                const valorPagoDisplayInput = document.getElementById('ValorPagoDisplay');
 
-            if (valorPagoHiddenInput && valorPagoDisplayInput) {
-                const valorNumerico = parseValor(valorPagoHiddenInput.value);
+                if (valorPagoHiddenInput && valorPagoDisplayInput) {
+                    const valorNumerico = parseValor(valorPagoHiddenInput.value);
 
-                if (valorNumerico > 0) {
-                    valorPagoDisplayInput.value = formatarMoeda(valorNumerico);
+                    if (valorNumerico > 0) {
+                        valorPagoDisplayInput.value = formatarMoeda(valorNumerico);
+                    }
                 }
             }
-        }
         });
 
     </script>

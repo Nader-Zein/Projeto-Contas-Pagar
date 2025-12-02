@@ -6,7 +6,8 @@
 
 <h1>@ViewData["Title"]</h1>
 
-
+@* 
+           *@
 
 @if (TempData["SuccessMessage"] != null)
 {
@@ -43,8 +44,10 @@
                     }
                     else
                     {
+                                 
                         bool vencidaEmAberto = aReceber && item.DataVencimento.Date < DateTime.Today;
 
+                                          
                         bool recebidaAtrasada = recebido
                                                 && item.DataPagamento.HasValue
                                                 && item.DataPagamento.Value.Date > item.DataVencimento.Date;
@@ -59,8 +62,8 @@
                         }
                     }
 
-
                     <tr class="@trClass">
+                                
                         <td>
                             @if (!string.IsNullOrEmpty(item.Modelo))
                             {
@@ -101,13 +104,15 @@
                         </td>
                         <td>
                             @{
+                                               
+                                            
                                 string baixarDisabled = (item.Situacao != "A RECEBER" || item.Status == false) ? "disabled" : "";
                                 bool cancelarDisabled =
                                                         (item.Situacao ?? "").Trim().Equals("RECEBIDA", StringComparison.OrdinalIgnoreCase)
                                                         || item.Status == false;
                             }
                             
-                            @*                        *@
+                            @*                                    *@
                             <button type="button"
                                     class="btn btn-sm btn-primary"
                                     onclick="location.href='@Url.Action("Criar", new {
@@ -121,7 +126,7 @@
                                 Detalhes
                             </button>
 
-                            @*                        *@
+                            @*                                    *@
                             <button type="button"
                                     class="btn btn-sm btn-primary btn-verificar-baixa @baixarDisabled"
                                     title="Receber/Baixar"
@@ -139,9 +144,11 @@
                                     })">
                                 Dar Baixa
                             </button>
-
                             @*   
-                            *@
+                                            
+                               
+                                            
+                                                                                                       *@
                             <button type="button" 
                             class="btn btn-sm btn-danger"
                              disabled="@cancelarDisabled" 
@@ -157,7 +164,7 @@
     </div>
 </div>
 
-@*                                                    *@
+@*                                                                              *@
 
 <div class="modal fade" id="modalAvisoPendencia" tabindex="-1" aria-labelledby="modalAvisoLabel" aria-hidden="true">
     <div class="modal-dialog">

@@ -229,12 +229,17 @@
                 return;
             }
 
+            // --- INÍCIO DA ALTERAÇÃO ---
+            // Calcula o total atual das parcelas já adicionadas
             let totalAtual = parcelas.reduce((sum, p) => sum + p.valorPercentual, 0);
 
+            // Verifica se a nova parcela faria o total passar de 100
             if (totalAtual + valor > 100) {
                 alert("A soma das parcelas não pode ultrapassar 100%. Total atual: " + totalAtual + "%. Restante: " + (100 - totalAtual) + "%.");
                 return;
             }
+            // --- FIM DA ALTERAÇÃO ---
+
 
             if (parcelas.some(p => p.numeroParcela === numeroParcela)) {
                 alert("Já existe uma parcela com esse número.");
@@ -280,19 +285,27 @@
                 
         document.querySelector("form").addEventListener("submit", function (e) {
 
+            // 1. Calcula o total
+            // O toFixed(2) ajuda a arredondar para 2 casas decimais antes de somar,
+            // mas converter para Number() garante que a soma matemática funcione.
             let total = parcelas.reduce((sum, p) => sum + p.valorPercentual, 0);
 
+            // 2. Validação Flexível (aceita 99.99 até 100.01 como 100)
+            // Math.abs pega o valor absoluto da diferença. Se for menor que 0.1, aceitamos.
             if (Math.abs(total - 100) > 0.1) {
-                e.preventDefault();       
+                e.preventDefault(); // Cancela o envio
                 alert("A soma das porcentagens das parcelas deve ser 100%. Total atual: " + total.toFixed(2) + "%.");
                 return;
             }
 
+            // 3. Previne duplicação do input hidden
+            // Procura se já existe um input com esse nome e remove
             let inputExistente = this.querySelector("input[name='ParcelasJson']");
             if (inputExistente) {
                 inputExistente.remove();
             }
 
+            // 4. Cria e adiciona o JSON limpo
             let input = document.createElement("input");
             input.type = "hidden";
             input.name = "ParcelasJson";

@@ -96,7 +96,7 @@
 
         <div class="col-md-2 mb-3">
             <label asp-for="DataNascimento_Fundacao" class="form-label">Data de Nascimento</label>
-            <input asp-for="DataNascimento_Fundacao" type="date" class="form-control" />
+            <input asp-for="DataNascimento_Fundacao" type="date" class="form-control" max="@DateTime.Now.ToString("yyyy-MM-dd") />
             <span asp-validation-for="DataNascimento_Fundacao" class="text-danger"></span>
 
         </div>
@@ -240,6 +240,144 @@
     <partial name="_ValidationScriptsPartial" />
 
     <script>
+
+
+        $(document).ready(function () {
+
+            // Função auxiliar para calcular idade em anos completos
+            function idadeEmAnos(dataNascStr, dataRefStr) {
+                var nasc = new Date(dataNascStr);
+                var ref  = dataRefStr ? new Date(dataRefStr) : new Date();
+
+                var idade = ref.getFullYear() - nasc.getFullYear();
+                var mes   = ref.getMonth() - nasc.getMonth();
+
+                if (mes < 0 || (mes === 0 && ref.getDate() < nasc.getDate())) {
+                    idade--;
+                }
+
+                return idade;
+            }
+
+            // ===================== 1) Validação de DATA DE NASCIMENTO =====================
+            function validarDataNascimento() {
+                var dtNascimentoVal = $('#DataNascimento_Fundacao').val();
+                if (!dtNascimentoVal) return true; // se não preencheu, deixa outras validações cuidarem
+
+                var dataNasc = new Date(dtNascimentoVal);
+                if (dataNasc.getFullYear() < 1900) return true; // usuário ainda digitando
+
+                var hojeStr = new Date().toISOString().split('T')[0];
+
+                // 1.1 Nascimento não pode ser no futuro
+                if (dtNascimentoVal > hojeStr) {
+                    alert('A Data de Nascimento não pode ser futura.');
+                    $('#DataNascimento_Fundacao').focus();
+                    return false;
+                }
+
+                // 1.2 Idade mínima hoje (se quiser essa regra)
+                var idadeHoje = idadeEmAnos(dtNascimentoVal, hojeStr);
+                if (idadeHoje < 16) {
+                    alert('Erro: o funcionário ainda não tem 16 anos completos hoje.');
+                    $('#DataNascimento_Fundacao').focus();
+                    return false;
+                }
+
+                return true;
+            }
+
+            // ===================== 2) Validação de ADMISSÃO e DEMISSÃO =====================
+            function validarAdmissaoEDemissao() {
+                var dtNascimentoVal = $('#DataNascimento_Fundacao').val();
+                var dtAdmissaoVal   = $('#DataAdmissao').val();
+                var dtDemissaoVal   = $('#DataDemissao').val();
+                var hojeStr         = new Date().toISOString().split('T')[0];
+
+                // ------ 2.1 Valida ADMISSÃO ------
+                if (dtAdmissaoVal) {
+                    var dataAdm = new Date(dtAdmissaoVal);
+                    if (dataAdm.getFullYear() < 1900) return true; // ainda digitando
+
+                    // 2.1.1 Admissão não pode ser futura
+                    if (dtAdmissaoVal > hojeStr) {
+                        alert('A Data de Admissão não pode ser futura.');
+                        $('#DataAdmissao').focus();
+                        return false;
+                    }
+
+                    // 2.1.2 Idade mínima na data de admissão
+                    if (dtNascimentoVal) {
+                        var idadeNaAdmissao = idadeEmAnos(dtNascimentoVal, dtAdmissaoVal);
+                        if (idadeNaAdmissao < 16) {
+                            alert('Erro: o funcionário tinha menos de 16 anos na Data de Admissão.');
+                            $('#DataAdmissao').focus();
+                            return false;
+                        }
+                    }
+
+                    // 2.1.3 Admissão não pode ser depois da Demissão
+                    if (dtDemissaoVal && dtAdmissaoVal > dtDemissaoVal) {
+                        alert('Erro: a Data de Admissão não pode ser posterior à Data de Demissão.');
+                        $('#DataAdmissao').focus();
+                        return false;
+                    }
+                }
+
+                // ------ 2.2 Valida DEMISSÃO ------
+                if (dtDemissaoVal) {
+                    var dataDem = new Date(dtDemissaoVal);
+                    if (dataDem.getFullYear() < 1900) return true; // ainda digitando
+
+                    // 👇 Demissão futura é PERMITIDA, então não tem comparação com "hojeStr" aqui
+
+                    // 2.2.1 Demissão não pode ser antes da Admissão
+                    if (dtAdmissaoVal && dtDemissaoVal < dtAdmissaoVal) {
+                        alert('Erro: a Data de Demissão não pode ser anterior à Data de Admissão.');
+                        $('#DataDemissao').focus();
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+
+            // ===================== 3) Função principal =====================
+            function validarDatasFuncionario() {
+                // Se falhar Nascimento OU Admissão/Demissão, bloqueia envio
+                return validarDataNascimento() && validarAdmissaoEDemissao();
+            }
+
+            // ===================== 4) Valida SOMENTE NO SUBMIT =====================
+            $('form').on('submit', function (e) {
+                if (!validarDatasFuncionario()) {
+                    e.preventDefault();
+                }
+            });
+        });
+
+
+
+                $(document).ready(function () {
+            // Pega a data de hoje no formato YYYY-MM-DD
+            var hoje = new Date().toISOString().split('T')[0];
+
+            // Garante que o atributo max esteja definido via JS também (segurança extra)
+            $('#DataNascimento_Fundacao').attr('max', hoje);
+
+            // Evento para verificar quando o usuário muda a data
+            $('#DataNascimento_Fundacao').on('change blur', function() {
+                var dataSelecionada = $(this).val();
+
+                // Se a data selecionada for maior que hoje
+                if (dataSelecionada && dataSelecionada > hoje) {
+                    alert("A data não pode ser futura!");
+                    $(this).val(hoje); // Reseta para a data de hoje ou use '' para limpar
+                }
+            });
+        });
+
+
         function selecionarCidade(id, nome) {
             document.getElementById('IdCidade').value = id;
             document.getElementById('NomeCidadeSelecionada').value = nome;

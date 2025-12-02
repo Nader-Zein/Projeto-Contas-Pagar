@@ -82,7 +82,7 @@
 
         <div class="col-md-2 mb-3">
             <label asp-for="DataNascimento_Fundacao" id="labelNascimentoFundacao" class="form-label">Data de Nascimento / Data de Fundação</label>
-            <input asp-for="DataNascimento_Fundacao" type="date" class="form-control" />
+            <input asp-for="DataNascimento_Fundacao" type="date" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" max="@DateTime.Now.ToString("yyyy-MM-dd")" />
             <span asp-validation-for="DataNascimento_Fundacao" class="text-danger"></span>
 
         </div>
@@ -253,8 +253,9 @@
     <script>
 
 
+        //======================Marcara Telefone==================
         $(document).ready(function(){
-                                
+            // Esta máscara inteligente se adapta para telefone fixo e celular
             var maskBehavior = function (val) {
                 return val.replace(/\D/g, '').length === 11 ? '(00) 00000-0000' : '(00) 0000-00009';
             },
@@ -266,31 +267,43 @@
 
             $('#Telefone').mask(maskBehavior, options);
         });
+        //======================Marcara Telefone==================
+
+        //=====================Mascara CPF========================
+
         $(document).ready(function () {
+            // Seleciona o campo com id 'CPF' e adiciona um "ouvinte" para o evento de pressionar tecla
             $('#CPF_CNPJ').on('keypress', function (event) {
+                // 'event.which' retorna o código numérico da tecla pressionada.
+                // Os códigos para os dígitos '0' a '9' estão no intervalo de 48 a 57.
+
+                // Se o código da tecla estiver FORA desse intervalo...
                 if (event.which < 48 || event.which > 57) {
-                                    
+                    // ...a ação padrão (digitar o caractere) é prevenida/cancelada.
                     event.preventDefault();
                 }
             });
         });
 
+        //=====================Mascara CPF========================
+
+        //=====================Mascara CEP========================
         $(document).ready(function () {
             var cepInput = $('#Cep');
 
-                      
+            // Impede a digitação de não-números
             cepInput.on('keypress', function (event) {
                 if (event.which < 48 || event.which > 57) {
                     event.preventDefault();
                 }
             });
 
+            // Limpa o campo caso algo seja colado
             cepInput.on('input', function () {
                 this.value = this.value.replace(/[^0-9]/g, '');
             });
         });
-          
- 
+         //=====================Mascara CEP========================
 
 
 
@@ -309,6 +322,27 @@
                 $('#labelRgIe').text("Inscrição Estadual*");
             } 
         }
+
+
+                
+        $(document).ready(function () {
+            // Pega a data de hoje no formato YYYY-MM-DD
+            var hoje = new Date().toISOString().split('T')[0];
+
+            // Garante que o atributo max esteja definido via JS também (segurança extra)
+            $('#DataNascimento_Fundacao').attr('max', hoje);
+
+            // Evento para verificar quando o usuário muda a data
+            $('#DataNascimento_Fundacao').on('change blur', function() {
+                var dataSelecionada = $(this).val();
+
+                // Se a data selecionada for maior que hoje
+                if (dataSelecionada && dataSelecionada > hoje) {
+                    alert("A data não pode ser futura!");
+                    $(this).val(hoje); // Reseta para a data de hoje ou use '' para limpar
+                }
+            });
+        });
 
         $(document).ready(function () {
             $('#TipoPessoa').change(function () {
@@ -448,15 +482,15 @@
             }
 
 
-                          
-                                          
+            // --- INÍCIO DA VALIDAÇÃO (ADICIONAR ISTO) ---
+            // Calcula quanto já tem cadastrado (somando as parcelas que vieram do banco + as novas)
             let totalAtual = parcelas.reduce((sum, p) => sum + p.valorPercentual, 0);
 
             if (totalAtual + valor > 100) {
                 alert("A soma das parcelas não pode ultrapassar 100%. Total atual: " + totalAtual + "%. Restante permitido: " + (100 - totalAtual) + "%.");
                 return;
             }
-                      
+            // --- FIM DA VALIDAÇÃO ---
 
 
             if (parcelas.some(p => p.numeroParcela === numeroParcela)) {
@@ -497,15 +531,21 @@
             $('#IdFormaPgto').val('');
             $('#NomeFormaSelecionada').val('');
         });
+
         $(document).on('submit', '#formCadastrarCondicaoPgto', function (e) {
             e.preventDefault();
-                          
+
+            // --- INÍCIO DA VALIDAÇÃO DE 100% ---
+            // Calcula a soma dos percentuais das parcelas
+            // (Assumindo que a variável 'parcelas' contém objetos com a propriedade 'valorPercentual')
             var totalPercentual = parcelas.reduce((soma, p) => soma + (parseFloat(p.valorPercentual) || 0), 0);
+
+            // Verifica se a soma é diferente de 100 (usando uma margem de erro mínima para floats)
             if (Math.abs(totalPercentual - 100) > 0.001) {
                 alert("A soma das parcelas deve ser exatamente 100%. Total atual: " + totalPercentual.toFixed(2) + "%");
-                return;           
+                return; // Interrompe o envio do formulário
             }
-                      
+            // --- FIM DA VALIDAÇÃO ---
 
 
             const formData = $(this).serializeArray();
@@ -533,9 +573,9 @@
 
                         $('#IdCondPgto').val(response.condicao.id);
                         $('#NomeCondicaoSelecionada').val(response.condicao.nome);
-                                
+                        // ADICIONE ESTA LINHA AQUI:
                         parcelas = [];
-                                                
+                        // Isso limpa a lista para o próximo cadastro sem precisar dar F5
                     } else {
                         $('#modalNovaCondicaoContent').html(response);
                     }

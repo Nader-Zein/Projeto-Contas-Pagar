@@ -252,12 +252,16 @@
                 return;
             }
 
+            // --- INÍCIO DA VALIDAÇÃO (ADICIONAR ISTO) ---
+            // Calcula quanto já tem cadastrado (somando as parcelas que vieram do banco + as novas)
             let totalAtual = parcelas.reduce((sum, p) => sum + p.valorPercentual, 0);
 
             if (totalAtual + valor > 100) {
                 alert("A soma das parcelas não pode ultrapassar 100%. Total atual: " + totalAtual + "%. Restante permitido: " + (100 - totalAtual) + "%.");
                 return;
             }
+            // --- FIM DA VALIDAÇÃO ---
+
 
             if (parcelas.some(p => p.numeroParcela === numeroParcela)) {
                 alert("Número de parcela já utilizado.");
@@ -294,24 +298,29 @@
         });
 
                 
-        document.querySelector("form").addEventListener("submit", function (e) {             
+        document.querySelector("form").addEventListener("submit", function (e) { // <--- O "e" foi adicionado aqui
 
+            // 1. Recalcula o total para garantir
             let total = parcelas.reduce((sum, p) => sum + p.valorPercentual, 0);
 
+            // Validação de soma 100%
+            // Nota: Usamos Math.abs para evitar erros de arredondamento de ponto flutuante (ex: 99.99999)
             if (Math.abs(total - 100) > 0.01) {
-                e.preventDefault();               
+                e.preventDefault(); // Agora o "e" existe e vai funcionar!
                 alert("A soma das porcentagens das parcelas deve ser exatamente 100%. Total atual: " + total.toFixed(2) + "%.");
                 return;
             }
 
+            // 2. Remove input antigo se houver (para evitar duplicatas se o usuário clicar várias vezes)
             let inputExistente = this.querySelector("input[name='ParcelasJson']");
             if (inputExistente) {
                 inputExistente.remove();
             }
 
+            // 3. Cria e adiciona o JSON
             const input = document.createElement("input");
             input.type = "hidden";
-            input.name = "ParcelasJson";               
+            input.name = "ParcelasJson"; // O nome exato que o Controller espera
             input.value = JSON.stringify(parcelas);
             this.appendChild(input);
         });

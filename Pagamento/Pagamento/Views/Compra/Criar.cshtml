@@ -3,7 +3,7 @@
 @{
     string modo = ViewData["Modo"] as string ?? "Criar";
     ViewData["Title"] = modo == "Criar" ? "Cadastro de Compra" : (modo == "Detalhes" ? "Detalhes da Compra" : "Cancelar Compra");
-    bool isReadOnly = (modo != "Criar");           
+    bool isReadOnly = (modo != "Criar");                
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -133,6 +133,7 @@
                             
                 <div class="col-md-auto d-flex gap-1 ms-3 align-self-end">                
                 <button type="button" id="btn-adicionar-produto" class="btn btn-secondary flex-grow-1">Adicionar</button>
+                @* --- NOVO BOTÃO: LIMPAR PRODUTOS --- *@
                 <button type="button" id="btn-limpar-produtos" class="btn btn-outline-danger" title="Limpar lista e desbloquear dados da nota">
                 <i class="bi bi-trash"></i> Limpar       
                 </button>            
@@ -202,6 +203,7 @@
                                 {
 
                                     
+                             <!-- NOVO: Buscar condição por ID -->
                             <input type="number"
                                    id="condicao-id-input"
                                    class="form-control"
@@ -305,6 +307,7 @@
    <div class="mt-4 text-end">
         @if (modo == "Criar")
         {
+            @* Alterado de type="submit" para type="button" com onclick *@
             <button type="button" class="btn btn-success" onclick="verificarParcelasAntesDeSalvar()">Salvar Compra</button>
             <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
         }
@@ -328,6 +331,7 @@
     </div>
 </form>
 
+@* ✅ COLE ESTA LINHA ONDE OS BLOCOS ACIMA ESTAVAM ✅ *@
 <partial name="_ModalCondicaoPagamento" model="ViewBag.CondicoesPagamento" />
 
 
@@ -343,6 +347,7 @@
                 <table class="table table-bordered table-hover" id="tabelaFornecedores">
                     <thead><tr><th>ID</th><th>Nome</th><th>Ação</th></tr></thead>              
                     <tbody>
+                        @* MUDANÇA: Iterar sobre a lista de Fornecedor e usar as propriedades do modelo *@
                         @foreach (var fornecedor in ViewBag.Fornecedores as List<Pagamento.Models.Fornecedor>)
                         {
                             <tr>
@@ -381,6 +386,7 @@
                                 <td>@produto.IdProduto</td>
                                 <td>@produto.Descricao</td>
                                 <td>
+                                    @* MODIFICAÇÃO: Adicione @produto.Nomeunidade como terceiro parâmetro *@
                                     <button type="button" class="btn btn-sm btn-primary" onclick="selecionarProduto(@produto.IdProduto, '@produto.Descricao', '@produto.NomeUnidade')">Selecionar</button>
                                 </td>
                             </tr>
@@ -405,6 +411,7 @@
 
 
 
+@* Adicione este modal junto com os outros modais de "novo item" *@
 <div class="modal fade" id="modalNovoProduto" tabindex="-1">
     <div class="modal-dialog modal-xl">
         <div class="modal-content" id="modalNovoProdutoContent">
@@ -413,7 +420,9 @@
 </div>
 
 
+@* ==================================modais do formProdutoModal=================================== *@
 
+@* Seletores *@
 <div class="modal fade" id="modalMarcaSelecionar" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -431,6 +440,7 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @* @foreach (var marca in ViewBag.Marcas as List<SelectListItem>) *@
                          @foreach (var marca in ViewBag.MarcasItens as List<SelectListItem>)
                         {
                             <tr>
@@ -469,6 +479,7 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @* @foreach (var unidade in ViewBag.Unidades as List<SelectListItem>) *@
                         @foreach (var unidade in ViewBag.UnidadesItens as List<SelectListItem>)
                         {
                             <tr>
@@ -507,6 +518,7 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @* @foreach (var categoria in ViewBag.Categorias as List<SelectListItem>) *@
                         @foreach (var categoria in ViewBag.CategoriasItens as List<SelectListItem>)
                         {
                             <tr>
@@ -548,6 +560,7 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @* CORREÇÃO: Usamos FornecedoresItens que é do tipo SelectListItem *@
                             @if (ViewBag.FornecedoresItens != null)
                             {
                                 foreach (var t in ViewBag.FornecedoresItens as List<SelectListItem>)
@@ -576,6 +589,7 @@
         </div>
     </div>
 
+@*             *@
 <div class="modal fade" id="modalMarca" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog"><div class="modal-content" id="modalMarcaContent"></div></div>
 </div>
@@ -591,6 +605,9 @@
 
 
 
+@*  *@
+
+@*    *@
 
 <div class="modal fade" id="modalCidadeFornecedor" tabindex="-1" aria-labelledby="modalCidadeFornecedorLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -612,6 +629,7 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @*        *@
                         @foreach (var cidade in ViewBag.CidadesItens as List<SelectListItem>)
                         {
                             <tr>
@@ -652,6 +670,7 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @* @foreach (var condicao in ViewBag.CondicoesPagamento as List<SelectListItem>) *@
                         @foreach (var condicao in ViewBag.CondicoesPagamentoItens as List<SelectListItem>)
                         {
                             <tr>
@@ -777,6 +796,8 @@
     </div>
 </div>
 
+@*      
+ *@
 
 <div class="modal fade" id="modalNovaCondicaoFornecedor" tabindex="-1" aria-labelledby="modalNovaCondicaoFornecedorLabel">
     <div class="modal-dialog modal-xl">
@@ -788,10 +809,14 @@
         </div>
     </div>
 </div>
+@*  *@
 
+@*     *@
+@*            *@
 <div class="modal fade" id="modalNovaCondicaoCompra" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content" id="modalNovaCondicaoContentCompra">
+            @*     *@
         </div>
     </div>
 </div>

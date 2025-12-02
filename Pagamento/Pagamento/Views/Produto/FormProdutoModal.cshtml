@@ -123,6 +123,7 @@
                 <textarea asp-for="Observacoes" class="form-control"></textarea>
             </div>
 
+            <!-- Campos de data somente informativos no modal -->
             <div class="col-md-4 mb-3">
                 <label class="form-label">Data de Criação</label>
                 <input type="text" class="form-control" value="@Model.DataCriacao.ToString("dd/MM/yyyy HH:mm")" readonly />
@@ -144,16 +145,20 @@
 </div>
 
 <script>
-               
+    // =================================================================================
+    // SCRIPTS ESPECÍFICOS PARA O MODAL DE CADASTRO DE PRODUTO
+    // =================================================================================
+
+    // ALTERAÇÃO 5: A função para abrir o form de fornecedor agora tem um nome único
     function abrirFormNovoFornecedorProduto() {
-                              
+        // Opcional: Esconde o modal de seleção para evitar problemas de sobreposição
         var selectionModal = bootstrap.Modal.getInstance(document.getElementById('modalFornecedorSelecionarProduto'));
         if (selectionModal) {
             selectionModal.hide();
         }
 
         $.get('@Url.Action("FormModal", "Fornecedor")', function (data) {
-                      
+            // Alvo nos novos IDs únicos
             $('#modalFornecedorProdutoContent').html(data);
             var modal = new bootstrap.Modal(document.getElementById('modalFornecedorProduto'));
             modal.show();
